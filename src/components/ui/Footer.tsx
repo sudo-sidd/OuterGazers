@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { DISCORD_INVITE_URL } from "@/constants";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -92,6 +93,13 @@ export default function Footer() {
                     Contact
                   </motion.div>
                 </Link>
+              </li>
+              <li>
+                <a href={DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">
+                  <motion.div initial="initial" whileHover="hover" variants={linkVariants} className="inline-block cursor-pointer text-[#5865F2]">
+                    Discord Community
+                  </motion.div>
+                </a>
               </li>
             </ul>
           </motion.div>

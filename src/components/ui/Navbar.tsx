@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { DISCORD_INVITE_URL } from "@/constants";
 
 const NAV_LINKS = [
   { name: "Our Work", href: "/#work" },
@@ -68,7 +69,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
+          <div className="hidden md:flex items-center space-x-8">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -90,6 +91,16 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Discord Community Link */}
+            <a
+              href={DISCORD_INVITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5865F2]/10 hover:bg-[#5865F2] text-[#5865F2] hover:text-white border border-[#5865F2]/30 text-[11px] font-bold uppercase tracking-wider transition-all duration-300"
+            >
+              <span>Discord</span>
+            </a>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -138,6 +149,21 @@ export default function Navbar() {
                   </Link>
                 </motion.li>
               ))}
+              <motion.li
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <a
+                  href={DISCORD_INVITE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-2xl font-extrabold uppercase tracking-widest text-[#5865F2] hover:text-white"
+                >
+                  Discord Server
+                </a>
+              </motion.li>
             </ul>
 
             {/* Mobile Menu Decorative Footer */}

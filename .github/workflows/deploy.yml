@@ -36,6 +36,10 @@ jobs:
 
       - name: Build with Next.js
         run: npm run build
+        env:
+          NEXT_PUBLIC_GOOGLE_SCRIPT_URL: ${{ secrets.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || vars.NEXT_PUBLIC_GOOGLE_SCRIPT_URL }}
+          NEXT_PUBLIC_RAZORPAY_KEY_ID: ${{ secrets.NEXT_PUBLIC_RAZORPAY_KEY_ID || vars.NEXT_PUBLIC_RAZORPAY_KEY_ID }}
+          NEXT_PUBLIC_DISCORD_INVITE_URL: ${{ secrets.NEXT_PUBLIC_DISCORD_INVITE_URL || vars.NEXT_PUBLIC_DISCORD_INVITE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
