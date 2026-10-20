@@ -2,6 +2,8 @@ import { Work, Founder, GameJamEvent, StudioTransmission } from "./types";
 
 // ─── Studio Integrations & Config ─────────────────────────────────────────────
 export const DISCORD_INVITE_URL = "https://discord.gg/N4w7gGfdq";
+export const WHATSAPP_GROUP_INVITE_URL =
+  process.env.NEXT_PUBLIC_WHATSAPP_GROUP_URL || "https://chat.whatsapp.com/invite/temp-outergazers-siet-jam";
 
 // Google Apps Script Web App URL for Sheets logging
 export const GOOGLE_SHEET_SCRIPT_URL =

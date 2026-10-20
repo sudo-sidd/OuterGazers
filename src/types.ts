@@ -22,9 +22,9 @@ export interface Founder {
 
 export interface TeamMember {
   name: string;
-  email: string;
+  email?: string;
   phone?: string;
-  discordTag: string;
+  discordTag?: string;
   college?: string;
 }
 
@@ -96,13 +96,13 @@ export interface TeamRegistrationPayload {
   eventId: string;
   eventTitle: string;
   teamName: string;
-  collegeName?: string;
+  collegeName: string;
   teamSize: number;
   totalAmount: number;
-  track: string;
+  track?: string;
   leader: TeamMember;
   members: TeamMember[];
-  paymentStatus: "PENDING" | "PAID" | "FREE";
+  paymentStatus: "PENDING" | "PAID" | "FREE" | "FAILED";
   razorpayPaymentId?: string;
   notes?: string;
   submittedAt: string;

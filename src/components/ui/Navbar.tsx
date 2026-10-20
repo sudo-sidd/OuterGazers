@@ -6,11 +6,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { DISCORD_INVITE_URL } from "@/constants";
+import EventAnnouncementPopup from "@/components/events/EventAnnouncementPopup";
 
 const NAV_LINKS = [
   { name: "Our Work", href: "/#work" },
   { name: "About", href: "/#about" },
-  { name: "Events", href: "/events" },
+  { name: "News", href: "/news" },
   { name: "Contact", href: "/#contact" },
 ];
 
@@ -45,6 +46,7 @@ export default function Navbar() {
 
   return (
     <>
+      <EventAnnouncementPopup />
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -71,7 +73,9 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                pathname === link.href ||
+                (link.href === "/news" && (pathname?.startsWith("/news") || pathname?.startsWith("/events")));
               return (
                 <Link
                   key={link.name}

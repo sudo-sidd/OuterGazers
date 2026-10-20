@@ -72,25 +72,17 @@ function handleGameJamRegistration(ss, data) {
       "Registration ID",
       "Event Title",
       "Team Name",
+      "College / Institution",
       "Team Size",
-      "Track",
       "Amount (INR)",
       "Payment Status",
       "Payment ID",
       "Leader Name",
       "Leader Email",
       "Leader Phone",
-      "Leader Discord",
       "Member 2 Name",
-      "Member 2 Email",
-      "Member 2 Discord",
       "Member 3 Name",
-      "Member 3 Email",
-      "Member 3 Discord",
-      "Member 4 Name",
-      "Member 4 Email",
-      "Member 4 Discord",
-      "Project Notes"
+      "Member 4 Name"
     ];
     sheet.appendRow(headers);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#00b4d8").setFontColor("#000000");
@@ -108,25 +100,17 @@ function handleGameJamRegistration(ss, data) {
     data.registrationId || "",
     data.eventTitle || "",
     data.teamName || "",
+    data.collegeName || "",
     data.teamSize || "",
-    data.track || "",
     data.totalAmount || "",
     data.paymentStatus || "PENDING",
     data.razorpayPaymentId || "N/A",
     leader.name || "",
     leader.email || "",
     leader.phone || "",
-    leader.discordTag || "",
     m2.name || "",
-    m2.email || "",
-    m2.discordTag || "",
     m3.name || "",
-    m3.email || "",
-    m3.discordTag || "",
-    m4.name || "N/A",
-    m4.email || "N/A",
-    m4.discordTag || "N/A",
-    data.notes || ""
+    m4.name || "N/A"
   ];
 
   sheet.appendRow(row);

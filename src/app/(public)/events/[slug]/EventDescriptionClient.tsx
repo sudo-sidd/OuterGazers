@@ -39,10 +39,10 @@ export default function EventDescriptionClient() {
         {/* Back Link & Breadcrumb */}
         <div className="mb-8 flex items-center justify-between">
           <Link
-            href="/events"
+            href="/news"
             className="inline-flex items-center gap-2 text-xs font-[family-name:var(--font-kode)] uppercase tracking-widest text-zinc-400 hover:text-[#00b4d8] transition-colors"
           >
-            <ArrowLeft size={14} /> Back to Events Hub
+            <ArrowLeft size={14} /> Back to News &amp; Events
           </Link>
 
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-[family-name:var(--font-kode)] border border-[#00b4d8]/30 px-3 py-1 rounded-full bg-[#00b4d8]/5">

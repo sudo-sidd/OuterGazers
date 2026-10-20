@@ -2,9 +2,26 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Users, ShieldCheck, Sparkles, ChevronRight, ArrowLeft, CheckCircle2, AlertCircle, Loader2, Utensils, Gamepad2 } from "lucide-react";
+import {
+  X,
+  Users,
+  ShieldCheck,
+  Sparkles,
+  ChevronRight,
+  ArrowLeft,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Utensils,
+  Gamepad2,
+  MessageCircle,
+  ExternalLink,
+  RefreshCw,
+  Copy,
+  Check,
+} from "lucide-react";
 import { GameJamEvent, TeamRegistrationPayload, TeamMember } from "@/types";
-import { DISCORD_INVITE_URL } from "@/constants";
+import { DISCORD_INVITE_URL, WHATSAPP_GROUP_INVITE_URL } from "@/constants";
 import { openRazorpayCheckout } from "@/lib/razorpay";
 import { submitTeamRegistration } from "@/lib/sheets";
 
@@ -15,131 +32,145 @@ interface ModalProps {
 }
 
 export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalProps) {
+  // Steps: 1: Details, 2: Review & Pay, 3: Success, 4: Failed / Cancelled
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [teamSize, setTeamSize] = useState<3 | 4>(3);
   const [teamName, setTeamName] = useState("");
   const [collegeName, setCollegeName] = useState("");
-  const [selectedTrack, setSelectedTrack] = useState(event.tracks[0]?.name || "PC Interactive Vanguard");
-  const [projectNotes, setProjectNotes] = useState("");
 
-  // Roster state
-  const [leader, setLeader] = useState<TeamMember>({ name: "", email: "", phone: "", discordTag: "" });
-  const [member2, setMember2] = useState<TeamMember>({ name: "", email: "", discordTag: "" });
-  const [member3, setMember3] = useState<TeamMember>({ name: "", email: "", discordTag: "" });
-  const [member4, setMember4] = useState<TeamMember>({ name: "", email: "", discordTag: "" });
+  // Roster: Leader contact info + Member names only
+  const [leaderName, setLeaderName] = useState("");
+  const [leaderEmail, setLeaderEmail] = useState("");
+  const [leaderPhone, setLeaderPhone] = useState("");
+  const [member2Name, setMember2Name] = useState("");
+  const [member3Name, setMember3Name] = useState("");
+  const [member4Name, setMember4Name] = useState("");
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmedRegId, setConfirmedRegId] = useState<string | null>(null);
   const [confirmedPaymentId, setConfirmedPaymentId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState(false);
 
   const totalAmount = teamSize * event.pricePerPerson;
 
-  // Validate step 1
-  const handleNextStep1 = (e: React.FormEvent) => {
+  // Validate Step 1
+  const handleProceedToReview = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     if (!teamName.trim()) {
-      setErrorMessage("Please enter a valid Team Name.");
+      setErrorMessage("Please enter a Team Name.");
       return;
     }
     if (!collegeName.trim()) {
       setErrorMessage("Please enter your College / Institution Name.");
       return;
     }
-    setErrorMessage(null);
+    if (!leaderName.trim() || !leaderEmail.trim() || !leaderPhone.trim()) {
+      setErrorMessage("Please complete all Team Leader details (Name, Email, Phone).");
+      return;
+    }
+    if (!member2Name.trim()) {
+      setErrorMessage("Please enter the name of Member 02.");
+      return;
+    }
+    if (!member3Name.trim()) {
+      setErrorMessage("Please enter the name of Member 03.");
+      return;
+    }
+    if (teamSize === 4 && !member4Name.trim()) {
+      setErrorMessage("Please enter the name of Member 04.");
+      return;
+    }
+
     setStep(2);
   };
 
-  // Validate step 2
-  const handleNextStep2 = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!leader.name || !leader.email || !leader.phone || !leader.discordTag) {
-      setErrorMessage("Please complete all Team Leader fields including Discord tag.");
-      return;
-    }
-    if (!member2.name || !member2.email || !member2.discordTag) {
-      setErrorMessage("Please complete all Member 2 fields.");
-      return;
-    }
-    if (!member3.name || !member3.email || !member3.discordTag) {
-      setErrorMessage("Please complete all Member 3 fields.");
-      return;
-    }
-    if (teamSize === 4 && (!member4.name || !member4.email || !member4.discordTag)) {
-      setErrorMessage("Please complete all Member 4 fields.");
-      return;
-    }
-
-    setErrorMessage(null);
-    setStep(3);
-  };
-
-  // Trigger Payment & Submission
+  // Trigger Razorpay Checkout
   const handleInitiatePayment = async () => {
     setIsProcessing(true);
     setErrorMessage(null);
 
-    const generatedRegId = `SIET-JAM-${Math.floor(100000 + Math.random() * 900000)}`;
+    const generatedRegId = confirmedRegId || `SIET-JAM-${Math.floor(100000 + Math.random() * 900000)}`;
+    setConfirmedRegId(generatedRegId);
 
-    const membersList: TeamMember[] = [member2, member3];
-    if (teamSize === 4) {
-      membersList.push(member4);
+    const leader: TeamMember = {
+      name: leaderName.trim(),
+      email: leaderEmail.trim(),
+      phone: leaderPhone.trim(),
+      college: collegeName.trim(),
+    };
+
+    const membersList: TeamMember[] = [
+      { name: member2Name.trim() },
+      { name: member3Name.trim() },
+    ];
+    if (teamSize === 4 && member4Name.trim()) {
+      membersList.push({ name: member4Name.trim() });
     }
 
     const payload: TeamRegistrationPayload = {
       registrationId: generatedRegId,
       eventId: event.id,
       eventTitle: event.title,
-      teamName,
-      collegeName,
+      teamName: teamName.trim(),
+      collegeName: collegeName.trim(),
       teamSize,
       totalAmount,
-      track: selectedTrack,
       leader,
       members: membersList,
       paymentStatus: "PENDING",
-      notes: projectNotes,
       submittedAt: new Date().toISOString(),
     };
 
-    // 1. Initial log to Google Sheet
-    await submitTeamRegistration(payload);
+    // Pre-log to Google Sheet (non-blocking)
+    submitTeamRegistration(payload).catch((err) => console.warn("Pre-log error:", err));
 
-    // 2. Open Razorpay Checkout Modal
     try {
       await openRazorpayCheckout({
         amountInINR: totalAmount,
-        teamName,
+        teamName: teamName.trim(),
         teamSize,
         eventTitle: event.title,
         leaderName: leader.name,
-        leaderEmail: leader.email,
+        leaderEmail: leader.email || "",
         leaderPhone: leader.phone || "",
         onSuccess: async (paymentId) => {
-          // Update sheet record with PAID status & paymentId
+          // Log success to Google Sheet
           await submitTeamRegistration({
             ...payload,
             paymentStatus: "PAID",
             razorpayPaymentId: paymentId,
           });
 
-          setConfirmedRegId(generatedRegId);
           setConfirmedPaymentId(paymentId);
           setIsProcessing(false);
-          setStep(4);
+          setStep(3); // Go to Success Screen
         },
         onDismiss: () => {
           setIsProcessing(false);
-          setErrorMessage("Payment was canceled. You can re-attempt when ready.");
+          setErrorMessage("Payment checkout was canceled or dismissed.");
+          setStep(4); // Go to Failure / Dismissed Screen
         },
         onError: (err) => {
           setIsProcessing(false);
           setErrorMessage(err.message || "Payment gateway encountered an error.");
+          setStep(4); // Go to Failure / Dismissed Screen
         },
       });
     } catch (err) {
       setIsProcessing(false);
-      setErrorMessage(err instanceof Error ? err.message : "Failed to open payment gateway.");
+      setErrorMessage(err instanceof Error ? err.message : "Failed to connect to payment gateway.");
+      setStep(4);
+    }
+  };
+
+  const copyRegId = () => {
+    if (confirmedRegId) {
+      navigator.clipboard.writeText(confirmedRegId);
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
     }
   };
 
@@ -178,13 +209,13 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#00b4d8]/10 border border-[#00b4d8]/30 text-[#00b4d8] text-[10px] font-bold uppercase tracking-widest mb-2 font-[family-name:var(--font-kode)]">
                   <ShieldCheck size={12} />
-                  XR Lab, SIET Coimbatore · Team Event (3–4 Members)
+                  XR Lab, SIET Coimbatore · Official Registration
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold font-[family-name:var(--font-tech)] tracking-tight text-white">
                   {event.title}
                 </h3>
                 <p className="text-xs text-zinc-400 font-[family-name:var(--font-kode)] tracking-wider">
-                  ₹{event.pricePerPerson} / Member · Meals, XR Lab Access & Esports Included
+                  ₹{event.pricePerPerson} / Member · Includes All Meals, Refreshments & Esports Entry
                 </p>
               </div>
 
@@ -202,43 +233,42 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
             <div className="px-6 md:px-8 py-2.5 bg-zinc-950/80 border-b border-zinc-900 flex flex-wrap items-center gap-4 text-[11px] text-zinc-400 font-[family-name:var(--font-kode)]">
               <span className="flex items-center gap-1.5 text-zinc-300">
                 <Utensils size={13} className="text-[#00b4d8]" />
-                Full Hospitality (All Meals & Snacks)
+                Full Hospitality (All Meals &amp; High-Tea)
               </span>
               <span className="text-zinc-700">•</span>
               <span className="flex items-center gap-1.5 text-zinc-300">
                 <Gamepad2 size={13} className="text-[#7c3aed]" />
-                Free Valorant & FC 26 Esports Entry
+                Free Valorant &amp; FC 26 Esports Entry
               </span>
             </div>
 
-            {/* Step Indicator */}
-            {step < 4 && (
+            {/* Step 1 & 2 Indicator */}
+            {step <= 2 && (
               <div className="px-6 md:px-8 pt-4 pb-2 bg-zinc-950/40 border-b border-zinc-900 flex items-center justify-between text-xs font-[family-name:var(--font-kode)]">
-                <span className={step >= 1 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
-                  01. Squad & College
+                <span className={step === 1 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
+                  01. Team &amp; Roster Info
                 </span>
                 <span className="text-zinc-700">───</span>
-                <span className={step >= 2 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
-                  02. Roster Details
-                </span>
-                <span className="text-zinc-700">───</span>
-                <span className={step >= 3 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
-                  03. Secure Checkout
+                <span className={step === 2 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
+                  02. Review &amp; Secure Payment
                 </span>
               </div>
             )}
 
-            {/* Error Banner */}
-            {errorMessage && (
+            {/* General Error Banner */}
+            {errorMessage && step !== 4 && (
               <div className="mx-6 md:mx-8 mt-4 p-3 rounded-lg bg-red-950/30 border border-red-800/50 text-red-400 text-xs flex items-center gap-2">
                 <AlertCircle size={16} className="shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            {/* Step 1: Squad Configuration & College */}
+            {/* ══════════════════════════════════════════════════════════════
+                STEP 1: Team & Roster Information
+            ══════════════════════════════════════════════════════════════ */}
             {step === 1 && (
-              <form onSubmit={handleNextStep1} className="p-6 md:p-8 space-y-5">
+              <form onSubmit={handleProceedToReview} className="p-6 md:p-8 space-y-5 max-h-[70vh] overflow-y-auto">
+                {/* Team Name & College Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2 font-[family-name:var(--font-kode)]">
@@ -269,9 +299,10 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   </div>
                 </div>
 
+                {/* Team Size Selector */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 font-[family-name:var(--font-kode)]">
-                    Team Squad Size *
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2 font-[family-name:var(--font-kode)]">
+                    Team Members Count *
                   </label>
                   <div className="grid grid-cols-2 gap-4">
                     <button
@@ -289,7 +320,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       </div>
                       <p className="text-xs text-white font-bold">Total Entry: ₹2,400</p>
                       <span className="text-[10px] text-[#00b4d8] font-[family-name:var(--font-kode)]">
-                        (₹800 × 3 Members · All-Inclusive)
+                        (₹800 × 3 Members · Meals &amp; Esports Included)
                       </span>
                     </button>
 
@@ -308,245 +339,173 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       </div>
                       <p className="text-xs text-white font-bold">Total Entry: ₹3,200</p>
                       <span className="text-[10px] text-[#00b4d8] font-[family-name:var(--font-kode)]">
-                        (₹800 × 4 Members · All-Inclusive)
+                        (₹800 × 4 Members · Meals &amp; Esports Included)
                       </span>
                     </button>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2 font-[family-name:var(--font-kode)]">
-                    Primary Target Track *
-                  </label>
-                  <select
-                    value={selectedTrack}
-                    onChange={(e) => setSelectedTrack(e.target.value)}
-                    className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-[#00b4d8] rounded-lg px-4 py-3 text-white focus:outline-none transition-colors text-sm"
-                  >
-                    {event.tracks.map((track) => (
-                      <option key={track.name} value={track.name} className="bg-zinc-950 text-white">
-                        {track.name} ({track.hardwareNotes})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2 font-[family-name:var(--font-kode)]">
-                    Engine / Tech Stack & Game Jam Pitch (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={projectNotes}
-                    onChange={(e) => setProjectNotes(e.target.value)}
-                    placeholder="e.g. Unity / Unreal Engine / Godot; interested in Valorant Esports"
-                    className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-[#00b4d8] rounded-lg px-4 py-3 text-white placeholder-zinc-600 focus:outline-none transition-colors text-sm"
-                  />
-                </div>
-
-                <div className="pt-4 flex justify-end">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-[#00b4d8] hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    Proceed to Roster
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* Step 2: Member Details */}
-            {step === 2 && (
-              <form onSubmit={handleNextStep2} className="p-6 md:p-8 space-y-5 max-h-[65vh] overflow-y-auto">
-                <div className="p-4 bg-zinc-950/60 border border-zinc-800/80 rounded-lg space-y-3">
+                {/* Team Leader Contact Details */}
+                <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#00b4d8] font-[family-name:var(--font-kode)]">
-                      Team Leader (Primary Contact)
+                      Team Leader (Primary Contact &amp; Payment Receipt)
                     </span>
                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Leader Full Name *"
-                      value={leader.name}
-                      onChange={(e) => setLeader({ ...leader, name: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Leader College Email *"
-                      value={leader.email}
-                      onChange={(e) => setLeader({ ...leader, email: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="tel"
-                      required
-                      placeholder="WhatsApp / Phone Number *"
-                      value={leader.phone}
-                      onChange={(e) => setLeader({ ...leader, phone: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="text"
-                      required
-                      placeholder="Discord Tag (e.g. gazer#1234 or @gazer) *"
-                      value={leader.discordTag}
-                      onChange={(e) => setLeader({ ...leader, discordTag: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Member 2 */}
-                <div className="p-4 bg-zinc-950/60 border border-zinc-800/80 rounded-lg space-y-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
-                    Team Member 02
-                  </span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Full Name *"
-                      value={member2.name}
-                      onChange={(e) => setMember2({ ...member2, name: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Email Address *"
-                      value={member2.email}
-                      onChange={(e) => setMember2({ ...member2, email: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="text"
-                      required
-                      placeholder="Discord Tag *"
-                      value={member2.discordTag}
-                      onChange={(e) => setMember2({ ...member2, discordTag: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Member 3 */}
-                <div className="p-4 bg-zinc-950/60 border border-zinc-800/80 rounded-lg space-y-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
-                    Team Member 03
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Full Name *"
-                      value={member3.name}
-                      onChange={(e) => setMember3({ ...member3, name: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Email Address *"
-                      value={member3.email}
-                      onChange={(e) => setMember3({ ...member3, email: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                    <input
-                      type="text"
-                      required
-                      placeholder="Discord Tag *"
-                      value={member3.discordTag}
-                      onChange={(e) => setMember3({ ...member3, discordTag: e.target.value })}
-                      className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Member 4 (Conditional) */}
-                {teamSize === 4 && (
-                  <div className="p-4 bg-zinc-950/60 border border-zinc-800/80 rounded-lg space-y-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
-                      Team Member 04
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
                       <input
                         type="text"
                         required
-                        placeholder="Full Name *"
-                        value={member4.name}
-                        onChange={(e) => setMember4({ ...member4, name: e.target.value })}
-                        className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                        placeholder="Leader Full Name *"
+                        value={leaderName}
+                        onChange={(e) => setLeaderName(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
                       />
+                    </div>
+                    <div>
                       <input
                         type="email"
                         required
-                        placeholder="Email Address *"
-                        value={member4.email}
-                        onChange={(e) => setMember4({ ...member4, email: e.target.value })}
-                        className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                        placeholder="Leader Email Address *"
+                        value={leaderEmail}
+                        onChange={(e) => setLeaderEmail(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
                       />
+                    </div>
+                    <div>
                       <input
-                        type="text"
+                        type="tel"
                         required
-                        placeholder="Discord Tag *"
-                        value={member4.discordTag}
-                        onChange={(e) => setMember4({ ...member4, discordTag: e.target.value })}
-                        className="bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                        placeholder="Phone / WhatsApp Number *"
+                        value={leaderPhone}
+                        onChange={(e) => setLeaderPhone(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
                       />
                     </div>
                   </div>
-                )}
+                </div>
 
-                <div className="pt-4 flex items-center justify-between border-t border-zinc-800">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider"
-                  >
-                    <ArrowLeft size={14} /> Back
-                  </button>
+                {/* Squad Members: Just Names Needed */}
+                <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
+                      Squad Members (Names Only)
+                    </span>
+                    <span className="text-[10px] text-zinc-500 font-[family-name:var(--font-kode)]">
+                      {teamSize - 1} Teammates
+                    </span>
+                  </div>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                        Member 02 Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Member 2 Full Name"
+                        value={member2Name}
+                        onChange={(e) => setMember2Name(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                        Member 03 Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Member 3 Full Name"
+                        value={member3Name}
+                        onChange={(e) => setMember3Name(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {teamSize === 4 && (
+                    <div className="pt-1">
+                      <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                        Member 04 Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Member 4 Full Name"
+                        value={member4Name}
+                        onChange={(e) => setMember4Name(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-2 flex justify-end">
                   <button
                     type="submit"
                     className="px-6 py-3 bg-[#00b4d8] hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center gap-2"
                   >
-                    Summary & Checkout
+                    Proceed to Review &amp; Pay
                     <ChevronRight size={16} />
                   </button>
                 </div>
               </form>
             )}
 
-            {/* Step 3: Checkout & Summary */}
-            {step === 3 && (
+            {/* ══════════════════════════════════════════════════════════════
+                STEP 2: Summary & Checkout
+            ══════════════════════════════════════════════════════════════ */}
+            {step === 2 && (
               <div className="p-6 md:p-8 space-y-6">
                 <div className="bg-zinc-950/80 border border-zinc-800 rounded-lg p-5 space-y-3.5">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
                     <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Team Name</span>
                     <span className="text-sm font-bold text-white">{teamName}</span>
                   </div>
+
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
                     <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">College / Institution</span>
                     <span className="text-sm text-zinc-200">{collegeName}</span>
                   </div>
+
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Selected Track</span>
-                    <span className="text-sm font-bold text-[#00b4d8]">{selectedTrack}</span>
+                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Team Leader</span>
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-white">{leaderName}</div>
+                      <div className="text-[11px] text-zinc-400">{leaderEmail} · {leaderPhone}</div>
+                    </div>
                   </div>
+
+                  <div className="border-b border-zinc-800 pb-2.5 space-y-1">
+                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Squad Members</span>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 font-bold">
+                        1. {leaderName} (Leader)
+                      </span>
+                      <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                        2. {member2Name}
+                      </span>
+                      <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                        3. {member3Name}
+                      </span>
+                      {teamSize === 4 && (
+                        <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                          4. {member4Name}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Team Squad Size</span>
-                    <span className="text-sm font-bold text-white">{teamSize} Gazers</span>
+                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Squad Size &amp; Rate</span>
+                    <span className="text-sm text-zinc-300">{teamSize} Gazers × ₹{event.pricePerPerson}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-                    <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Rate Per Person</span>
-                    <span className="text-sm text-zinc-300">₹{event.pricePerPerson}</span>
-                  </div>
+
                   <div className="flex items-center justify-between pt-1">
                     <span className="text-sm font-bold uppercase tracking-wider text-white">Total Amount Due</span>
                     <span className="text-2xl font-bold font-[family-name:var(--font-tech)] text-[#00b4d8]">
@@ -555,14 +514,14 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   </div>
                 </div>
 
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 text-xs text-zinc-400 space-y-2">
+                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 text-xs text-zinc-400 space-y-1.5">
                   <div className="flex items-center gap-2 text-white font-bold">
                     <ShieldCheck size={16} className="text-[#00b4d8]" />
                     Razorpay Secure Checkout
                   </div>
                   <p className="text-[11px] leading-relaxed">
                     Supports UPI (Google Pay, PhonePe, Paytm, BHIM), Cards, and NetBanking.
-                    Covers 2-day XR Lab SIET entry, all meals & refreshments, plus entry to the Day 2 Valorant & FC 26 tournaments.
+                    Includes all 2 days of SIET XR Lab access, hospitality meals, and free Day 2 Valorant &amp; FC 26 tournaments.
                   </p>
                 </div>
 
@@ -570,10 +529,10 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   <button
                     type="button"
                     disabled={isProcessing}
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(1)}
                     className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider disabled:opacity-50"
                   >
-                    <ArrowLeft size={14} /> Back
+                    <ArrowLeft size={14} /> Back to Edit
                   </button>
 
                   <button
@@ -590,7 +549,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     ) : (
                       <>
                         <Sparkles size={16} />
-                        Pay ₹{totalAmount} & Confirm Roster
+                        Pay ₹{totalAmount} &amp; Confirm Registration
                       </>
                     )}
                   </button>
@@ -598,8 +557,10 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               </div>
             )}
 
-            {/* Step 4: Holographic Confirmation Pass */}
-            {step === 4 && (
+            {/* ══════════════════════════════════════════════════════════════
+                STEP 3: Payment SUCCESS Confirmation & Groups
+            ══════════════════════════════════════════════════════════════ */}
+            {step === 3 && (
               <div className="p-6 md:p-8 text-center space-y-6">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
                   <CheckCircle2 size={36} />
@@ -612,17 +573,28 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   <h3 className="font-[family-name:var(--font-tech)] text-3xl font-bold text-white mt-1">
                     {teamName}
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-1">
-                    Pass ID: <span className="text-white font-mono font-bold">{confirmedRegId}</span>
-                  </p>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <span className="text-xs text-zinc-400">Pass ID:</span>
+                    <span className="text-white font-mono font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                      {confirmedRegId}
+                    </span>
+                    <button
+                      onClick={copyRegId}
+                      className="text-xs text-zinc-400 hover:text-white p-1 rounded hover:bg-zinc-800 transition-colors"
+                      title="Copy Pass ID"
+                    >
+                      {copiedId ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                    </button>
+                  </div>
                   {confirmedPaymentId && (
-                    <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
+                    <p className="text-[10px] text-zinc-500 font-mono mt-1">
                       Payment Ref: {confirmedPaymentId}
                     </p>
                   )}
                 </div>
 
-                <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-lg text-left space-y-2.5 font-[family-name:var(--font-kode)] text-xs">
+                {/* Summary Table */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg text-left space-y-2 font-[family-name:var(--font-kode)] text-xs">
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
                     <span className="text-zinc-500">EVENT</span>
                     <span className="text-zinc-300 font-bold">{event.title}</span>
@@ -632,12 +604,12 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     <span className="text-zinc-300 font-bold">XR Lab, SIET Coimbatore</span>
                   </div>
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
-                    <span className="text-zinc-500">TRACK</span>
-                    <span className="text-[#00b4d8] font-bold">{selectedTrack}</span>
+                    <span className="text-zinc-500">COLLEGE</span>
+                    <span className="text-zinc-300 font-bold">{collegeName}</span>
                   </div>
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
                     <span className="text-zinc-500">ROSTER</span>
-                    <span className="text-zinc-300 font-bold">{teamSize} Gazers ({collegeName})</span>
+                    <span className="text-zinc-300 font-bold">{teamSize} Gazers</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">PAYMENT STATUS</span>
@@ -645,26 +617,58 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   </div>
                 </div>
 
-                {/* Important Discord Step */}
-                <div className="p-4 rounded-lg bg-[#5865F2]/10 border border-[#5865F2]/30 text-left space-y-2">
-                  <div className="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-[#5865F2] animate-ping" />
-                    Mandatory Step: Join OuterGazers Discord
+                {/* Success Message Box: Next Steps & Community Links */}
+                <div className="space-y-3 text-left">
+                  {/* WhatsApp Group Link */}
+                  <div className="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider font-[family-name:var(--font-kode)]">
+                        <MessageCircle size={15} />
+                        Step 1: Join Official WhatsApp Squad Group
+                      </div>
+                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">
+                        Mandatory
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      Connect with SIET XR Lab coordinators, receive on-campus reporting schedules, food coupons, and live updates.
+                    </p>
+                    <a
+                      href={WHATSAPP_GROUP_INVITE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 w-full mt-1 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-widest rounded transition-colors"
+                    >
+                      <span>Join WhatsApp Group (Invite Link)</span>
+                      <ExternalLink size={13} />
+                    </a>
                   </div>
-                  <p className="text-xs text-zinc-300 leading-relaxed">
-                    Have your squad join our Discord server. Post your Pass ID{" "}
-                    <span className="text-[#00b4d8] font-mono font-bold">{confirmedRegId}</span> in{" "}
-                    <span className="text-white font-semibold">#jam-verify</span> to receive your Team Leader & Participant roles and access the jam channels!
-                  </p>
-                  <a
-                    href={DISCORD_INVITE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 w-full mt-2 px-6 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-widest rounded transition-colors"
-                  >
-                    Enter OuterGazers Discord (discord.gg/N4w7gGfdq)
-                    <ChevronRight size={14} />
-                  </a>
+
+                  {/* Discord Server Link */}
+                  <div className="p-4 rounded-lg bg-[#5865F2]/10 border border-[#5865F2]/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-[#5865F2] font-bold text-xs uppercase tracking-wider font-[family-name:var(--font-kode)]">
+                        <Sparkles size={15} />
+                        Step 2: Join OuterGazers Discord
+                      </div>
+                      <span className="text-[10px] bg-[#5865F2]/20 text-[#5865F2] px-2 py-0.5 rounded font-bold">
+                        Community
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      Drop your Pass ID <span className="text-[#00b4d8] font-mono font-bold">{confirmedRegId}</span> in{" "}
+                      <span className="text-white font-semibold">#jam-verify</span> to receive your Team Leader &amp; Participant roles.
+                    </p>
+                    <a
+                      href={DISCORD_INVITE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 w-full mt-1 px-4 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-widest rounded transition-colors"
+                    >
+                      <span>Enter OuterGazers Discord</span>
+                      <ExternalLink size={13} />
+                    </a>
+                  </div>
                 </div>
 
                 <div className="pt-2">
@@ -674,6 +678,93 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   >
                     Close Pass
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════════
+                STEP 4: Payment FAILED or CANCELED Message Box & Links
+            ══════════════════════════════════════════════════════════════ */}
+            {step === 4 && (
+              <div className="p-6 md:p-8 text-center space-y-6">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto text-red-400">
+                  <AlertCircle size={36} />
+                </div>
+
+                <div>
+                  <span className="font-[family-name:var(--font-kode)] text-xs font-bold uppercase tracking-[0.3em] text-red-400">
+                    Payment Incomplete or Canceled
+                  </span>
+                  <h3 className="font-[family-name:var(--font-tech)] text-2xl font-bold text-white mt-1">
+                    Registration Pending Payment
+                  </h3>
+                  <p className="text-xs text-zinc-400 mt-2 max-w-md mx-auto leading-relaxed">
+                    {errorMessage || "The transaction was canceled before completion. Your squad details have been retained so you do not have to re-enter them."}
+                  </p>
+                </div>
+
+                {/* Saved Details Box */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg text-left space-y-2 font-[family-name:var(--font-kode)] text-xs">
+                  <div className="flex justify-between border-b border-zinc-900 pb-2">
+                    <span className="text-zinc-500">SAVED TEAM</span>
+                    <span className="text-white font-bold">{teamName} ({collegeName})</span>
+                  </div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-2">
+                    <span className="text-zinc-500">ROSTER</span>
+                    <span className="text-zinc-300">{teamSize} Gazers · Leader: {leaderName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">AMOUNT PENDING</span>
+                    <span className="text-[#00b4d8] font-bold">₹{totalAmount}</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={handleInitiatePayment}
+                    className="px-6 py-3 bg-[#00b4d8] hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <RefreshCw size={14} />
+                    Retry Payment Now
+                  </button>
+
+                  <button
+                    onClick={() => setStep(1)}
+                    className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors"
+                  >
+                    Edit Registration Details
+                  </button>
+                </div>
+
+                {/* Need Help / Support Links */}
+                <div className="p-4 rounded-lg bg-zinc-950/60 border border-zinc-800 text-left space-y-2">
+                  <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider font-[family-name:var(--font-kode)]">
+                    Need Help Completing Registration?
+                  </p>
+                  <p className="text-xs text-zinc-500 leading-relaxed">
+                    If money was debited from your account or you need manual UPI verification, reach out to our team directly:
+                  </p>
+                  <div className="flex flex-wrap gap-3 pt-1">
+                    <a
+                      href={WHATSAPP_GROUP_INVITE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 hover:text-white text-[11px] font-bold font-[family-name:var(--font-kode)] transition-colors"
+                    >
+                      <MessageCircle size={13} />
+                      WhatsApp Support Group
+                    </a>
+                    <a
+                      href={DISCORD_INVITE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#5865F2]/20 border border-[#5865F2]/30 text-[#5865F2] hover:text-white text-[11px] font-bold font-[family-name:var(--font-kode)] transition-colors"
+                    >
+                      <Sparkles size={13} />
+                      Discord #help Desk
+                    </a>
+                  </div>
                 </div>
               </div>
             )}

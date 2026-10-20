@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Trophy, ChevronRight, Terminal, Sparkles, MapPin, Users, Utensils, Gamepad2, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { FLAGSHIP_GAME_JAM, STUDIO_TRANSMISSIONS, DISCORD_INVITE_URL } from "@/constants";
+import { FLAGSHIP_GAME_JAM, DISCORD_INVITE_URL } from "@/constants";
 import EventCountdown from "@/components/events/EventCountdown";
 import TeamRegistrationModal from "@/components/events/TeamRegistrationModal";
 
@@ -56,7 +56,7 @@ export default function EventsPage() {
           >
             <div className="w-8 h-px bg-[#00b4d8]" />
             <span className="font-[family-name:var(--font-vt)] text-lg font-bold uppercase tracking-[0.4em] text-[#00b4d8]">
-              Transmissions &amp; Jams
+              News &amp; Events
             </span>
             <div className="w-8 h-px bg-[#00b4d8]" />
           </motion.div>
@@ -75,7 +75,7 @@ export default function EventsPage() {
               className="relative inline-block text-transparent"
               style={{ WebkitTextStroke: "1.5px rgba(0,180,216,0.7)" }}
             >
-              Events
+              News
             </span>
           </h1>
 
@@ -95,7 +95,7 @@ export default function EventsPage() {
             transition={{ duration: 0.8, delay: 1 }}
             className="font-[family-name:var(--font-kode)] text-sm md:text-base font-bold uppercase tracking-[0.35em] text-zinc-400"
           >
-            Hackathons · Esports Showdowns · Studio Logs
+            Hackathons · Esports Showdowns · Game Jams
           </motion.p>
         </motion.div>
       </section>
@@ -252,68 +252,6 @@ export default function EventsPage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          LATEST TRANSMISSIONS / LOGS
-      ═══════════════════════════════════════════ */}
-      <section className="relative z-20 bg-[#0a0a0a] py-28 px-6 md:px-12 border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8 }}
-            className="mb-14"
-          >
-            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-3">
-              — Studio Logs
-            </p>
-            <h2 className="font-[family-name:var(--font-tech)] text-4xl md:text-6xl font-bold tracking-tight leading-none text-white">
-              Latest Transmissions
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {STUDIO_TRANSMISSIONS.map((update, i) => (
-              <motion.article
-                key={update.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="group cursor-pointer bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 p-8 rounded-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
-              >
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-[#00b4d8]/0 via-[#00b4d8]/50 to-[#00b4d8]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <div>
-                  <div className="flex items-center gap-3 mb-4 text-xs">
-                    <span className="font-[family-name:var(--font-kode)] text-[10px] font-bold tracking-[0.3em] uppercase text-[#00b4d8]">
-                      {update.tag}
-                    </span>
-                    <span className="text-zinc-700">•</span>
-                    <span className="font-[family-name:var(--font-kode)] text-[10px] font-bold tracking-[0.2em] text-zinc-500">
-                      {update.date}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-zinc-100 mb-3 group-hover:text-white transition-colors">
-                    {update.title}
-                  </h3>
-                  <p className="text-zinc-400 text-sm line-clamp-3 leading-relaxed">
-                    {update.excerpt}
-                  </p>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-zinc-800/60 flex items-center justify-between text-xs font-[family-name:var(--font-kode)] text-zinc-500">
-                  <span>{update.readTime}</span>
-                  <span className="text-[#00b4d8] group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                    Read log <ChevronRight size={13} />
-                  </span>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
           CTA — JOIN THE NETWORK
       ═══════════════════════════════════════════ */}
       <section className="relative z-20 bg-[#0a0a0a] py-36 px-6 md:px-12 overflow-hidden border-t border-zinc-900">
@@ -342,12 +280,12 @@ export default function EventsPage() {
               — Connect Your Terminal
             </p>
             <h2 className="font-[family-name:var(--font-tech)] text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight leading-tight mb-4">
-              Never miss a{" "}
+              Never miss an{" "}
               <span
                 className="relative inline-block"
                 style={{ textShadow: "0 0 60px rgba(0,180,216,0.4)" }}
               >
-                transmission.
+                announcement.
               </span>
             </h2>
             <h2 className="font-[family-name:var(--font-tech)] text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight leading-tight mb-12">

@@ -81,9 +81,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/events">
+                <Link href="/news">
                   <motion.div initial="initial" whileHover="hover" variants={linkVariants} className="inline-block cursor-pointer">
-                    Events
+                    News
                   </motion.div>
                 </Link>
               </li>
