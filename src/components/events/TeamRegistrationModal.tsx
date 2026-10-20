@@ -561,7 +561,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                 STEP 3: Payment SUCCESS Confirmation & Groups
             ══════════════════════════════════════════════════════════════ */}
             {step === 3 && (
-              <div className="p-6 md:p-8 text-center space-y-6">
+              <div className="p-6 md:p-8 text-center space-y-6 max-h-[75vh] overflow-y-auto">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
                   <CheckCircle2 size={36} />
                 </div>
@@ -593,27 +593,66 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   )}
                 </div>
 
-                {/* Summary Table */}
-                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg text-left space-y-2 font-[family-name:var(--font-kode)] text-xs">
+                {/* Official Registration Bill / Summary Table */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg text-left space-y-2.5 font-[family-name:var(--font-kode)] text-xs">
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
-                    <span className="text-zinc-500">EVENT</span>
-                    <span className="text-zinc-300 font-bold">{event.title}</span>
+                    <span className="text-zinc-500 uppercase">Team Name</span>
+                    <span className="text-white font-bold">{teamName}</span>
                   </div>
+
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
-                    <span className="text-zinc-500">VENUE</span>
-                    <span className="text-zinc-300 font-bold">XR Lab, SIET Coimbatore</span>
+                    <span className="text-zinc-500 uppercase">Team Leader</span>
+                    <span className="text-white font-bold">{leaderName}</span>
                   </div>
+
                   <div className="flex justify-between border-b border-zinc-900 pb-2">
-                    <span className="text-zinc-500">COLLEGE</span>
+                    <span className="text-zinc-500 uppercase">Contact Info</span>
+                    <span className="text-zinc-300 text-right">
+                      <span className="block">{leaderEmail}</span>
+                      <span className="text-zinc-400 text-[11px]">{leaderPhone}</span>
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between border-b border-zinc-900 pb-2">
+                    <span className="text-zinc-500 uppercase">College / Institution</span>
                     <span className="text-zinc-300 font-bold">{collegeName}</span>
                   </div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-2">
-                    <span className="text-zinc-500">ROSTER</span>
-                    <span className="text-zinc-300 font-bold">{teamSize} Gazers</span>
+
+                  <div className="border-b border-zinc-900 pb-2 space-y-1">
+                    <div className="flex justify-between text-zinc-500 uppercase">
+                      <span>Squad Roster ({teamSize} Members)</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 font-bold">
+                        1. {leaderName} (Leader)
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
+                        2. {member2Name}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
+                        3. {member3Name}
+                      </span>
+                      {teamSize === 4 && member4Name && (
+                        <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
+                          4. {member4Name}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">PAYMENT STATUS</span>
-                    <span className="text-emerald-400 font-bold">VERIFIED (₹{totalAmount})</span>
+
+                  <div className="flex justify-between border-b border-zinc-900 pb-2">
+                    <span className="text-zinc-500 uppercase">Event &amp; Venue</span>
+                    <span className="text-zinc-300 text-right">
+                      <span className="block font-bold">{event.title}</span>
+                      <span className="text-zinc-400 text-[11px]">XR Lab, SIET Coimbatore</span>
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-0.5">
+                    <span className="text-zinc-400 uppercase font-bold">Total Amount Paid</span>
+                    <span className="text-emerald-400 font-bold text-sm">
+                      VERIFIED ₹{totalAmount}
+                    </span>
                   </div>
                 </div>
 
