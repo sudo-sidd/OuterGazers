@@ -39,6 +39,16 @@ export default function EventAnnouncementPopup() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Lock body scroll when popup is visible
+  useEffect(() => {
+    if (!isVisible) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isVisible]);
+
   const handleDismiss = () => {
     setIsVisible(false);
     if (typeof window !== "undefined") {
@@ -55,7 +65,10 @@ export default function EventAnnouncementPopup() {
     <>
       <AnimatePresence>
         {isVisible && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+          <div 
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden"
+            onWheel={(e) => e.stopPropagation()}
+          >
             {/* Dimmed backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -72,10 +85,12 @@ export default function EventAnnouncementPopup() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.88, y: 20 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-lg bg-[#0c0c0c] border border-[#00b4d8]/40 rounded-2xl shadow-[0_0_60px_rgba(0,180,216,0.25)] overflow-hidden z-10 font-[family-name:var(--font-anta)]"
+              data-lenis-prevent="true"
+              onWheel={(e) => e.stopPropagation()}
+              className="relative w-full max-w-lg max-h-[90vh] flex flex-col bg-[#0c0c0c] border border-[#00b4d8]/40 rounded-2xl shadow-[0_0_60px_rgba(0,180,216,0.25)] overflow-hidden z-10 font-[family-name:var(--font-anta)]"
             >
               {/* Animated Glowing Top Stripe */}
-              <div className="h-1.5 w-full bg-gradient-to-r from-[#00b4d8] via-[#7c3aed] to-[#00b4d8] animate-pulse" />
+              <div className="h-1.5 w-full shrink-0 bg-gradient-to-r from-[#00b4d8] via-[#7c3aed] to-[#00b4d8] animate-pulse" />
 
               {/* Close Button */}
               <button
@@ -87,7 +102,11 @@ export default function EventAnnouncementPopup() {
               </button>
 
               {/* Body */}
-              <div className="p-6 sm:p-8 relative">
+              <div 
+                className="p-6 sm:p-8 relative flex-1 overflow-y-auto overscroll-contain"
+                data-lenis-prevent="true"
+                onWheel={(e) => e.stopPropagation()}
+              >
                 {/* Background ambient glow */}
                 <div className="absolute top-0 right-0 w-48 h-48 bg-[#00b4d8]/10 blur-[80px] rounded-full pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#7c3aed]/10 blur-[80px] rounded-full pointer-events-none" />
