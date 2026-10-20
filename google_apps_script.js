@@ -26,6 +26,13 @@
 // Paste your Discord Channel Webhook URL here to receive instant team registration alerts:
 const DISCORD_WEBHOOK_URL = ""; 
 
+function doGet(e) {
+  return jsonResponse({
+    status: "active",
+    message: "OuterGazers Google Sheets API is live and ready for registrations."
+  });
+}
+
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {

@@ -16,34 +16,38 @@ export interface ContactPayload {
 async function postToGoogleScript(data: Record<string, unknown>): Promise<{ success: boolean; message?: string }> {
   if (!GOOGLE_SHEET_SCRIPT_URL) {
     console.warn("Google Sheet Script URL not configured. Data logged locally:", data);
-    // Return simulated success for seamless development & offline testing
     return { success: true, message: "Demo mode: Google Sheet URL not yet set in environment." };
   }
 
+  const payloadString = JSON.stringify(data);
+
   try {
-    const response = await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+    // CRITICAL for Google Apps Script Web Apps:
+    // Browser fetch must use mode: "no-cors" to avoid CORS blocks on Google's 302 redirect.
+    await fetch(GOOGLE_SHEET_SCRIPT_URL, {
       method: "POST",
+      mode: "no-cors",
+      cache: "no-cache",
+      keepalive: true,
       headers: {
         "Content-Type": "text/plain;charset=utf-8",
       },
-      body: JSON.stringify(data),
+      body: payloadString,
     });
 
-    if (response.ok) {
-      try {
-        const json = await response.json();
-        return { success: true, message: json.message || "Recorded successfully." };
-      } catch {
-        return { success: true };
-      }
-    } else {
-      // In some environments, Google Script returns 302 redirect. Fetch handles redirects or resolves cleanly.
-      return { success: true };
-    }
+    return { success: true, message: "Logged to Google Sheet successfully." };
   } catch (error) {
-    console.error("Error submitting to Google Sheet:", error);
-    // We return graceful fallback so user experience isn't blocked by network nuances
-    return { success: true, message: "Logged locally. Please verify network connectivity." };
+    console.warn("Fetch to Google Sheet failed, trying sendBeacon fallback:", error);
+    try {
+      if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+        const blob = new Blob([payloadString], { type: "text/plain;charset=utf-8" });
+        navigator.sendBeacon(GOOGLE_SHEET_SCRIPT_URL, blob);
+        return { success: true, message: "Logged via sendBeacon." };
+      }
+    } catch (beaconErr) {
+      console.error("sendBeacon fallback failed:", beaconErr);
+    }
+    return { success: false, message: "Network error sending to Google Sheet." };
   }
 }
 
