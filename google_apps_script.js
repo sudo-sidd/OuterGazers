@@ -86,10 +86,10 @@ function handleGameJamRegistration(ss, data) {
       "Payment ID",
       "Leader Name",
       "Leader Email",
-      "Leader Phone",
-      "Member 2 Name",
-      "Member 3 Name",
-      "Member 4 Name"
+      "Leader Phone & Discord",
+      "Member 2 (Name & Contacts)",
+      "Member 3 (Name & Contacts)",
+      "Member 4 (Name & Contacts)"
     ];
     sheet.appendRow(headers);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#00b4d8").setFontColor("#000000");
@@ -101,6 +101,16 @@ function handleGameJamRegistration(ss, data) {
   const m2 = members[0] || {};
   const m3 = members[1] || {};
   const m4 = members[2] || {};
+
+  function formatMember(m) {
+    if (!m || !m.name) return "";
+    let str = m.name;
+    if (m.phone) str += " | WA: " + m.phone;
+    if (m.discordTag) str += " | DC: @" + m.discordTag;
+    return str;
+  }
+
+  const leaderContact = (leader.phone || "") + (leader.discordTag ? " | DC: @" + leader.discordTag : "");
 
   const row = [
     data.submittedAt || new Date().toISOString(),
@@ -114,10 +124,10 @@ function handleGameJamRegistration(ss, data) {
     data.razorpayPaymentId || "N/A",
     leader.name || "",
     leader.email || "",
-    leader.phone || "",
-    m2.name || "",
-    m3.name || "",
-    m4.name || "N/A"
+    leaderContact,
+    formatMember(m2),
+    formatMember(m3),
+    formatMember(m4) || "N/A"
   ];
 
   sheet.appendRow(row);
@@ -145,20 +155,31 @@ function handleContactInquiry(ss, data) {
 function sendDiscordAlert(data) {
   try {
     const leader = data.leader || {};
+    const members = data.members || [];
+    const m2 = members[0] || {};
+    const m3 = members[1] || {};
+    const m4 = members[2] || {};
+
+    const rosterLines = [
+      "1. **" + (leader.name || "Leader") + "** (Leader) · WA: " + (leader.phone || "N/A") + (leader.discordTag ? " · DC: @" + leader.discordTag : ""),
+      m2.name ? "2. **" + m2.name + "** · WA: " + (m2.phone || "N/A") + (m2.discordTag ? " · DC: @" + m2.discordTag : "") : null,
+      m3.name ? "3. **" + m3.name + "** · WA: " + (m3.phone || "N/A") + (m3.discordTag ? " · DC: @" + m3.discordTag : "") : null,
+      m4.name ? "4. **" + m4.name + "** · WA: " + (m4.phone || "N/A") + (m4.discordTag ? " · DC: @" + m4.discordTag : "") : null
+    ].filter(Boolean).join("\n");
+
     const payload = {
       content: "🚀 **NEW GAME JAM REGISTRATION RECEIVED!**",
       embeds: [
         {
           title: "Team: " + data.teamName,
-          description: "Registered for **" + data.eventTitle + "**",
+          description: "Registered for **" + data.eventTitle + "**\nCollege: *" + (data.collegeName || "N/A") + "*",
           color: 46376, // #00b4d8 cyan
           fields: [
-            { name: "Track", value: data.track || "Not specified", inline: true },
             { name: "Team Size", value: String(data.teamSize) + " Gazers", inline: true },
             { name: "Fee Status", value: "₹" + data.totalAmount + " (" + data.paymentStatus + ")", inline: true },
             { name: "Payment ID", value: data.razorpayPaymentId || "Pending", inline: true },
-            { name: "Team Leader", value: (leader.name || "Unknown") + " (" + (leader.discordTag || "No Discord") + ")", inline: true },
-            { name: "Contact", value: (leader.email || "") + " | " + (leader.phone || ""), inline: false }
+            { name: "Leader Contact", value: (leader.email || "") + " | WA: " + (leader.phone || "") + (leader.discordTag ? " | DC: @" + leader.discordTag : ""), inline: false },
+            { name: "Squad Roster Contacts", value: rosterLines, inline: false }
           ],
           footer: { text: "OuterGazers Transmissions · Reg ID: " + data.registrationId }
         }

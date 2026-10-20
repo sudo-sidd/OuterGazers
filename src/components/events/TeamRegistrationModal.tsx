@@ -32,19 +32,37 @@ interface ModalProps {
 }
 
 export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalProps) {
-  // Steps: 1: Details, 2: Review & Pay, 3: Success, 4: Failed / Cancelled
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  // Steps: 
+  // 1: Team & College Info
+  // 2: Squad Roster (WhatsApp numbers + Optional Discord)
+  // 3: Review & Pay (Summary & Checkout)
+  // 4: Success Confirmation & Bill
+  // 5: Failed / Cancelled
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [teamSize, setTeamSize] = useState<3 | 4>(3);
   const [teamName, setTeamName] = useState("");
   const [collegeName, setCollegeName] = useState("");
 
-  // Roster: Leader contact info + Member names only
+  // Leader Contact Info
   const [leaderName, setLeaderName] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
   const [leaderPhone, setLeaderPhone] = useState("");
+  const [leaderDiscord, setLeaderDiscord] = useState("");
+
+  // Member 2
   const [member2Name, setMember2Name] = useState("");
+  const [member2Phone, setMember2Phone] = useState("");
+  const [member2Discord, setMember2Discord] = useState("");
+
+  // Member 3
   const [member3Name, setMember3Name] = useState("");
+  const [member3Phone, setMember3Phone] = useState("");
+  const [member3Discord, setMember3Discord] = useState("");
+
+  // Member 4
   const [member4Name, setMember4Name] = useState("");
+  const [member4Phone, setMember4Phone] = useState("");
+  const [member4Discord, setMember4Discord] = useState("");
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -64,8 +82,8 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
     };
   }, [isOpen]);
 
-  // Validate Step 1
-  const handleProceedToReview = (e: React.FormEvent) => {
+  // Validate Step 1 (Squad & College)
+  const handleProceedToRoster = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
@@ -77,24 +95,33 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       setErrorMessage("Please enter your College / Institution Name.");
       return;
     }
+
+    setStep(2);
+  };
+
+  // Validate Step 2 (Squad Roster)
+  const handleProceedToReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
     if (!leaderName.trim() || !leaderEmail.trim() || !leaderPhone.trim()) {
-      setErrorMessage("Please complete all Team Leader details (Name, Email, Phone).");
+      setErrorMessage("Please complete all Team Leader required fields (Name, Email, WhatsApp Number).");
       return;
     }
-    if (!member2Name.trim()) {
-      setErrorMessage("Please enter the name of Member 02.");
+    if (!member2Name.trim() || !member2Phone.trim()) {
+      setErrorMessage("Please enter both Name and WhatsApp Number for Member 02.");
       return;
     }
-    if (!member3Name.trim()) {
-      setErrorMessage("Please enter the name of Member 03.");
+    if (!member3Name.trim() || !member3Phone.trim()) {
+      setErrorMessage("Please enter both Name and WhatsApp Number for Member 03.");
       return;
     }
-    if (teamSize === 4 && !member4Name.trim()) {
-      setErrorMessage("Please enter the name of Member 04.");
+    if (teamSize === 4 && (!member4Name.trim() || !member4Phone.trim())) {
+      setErrorMessage("Please enter both Name and WhatsApp Number for Member 04.");
       return;
     }
 
-    setStep(2);
+    setStep(3);
   };
 
   // Trigger Razorpay Checkout
@@ -109,15 +136,28 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       name: leaderName.trim(),
       email: leaderEmail.trim(),
       phone: leaderPhone.trim(),
+      discordTag: leaderDiscord.trim() || undefined,
       college: collegeName.trim(),
     };
 
     const membersList: TeamMember[] = [
-      { name: member2Name.trim() },
-      { name: member3Name.trim() },
+      { 
+        name: member2Name.trim(),
+        phone: member2Phone.trim(),
+        discordTag: member2Discord.trim() || undefined,
+      },
+      { 
+        name: member3Name.trim(),
+        phone: member3Phone.trim(),
+        discordTag: member3Discord.trim() || undefined,
+      },
     ];
     if (teamSize === 4 && member4Name.trim()) {
-      membersList.push({ name: member4Name.trim() });
+      membersList.push({ 
+        name: member4Name.trim(),
+        phone: member4Phone.trim(),
+        discordTag: member4Discord.trim() || undefined,
+      });
     }
 
     const payload: TeamRegistrationPayload = {
@@ -156,23 +196,23 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
           setConfirmedPaymentId(paymentId);
           setIsProcessing(false);
-          setStep(3); // Go to Success Screen
+          setStep(4); // Go to Success Screen
         },
         onDismiss: () => {
           setIsProcessing(false);
           setErrorMessage("Payment checkout was canceled or dismissed.");
-          setStep(4); // Go to Failure / Dismissed Screen
+          setStep(5); // Go to Failure / Dismissed Screen
         },
         onError: (err) => {
           setIsProcessing(false);
           setErrorMessage(err.message || "Payment gateway encountered an error.");
-          setStep(4); // Go to Failure / Dismissed Screen
+          setStep(5); // Go to Failure / Dismissed Screen
         },
       });
     } catch (err) {
       setIsProcessing(false);
       setErrorMessage(err instanceof Error ? err.message : "Failed to connect to payment gateway.");
-      setStep(4);
+      setStep(5);
     }
   };
 
@@ -259,21 +299,25 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                 </span>
               </div>
 
-              {/* Step 1 & 2 Indicator */}
-              {step <= 2 && (
+              {/* Step 1, 2 & 3 Indicator */}
+              {step <= 3 && (
                 <div className="px-5 md:px-6 py-2.5 bg-zinc-950/40 border-b border-zinc-900 flex items-center justify-between text-xs font-[family-name:var(--font-kode)]">
                   <span className={step === 1 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
-                    01. Team &amp; Roster Info
+                    01. Squad &amp; College
                   </span>
                   <span className="text-zinc-700">───</span>
-                  <span className={step === 2 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
-                    02. Review &amp; Secure Payment
+                  <span className={step === 2 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
+                    02. Squad Roster
+                  </span>
+                  <span className="text-zinc-700">───</span>
+                  <span className={step === 3 ? "text-[#00b4d8] font-bold" : "text-zinc-600"}>
+                    03. Review &amp; Pay
                   </span>
                 </div>
               )}
 
               {/* General Error Banner */}
-              {errorMessage && step !== 4 && (
+              {errorMessage && step !== 5 && (
                 <div className="mx-5 md:mx-6 mt-3 p-3 rounded-lg bg-red-950/30 border border-red-800/50 text-red-400 text-xs flex items-center gap-2">
                   <AlertCircle size={16} className="shrink-0" />
                   <span>{errorMessage}</span>
@@ -288,10 +332,10 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               onWheel={(e) => e.stopPropagation()}
             >
               {/* ══════════════════════════════════════════════════════════════
-                  STEP 1: Team & Roster Information
+                  STEP 1: Team & College Configuration
               ══════════════════════════════════════════════════════════════ */}
               {step === 1 && (
-                <form onSubmit={handleProceedToReview} className="space-y-5">
+                <form onSubmit={handleProceedToRoster} className="space-y-5">
                   {/* Team Name & College Name */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -303,7 +347,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         required
                         value={teamName}
                         onChange={(e) => setTeamName(e.target.value)}
-                        placeholder="e.g. CyberDrifters, NeuralNexus"
+                        placeholder="Enter team name"
                         className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-[#00b4d8] rounded-lg px-4 py-3 text-white placeholder-zinc-600 focus:outline-none transition-colors text-sm"
                       />
                     </div>
@@ -317,7 +361,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         required
                         value={collegeName}
                         onChange={(e) => setCollegeName(e.target.value)}
-                        placeholder="e.g. SIET Coimbatore, PSG Tech"
+                        placeholder="Enter college or institution name"
                         className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-[#00b4d8] rounded-lg px-4 py-3 text-white placeholder-zinc-600 focus:outline-none transition-colors text-sm"
                       />
                     </div>
@@ -369,63 +413,113 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </div>
                   </div>
 
-                  {/* Team Leader Contact Details */}
-                  <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#00b4d8] font-[family-name:var(--font-kode)]">
-                        Team Leader (Primary Contact &amp; Payment Receipt)
-                      </span>
-                      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Leader Full Name *"
-                          value={leaderName}
-                          onChange={(e) => setLeaderName(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="email"
-                          required
-                          placeholder="Leader Email Address *"
-                          value={leaderEmail}
-                          onChange={(e) => setLeaderEmail(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="Phone / WhatsApp Number *"
-                          value={leaderPhone}
-                          onChange={(e) => setLeaderPhone(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                        />
-                      </div>
-                    </div>
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="submit"
+                      className="px-6 py-3 bg-[#00b4d8] hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      Next: Squad Roster
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* ══════════════════════════════════════════════════════════════
+                  STEP 2: Squad Roster (WhatsApp & Optional Discord)
+              ══════════════════════════════════════════════════════════════ */}
+              {step === 2 && (
+                <form onSubmit={handleProceedToReview} className="space-y-5">
+                  <div className="flex items-center justify-between pb-1 border-b border-zinc-900">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
+                      Squad Roster ({teamSize} Members)
+                    </span>
+                    <span className="text-[11px] text-zinc-500 font-[family-name:var(--font-kode)]">
+                      WhatsApp required · Discord optional
+                    </span>
                   </div>
 
-                  {/* Squad Members: Just Names Needed */}
-                  <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3">
+                  {/* Team Leader Details */}
+                  <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3 text-left">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
-                        Squad Members (Names Only)
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#00b4d8] font-[family-name:var(--font-kode)] flex items-center gap-1.5">
+                        <ShieldCheck size={14} />
+                        Team Leader (Primary Contact)
                       </span>
-                      <span className="text-[10px] text-zinc-500 font-[family-name:var(--font-kode)]">
-                        {teamSize - 1} Teammates
-                      </span>
+                      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
-                          Member 02 Full Name *
+                          Leader Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Leader Full Name"
+                          value={leaderName}
+                          onChange={(e) => setLeaderName(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          placeholder="Leader Email Address"
+                          value={leaderEmail}
+                          onChange={(e) => setLeaderEmail(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          WhatsApp Number *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="Leader WhatsApp Number"
+                          value={leaderPhone}
+                          onChange={(e) => setLeaderPhone(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Discord Username <span className="text-zinc-600 text-[10px] lowercase">(optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Discord username or handle"
+                          value={leaderDiscord}
+                          onChange={(e) => setLeaderDiscord(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Member 02 Details */}
+                  <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3 text-left">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
+                        Squad Member 02
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Full Name *
                         </label>
                         <input
                           type="text"
@@ -433,13 +527,52 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Member 2 Full Name"
                           value={member2Name}
                           onChange={(e) => setMember2Name(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
                       <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
-                          Member 03 Full Name *
+                          WhatsApp Number *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="WhatsApp Number"
+                          value={member2Phone}
+                          onChange={(e) => setMember2Phone(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Discord <span className="text-zinc-600 text-[10px] lowercase">(optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Discord handle"
+                          value={member2Discord}
+                          onChange={(e) => setMember2Discord(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Member 03 Details */}
+                  <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3 text-left">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
+                        Squad Member 03
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Full Name *
                         </label>
                         <input
                           type="text"
@@ -447,29 +580,104 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Member 3 Full Name"
                           value={member3Name}
                           onChange={(e) => setMember3Name(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
-                    </div>
 
-                    {teamSize === 4 && (
-                      <div className="pt-1">
+                      <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
-                          Member 04 Full Name *
+                          WhatsApp Number *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="WhatsApp Number"
+                          value={member3Phone}
+                          onChange={(e) => setMember3Phone(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                          Discord <span className="text-zinc-600 text-[10px] lowercase">(optional)</span>
                         </label>
                         <input
                           type="text"
-                          required
-                          placeholder="Member 4 Full Name"
-                          value={member4Name}
-                          onChange={(e) => setMember4Name(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                          placeholder="Discord handle"
+                          value={member3Discord}
+                          onChange={(e) => setMember3Discord(e.target.value)}
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
-                    )}
+                    </div>
                   </div>
 
-                  <div className="pt-2 flex justify-end">
+                  {/* Member 04 Details (if 4 members squad) */}
+                  {teamSize === 4 && (
+                    <div className="p-4 bg-zinc-950/70 border border-zinc-800 rounded-lg space-y-3 text-left">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-[family-name:var(--font-kode)]">
+                          Squad Member 04
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Required</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                            Full Name *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Member 4 Full Name"
+                            value={member4Name}
+                            onChange={(e) => setMember4Name(e.target.value)}
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                            WhatsApp Number *
+                          </label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="WhatsApp Number"
+                            value={member4Phone}
+                            onChange={(e) => setMember4Phone(e.target.value)}
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-[family-name:var(--font-kode)]">
+                            Discord <span className="text-zinc-600 text-[10px] lowercase">(optional)</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Discord handle"
+                            value={member4Discord}
+                            onChange={(e) => setMember4Discord(e.target.value)}
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Navigation Buttons */}
+                  <div className="pt-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider"
+                    >
+                      <ArrowLeft size={14} /> Back to Team Info
+                    </button>
+
                     <button
                       type="submit"
                       className="px-6 py-3 bg-[#00b4d8] hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center gap-2"
@@ -482,9 +690,9 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               )}
 
               {/* ══════════════════════════════════════════════════════════════
-                  STEP 2: Summary & Checkout
+                  STEP 3: Summary & Checkout
               ══════════════════════════════════════════════════════════════ */}
-              {step === 2 && (
+              {step === 3 && (
                 <div className="space-y-6">
                   <div className="bg-zinc-950/80 border border-zinc-800 rounded-lg p-5 space-y-3.5 text-left">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
@@ -501,26 +709,51 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Team Leader</span>
                       <div className="text-right">
                         <div className="text-sm font-bold text-white">{leaderName}</div>
-                        <div className="text-[11px] text-zinc-400">{leaderEmail} · {leaderPhone}</div>
+                        <div className="text-[11px] text-zinc-400">
+                          {leaderEmail} · WA: {leaderPhone}
+                          {leaderDiscord && <span className="text-[#5865F2] ml-1.5">(@{leaderDiscord})</span>}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="border-b border-zinc-800 pb-2.5 space-y-1">
-                      <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Squad Members</span>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 font-bold">
-                          1. {leaderName} (Leader)
-                        </span>
-                        <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
-                          2. {member2Name}
-                        </span>
-                        <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
-                          3. {member3Name}
-                        </span>
-                        {teamSize === 4 && (
-                          <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
-                            4. {member4Name}
-                          </span>
+                    <div className="border-b border-zinc-800 pb-2.5 space-y-2">
+                      <span className="text-xs text-zinc-400 font-[family-name:var(--font-kode)]">Squad Roster ({teamSize} Members)</span>
+                      <div className="space-y-1.5 pt-1">
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <div>
+                            <span className="text-white font-bold">1. {leaderName}</span>
+                            <span className="text-[10px] text-[#00b4d8] ml-1.5 font-semibold">(Leader)</span>
+                          </div>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {leaderPhone}</span>
+                            {leaderDiscord && <span className="text-[#5865F2] ml-2">@{leaderDiscord}</span>}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <span className="text-white font-medium">2. {member2Name}</span>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {member2Phone}</span>
+                            {member2Discord && <span className="text-[#5865F2] ml-2">@{member2Discord}</span>}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <span className="text-white font-medium">3. {member3Name}</span>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {member3Phone}</span>
+                            {member3Discord && <span className="text-[#5865F2] ml-2">@{member3Discord}</span>}
+                          </div>
+                        </div>
+
+                        {teamSize === 4 && member4Name && (
+                          <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                            <span className="text-white font-medium">4. {member4Name}</span>
+                            <div className="text-right text-[11px] text-zinc-400">
+                              <span>WA: {member4Phone}</span>
+                              {member4Discord && <span className="text-[#5865F2] ml-2">@{member4Discord}</span>}
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -553,10 +786,10 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     <button
                       type="button"
                       disabled={isProcessing}
-                      onClick={() => setStep(1)}
+                      onClick={() => setStep(2)}
                       className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider disabled:opacity-50"
                     >
-                      <ArrowLeft size={14} /> Back to Edit
+                      <ArrowLeft size={14} /> Back to Squad Roster
                     </button>
 
                     <button
@@ -582,9 +815,9 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               )}
 
               {/* ══════════════════════════════════════════════════════════════
-                  STEP 3: Payment SUCCESS Confirmation & Groups
+                  STEP 4: Payment SUCCESS Confirmation & Groups
               ══════════════════════════════════════════════════════════════ */}
-              {step === 3 && (
+              {step === 4 && (
                 <div className="text-center space-y-6">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
                     <CheckCircle2 size={36} />
@@ -630,10 +863,12 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </div>
 
                     <div className="flex justify-between border-b border-zinc-900 pb-2">
-                      <span className="text-zinc-500 uppercase">Contact Info</span>
+                      <span className="text-zinc-500 uppercase">Leader Contact</span>
                       <span className="text-zinc-300 text-right">
-                        <span className="block">{leaderEmail}</span>
-                        <span className="text-zinc-400 text-[11px]">{leaderPhone}</span>
+                        <span className="block font-medium">{leaderEmail}</span>
+                        <span className="text-zinc-400 text-[11px]">
+                          WA: {leaderPhone} {leaderDiscord ? `· Discord: @${leaderDiscord}` : ""}
+                        </span>
                       </span>
                     </div>
 
@@ -642,24 +877,46 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       <span className="text-zinc-300 font-bold">{collegeName}</span>
                     </div>
 
-                    <div className="border-b border-zinc-900 pb-2 space-y-1">
+                    <div className="border-b border-zinc-900 pb-2.5 space-y-2">
                       <div className="flex justify-between text-zinc-500 uppercase">
                         <span>Squad Roster ({teamSize} Members)</span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 font-bold">
-                          1. {leaderName} (Leader)
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
-                          2. {member2Name}
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
-                          3. {member3Name}
-                        </span>
+                      <div className="space-y-1.5 pt-1">
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <div>
+                            <span className="text-white font-bold">1. {leaderName}</span>
+                            <span className="text-[10px] text-[#00b4d8] ml-1.5 font-semibold">(Leader)</span>
+                          </div>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {leaderPhone}</span>
+                            {leaderDiscord && <span className="text-[#5865F2] ml-2">@{leaderDiscord}</span>}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <span className="text-white font-medium">2. {member2Name}</span>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {member2Phone}</span>
+                            {member2Discord && <span className="text-[#5865F2] ml-2">@{member2Discord}</span>}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                          <span className="text-white font-medium">3. {member3Name}</span>
+                          <div className="text-right text-[11px] text-zinc-400">
+                            <span>WA: {member3Phone}</span>
+                            {member3Discord && <span className="text-[#5865F2] ml-2">@{member3Discord}</span>}
+                          </div>
+                        </div>
+
                         {teamSize === 4 && member4Name && (
-                          <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
-                            4. {member4Name}
-                          </span>
+                          <div className="flex items-center justify-between text-xs bg-zinc-900/60 px-3 py-2 rounded border border-zinc-800">
+                            <span className="text-white font-medium">4. {member4Name}</span>
+                            <div className="text-right text-[11px] text-zinc-400">
+                              <span>WA: {member4Phone}</span>
+                              {member4Discord && <span className="text-[#5865F2] ml-2">@{member4Discord}</span>}
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -733,9 +990,9 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               )}
 
               {/* ══════════════════════════════════════════════════════════════
-                  STEP 4: Payment FAILED or CANCELED Message Box & Links
+                  STEP 5: Payment FAILED or CANCELED Message Box & Links
               ══════════════════════════════════════════════════════════════ */}
-              {step === 4 && (
+              {step === 5 && (
                 <div className="text-center space-y-6">
                   <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto text-red-400">
                     <AlertCircle size={36} />
@@ -780,10 +1037,17 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </button>
 
                     <button
-                      onClick={() => setStep(1)}
+                      onClick={() => setStep(2)}
                       className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors"
                     >
-                      Edit Registration Details
+                      Edit Squad Roster
+                    </button>
+
+                    <button
+                      onClick={() => setStep(1)}
+                      className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors"
+                    >
+                      Edit Team Info
                     </button>
                   </div>
 
