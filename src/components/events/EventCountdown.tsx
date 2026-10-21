@@ -46,15 +46,15 @@ export default function EventCountdown({ targetDate = "2026-11-14T18:00:00+05:30
       {units.map((unit, idx) => (
         <div key={unit.label} className="flex items-center gap-2 sm:gap-4">
           <div className="flex flex-col items-center min-w-[50px] sm:min-w-[68px]">
-            <span className="font-[family-name:var(--font-tech)] text-2xl sm:text-3xl font-bold tracking-tight text-white leading-none">
+            <span className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-white leading-none">
               {String(unit.value).padStart(2, "0")}
             </span>
-            <span className="font-[family-name:var(--font-kode)] text-[9px] sm:text-[10px] tracking-[0.25em] text-[#00b4d8] font-semibold mt-1">
+            <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.25em] text-[#00b4d8] font-semibold mt-1">
               {unit.label}
             </span>
           </div>
           {idx < units.length - 1 && (
-            <span className="font-[family-name:var(--font-tech)] text-zinc-600 text-xl font-bold -mt-3 select-none">
+            <span className="font-sans text-zinc-600 text-xl font-bold -mt-3 select-none">
               :
             </span>
           )}

@@ -9,9 +9,18 @@ export const WHATSAPP_GROUP_INVITE_URL =
 export const GOOGLE_SHEET_SCRIPT_URL =
   process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "";
 
-// Razorpay Public Key ID (Safe for static client-side checkout)
-export const RAZORPAY_KEY_ID =
-  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_1DP5mmOlF5G5ag";
+// Studio Contact & Comms
+export const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "connect@outergazer.in";
+export const FORMSUBMIT_URL =
+  process.env.NEXT_PUBLIC_FORMSUBMIT_URL || `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
+
+// UPI Payment Configuration
+export const UPI_PAYMENT_CONFIG = {
+  upiId: process.env.NEXT_PUBLIC_UPI_ID || "outergazers@oksbi",
+  payeeName: process.env.NEXT_PUBLIC_UPI_PAYEE_NAME || "OuterGazers Studio",
+  accountNote: "SIET XR Lab Game Jam Entry",
+};
 
 // ─── Flagship Game Jam & Esports Showdown ──────────────────────────────────────
 export const FLAGSHIP_GAME_JAM: GameJamEvent & {

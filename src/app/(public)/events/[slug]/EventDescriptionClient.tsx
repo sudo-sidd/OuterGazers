@@ -18,7 +18,7 @@ export default function EventDescriptionClient() {
   const event = FLAGSHIP_GAME_JAM;
 
   return (
-    <main className="bg-[#0a0a0a] text-white min-h-screen pt-28 pb-32 font-[family-name:var(--font-anta)] overflow-hidden">
+    <main className="bg-[#0a0a0a] text-white min-h-screen pt-28 pb-32 font-sans overflow-hidden">
       
       {/* Background Ambient Glows */}
       <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#00b4d8]/10 blur-[140px] rounded-full pointer-events-none -z-10" />
@@ -40,12 +40,12 @@ export default function EventDescriptionClient() {
         <div className="mb-8 flex items-center justify-between">
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 text-xs font-[family-name:var(--font-kode)] uppercase tracking-widest text-zinc-400 hover:text-[#00b4d8] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-zinc-400 hover:text-[#00b4d8] transition-colors"
           >
             <ArrowLeft size={14} /> Back to News &amp; Events
           </Link>
 
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-[family-name:var(--font-kode)] border border-[#00b4d8]/30 px-3 py-1 rounded-full bg-[#00b4d8]/5">
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-sans border border-[#00b4d8]/30 px-3 py-1 rounded-full bg-[#00b4d8]/5">
             Official Master Guide
           </span>
         </div>
@@ -60,12 +60,12 @@ export default function EventDescriptionClient() {
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-6 font-[family-name:var(--font-kode)]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-6 font-sans">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                 Registrations Open · Hybrid Collegiate Jam
               </div>
 
-              <h1 className="font-[family-name:var(--font-tech)] text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight uppercase leading-[1.05] text-white mb-6">
+              <h1 className="font-sans text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight uppercase leading-[1.05] text-white mb-6">
                 Game Jam &amp;{" "}
                 <span className="text-transparent" style={{ WebkitTextStroke: "1.5px rgba(0,180,216,0.85)" }}>
                   Esports Showdown
@@ -79,7 +79,7 @@ export default function EventDescriptionClient() {
               </p>
 
               {/* Key Highlights Pill Group */}
-              <div className="flex flex-wrap gap-4 text-xs font-[family-name:var(--font-kode)] text-zinc-300">
+              <div className="flex flex-wrap gap-4 text-xs font-sans text-zinc-300">
                 <div className="flex items-center gap-2 bg-zinc-900/80 border border-zinc-800 px-3.5 py-2 rounded-lg">
                   <MapPin size={15} className="text-[#00b4d8]" />
                   <span>XR Lab, SIET Coimbatore</span>
@@ -102,10 +102,10 @@ export default function EventDescriptionClient() {
             {/* Countdown & Action Card */}
             <div className="lg:w-80 w-full shrink-0 flex flex-col items-center justify-center p-6 sm:p-8 bg-zinc-950/90 border border-zinc-800 rounded-xl text-center space-y-6">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-[family-name:var(--font-kode)] mb-2">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-sans mb-2">
                   Total Prize Pool
                 </p>
-                <div className="font-[family-name:var(--font-tech)] text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                <div className="font-sans text-4xl sm:text-5xl font-bold text-white tracking-tight">
                   {event.totalPrizePool}
                 </div>
                 <p className="text-[11px] text-zinc-500 font-mono mt-1">
@@ -114,7 +114,7 @@ export default function EventDescriptionClient() {
               </div>
 
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-[family-name:var(--font-kode)] mb-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-sans mb-3">
                   Theme Announcement Drops In
                 </p>
                 <EventCountdown targetDate="2026-12-11T18:00:00+05:30" />
@@ -123,7 +123,7 @@ export default function EventDescriptionClient() {
               <div className="w-full space-y-3 pt-2">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="w-full py-4 px-6 bg-gradient-to-r from-[#00b4d8] to-[#0096c7] hover:from-white hover:to-zinc-200 text-black font-extrabold text-xs uppercase tracking-widest rounded-lg transition-all shadow-lg shadow-[#00b4d8]/20 flex items-center justify-center gap-2"
+                  className="w-full py-4 px-6 bg-gradient-to-r from-[#00b4d8] to-[#0096c7] hover:from-white hover:to-zinc-200 text-black font-extrabold text-xs uppercase tracking-wider rounded-lg transition-all shadow-lg shadow-[#00b4d8]/20 flex items-center justify-center gap-2"
                 >
                   <Sparkles size={16} />
                   Register Team (₹800/Head)
@@ -133,7 +133,7 @@ export default function EventDescriptionClient() {
                   href={DISCORD_INVITE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 px-6 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 px-6 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   Join Event Discord
                   <ExternalLink size={14} />
@@ -149,19 +149,19 @@ export default function EventDescriptionClient() {
         <section className="mb-20">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl relative overflow-hidden group hover:border-zinc-700 transition-colors">
-              <div className="text-[#00b4d8] font-bold text-2xl font-[family-name:var(--font-tech)] mb-1">
+              <div className="text-[#00b4d8] font-bold text-2xl font-sans mb-1">
                 ₹800 <span className="text-xs text-zinc-500 font-normal">/ person</span>
               </div>
               <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
                 Team Registration
               </h4>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                ₹2,400 for a 3-member team or ₹3,200 for a 4-member team. Paid collectively by the team leader via Razorpay.
+                ₹2,400 for a 3-member team or ₹3,200 for a 4-member team. Paid collectively by the team leader via UPI QR with instant screenshot verification.
               </p>
             </div>
 
             <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl relative overflow-hidden group hover:border-zinc-700 transition-colors">
-              <div className="text-emerald-400 font-bold text-2xl font-[family-name:var(--font-tech)] mb-1">
+              <div className="text-emerald-400 font-bold text-2xl font-sans mb-1">
                 All Meals Free
               </div>
               <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
@@ -173,7 +173,7 @@ export default function EventDescriptionClient() {
             </div>
 
             <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl relative overflow-hidden group hover:border-zinc-700 transition-colors">
-              <div className="text-[#7c3aed] font-bold text-2xl font-[family-name:var(--font-tech)] mb-1">
+              <div className="text-[#7c3aed] font-bold text-2xl font-sans mb-1">
                 Bonus Esports
               </div>
               <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
@@ -185,7 +185,7 @@ export default function EventDescriptionClient() {
             </div>
 
             <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl relative overflow-hidden group hover:border-zinc-700 transition-colors">
-              <div className="text-cyan-400 font-bold text-2xl font-[family-name:var(--font-tech)] mb-1">
+              <div className="text-cyan-400 font-bold text-2xl font-sans mb-1">
                 XR Lab Access
               </div>
               <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
@@ -203,10 +203,10 @@ export default function EventDescriptionClient() {
         ═══════════════════════════════════════════ */}
         <section className="mb-24">
           <div className="mb-12">
-            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
               — Roadmap &amp; Milestones
             </p>
-            <h2 className="font-[family-name:var(--font-tech)] text-3xl sm:text-5xl font-bold tracking-tight">
+            <h2 className="font-sans text-3xl sm:text-5xl font-bold tracking-tight">
               Event Phases &amp; Workflow
             </h2>
           </div>
@@ -218,13 +218,13 @@ export default function EventDescriptionClient() {
                 className="p-6 bg-zinc-900/20 border border-zinc-800 rounded-xl relative flex flex-col justify-between"
               >
                 <div>
-                  <span className="font-[family-name:var(--font-kode)] text-xs font-bold text-[#00b4d8] block mb-2">
+                  <span className="font-sans text-xs font-bold text-[#00b4d8] block mb-2">
                     0{idx + 1}
                   </span>
                   <h3 className="font-bold text-sm text-white mb-2">
                     {phase.phase.replace(/^Phase \d+: /, "")}
                   </h3>
-                  <div className="text-[11px] font-[family-name:var(--font-kode)] text-zinc-400 font-semibold mb-3">
+                  <div className="text-[11px] font-sans text-zinc-400 font-semibold mb-3">
                     {phase.time}
                   </div>
                   <p className="text-xs text-zinc-400 leading-relaxed">
@@ -241,17 +241,17 @@ export default function EventDescriptionClient() {
         ═══════════════════════════════════════════ */}
         <section className="mb-24">
           <div className="mb-12">
-            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
               — Bounty Allocation
             </p>
-            <h2 className="font-[family-name:var(--font-tech)] text-3xl sm:text-5xl font-bold tracking-tight">
+            <h2 className="font-sans text-3xl sm:text-5xl font-bold tracking-tight">
               Prize Structure &amp; Categories
             </h2>
           </div>
 
           {/* Game Jam Awards */}
           <div className="mb-10">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-[family-name:var(--font-kode)] mb-4 flex items-center gap-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-sans mb-4 flex items-center gap-2">
               <Trophy size={14} className="text-[#00b4d8]" />
               Game Jam Awards (₹12,000 Team Prizes)
             </h3>
@@ -262,13 +262,13 @@ export default function EventDescriptionClient() {
                   className="p-8 rounded-xl bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 transition-colors flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-[family-name:var(--font-kode)] block mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-sans block mb-2">
                       Award Category
                     </span>
                     <h4 className="text-xl font-bold text-white mb-3">
                       {prize.place}
                     </h4>
-                    <div className="text-3xl font-bold font-[family-name:var(--font-tech)] text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400 mb-6">
+                    <div className="text-3xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400 mb-6">
                       {prize.reward}
                     </div>
                     <ul className="space-y-2 text-xs text-zinc-400">
@@ -287,7 +287,7 @@ export default function EventDescriptionClient() {
 
           {/* Bonus Esports Awards */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-[family-name:var(--font-kode)] mb-4 flex items-center gap-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-sans mb-4 flex items-center gap-2">
               <Gamepad2 size={14} className="text-[#7c3aed]" />
               Day 2 Bonus Esports Showdown (₹4,000 Individual Prizes)
             </h3>
@@ -298,7 +298,7 @@ export default function EventDescriptionClient() {
                   className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
                 >
                   <div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#7c3aed] uppercase font-[family-name:var(--font-kode)] mb-1">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#7c3aed] uppercase font-sans mb-1">
                       <span>{esport.platform}</span>
                       <span>•</span>
                       <span>1v1 Tournament</span>
@@ -311,8 +311,8 @@ export default function EventDescriptionClient() {
                     </p>
                   </div>
                   <div className="text-right sm:shrink-0">
-                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block">Winner Takes All</span>
-                    <span className="text-2xl font-bold font-[family-name:var(--font-tech)] text-[#00b4d8]">
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Winner Takes All</span>
+                    <span className="text-2xl font-bold font-sans text-[#00b4d8]">
                       {esport.prize}
                     </span>
                   </div>
@@ -327,10 +327,10 @@ export default function EventDescriptionClient() {
         ═══════════════════════════════════════════ */}
         <section className="mb-24">
           <div className="mb-12">
-            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
               — Operational Playbook
             </p>
-            <h2 className="font-[family-name:var(--font-tech)] text-3xl sm:text-5xl font-bold tracking-tight">
+            <h2 className="font-sans text-3xl sm:text-5xl font-bold tracking-tight">
               In-Person Run of Show
             </h2>
           </div>
@@ -339,10 +339,10 @@ export default function EventDescriptionClient() {
             {/* Day 1 */}
             <div className="p-8 bg-zinc-900/30 border border-zinc-800 rounded-xl space-y-6">
               <div className="border-b border-zinc-800 pb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#00b4d8] font-[family-name:var(--font-kode)]">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b4d8] font-sans">
                   Thursday, December 17, 2026
                 </span>
-                <h3 className="text-2xl font-bold text-white font-[family-name:var(--font-tech)]">
+                <h3 className="text-2xl font-bold text-white font-sans">
                   Day 1: Submissions, Showcase &amp; Playtesting
                 </h3>
               </div>
@@ -368,7 +368,7 @@ export default function EventDescriptionClient() {
                         : "bg-zinc-950/50 border border-zinc-900"
                     }`}
                   >
-                    <div className="font-[family-name:var(--font-kode)] text-[#00b4d8] font-bold min-w-[150px]">
+                    <div className="font-sans text-[#00b4d8] font-bold min-w-[150px]">
                       {item.time}
                     </div>
                     <div className="flex-grow">
@@ -384,10 +384,10 @@ export default function EventDescriptionClient() {
             <div className="p-8 bg-zinc-900/30 border border-zinc-800 rounded-xl space-y-6 flex flex-col justify-between">
               <div>
                 <div className="border-b border-zinc-800 pb-4 mb-6">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c3aed] font-[family-name:var(--font-kode)]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7c3aed] font-sans">
                     Friday, December 18, 2026
                   </span>
-                  <h3 className="text-2xl font-bold text-white font-[family-name:var(--font-tech)]">
+                  <h3 className="text-2xl font-bold text-white font-sans">
                     Day 2: Awards &amp; Esports Showdown
                   </h3>
                 </div>
@@ -403,7 +403,7 @@ export default function EventDescriptionClient() {
                       key={i}
                       className="p-3.5 rounded-lg flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center justify-between bg-zinc-950/50 border border-zinc-900"
                     >
-                      <div className="font-[family-name:var(--font-kode)] text-[#7c3aed] font-bold min-w-[150px]">
+                      <div className="font-sans text-[#7c3aed] font-bold min-w-[150px]">
                         {item.time}
                       </div>
                       <div className="flex-grow">
@@ -435,10 +435,10 @@ export default function EventDescriptionClient() {
         <section className="mb-24">
           <div className="p-8 md:p-12 bg-zinc-900/20 border border-zinc-800 rounded-2xl">
             <div className="max-w-3xl mb-8">
-              <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+              <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
                 — Fair Play &amp; Transparent Scoring
               </p>
-              <h2 className="font-[family-name:var(--font-tech)] text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+              <h2 className="font-sans text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                 Judging &amp; Rating Framework
               </h2>
               <p className="text-zinc-400 text-xs md:text-sm leading-relaxed">
@@ -449,28 +449,28 @@ export default function EventDescriptionClient() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-[family-name:var(--font-kode)] text-sm">01. Theme Adherence</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">01. Theme Adherence</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
                   How creatively and fundamentally does the game mechanic reflect the Dec 11 secret theme?
                 </p>
               </div>
 
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-[family-name:var(--font-kode)] text-sm">02. Core Mechanic &amp; Tech</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">02. Core Mechanic &amp; Tech</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
                   Control responsiveness, physics feel, clean execution, and complete lack of game-breaking crashes.
                 </p>
               </div>
 
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-[family-name:var(--font-kode)] text-sm">03. Visuals, Audio &amp; Polish</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">03. Visuals, Audio &amp; Polish</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
                   Artistic identity, shader quality, lighting balance, UI cohesiveness, and immersive audio cues.
                 </p>
               </div>
 
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-[family-name:var(--font-kode)] text-sm">04. Stage Presentation</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">04. Stage Presentation</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
                   Clarity of the 3-minute pitch demo and technical poise during the 2-minute judge Q&amp;A.
                 </p>
@@ -486,17 +486,17 @@ export default function EventDescriptionClient() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Rules */}
             <div>
-              <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+              <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
                 — Regulations
               </p>
-              <h2 className="font-[family-name:var(--font-tech)] text-3xl font-bold tracking-tight text-white mb-6">
+              <h2 className="font-sans text-3xl font-bold tracking-tight text-white mb-6">
                 Official Ruleset
               </h2>
 
               <ul className="space-y-3 text-xs text-zinc-300">
                 {event.rules.map((rule, idx) => (
                   <li key={idx} className="flex items-start gap-3 p-3 bg-zinc-900/30 border border-zinc-800/70 rounded-lg">
-                    <span className="font-[family-name:var(--font-kode)] font-bold text-[#00b4d8] shrink-0">
+                    <span className="font-sans font-bold text-[#00b4d8] shrink-0">
                       {idx + 1}.
                     </span>
                     <span className="leading-relaxed">{rule}</span>
@@ -507,10 +507,10 @@ export default function EventDescriptionClient() {
 
             {/* FAQs */}
             <div>
-              <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+              <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
                 — Clarifications
               </p>
-              <h2 className="font-[family-name:var(--font-tech)] text-3xl font-bold tracking-tight text-white mb-6">
+              <h2 className="font-sans text-3xl font-bold tracking-tight text-white mb-6">
                 Frequently Asked Questions
               </h2>
 
@@ -554,10 +554,10 @@ export default function EventDescriptionClient() {
           <div className="absolute inset-0 bg-[#00b4d8]/5 pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-            <span className="font-[family-name:var(--font-kode)] text-xs font-bold uppercase tracking-[0.4em] text-[#00b4d8]">
+            <span className="font-sans text-xs font-bold uppercase tracking-[0.4em] text-[#00b4d8]">
               Registrations Close Dec 11 · 18:00 IST
             </span>
-            <h2 className="font-[family-name:var(--font-tech)] text-3xl sm:text-5xl font-bold tracking-tight text-white">
+            <h2 className="font-sans text-3xl sm:text-5xl font-bold tracking-tight text-white">
               Forge Your Reality at SIET XR Lab
             </h2>
             <p className="text-zinc-400 text-xs md:text-sm leading-relaxed">
@@ -567,7 +567,7 @@ export default function EventDescriptionClient() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 bg-[#00b4d8] hover:bg-white text-black font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-4 bg-[#00b4d8] hover:bg-white text-black font-extrabold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <Sparkles size={16} />
                 Register Team (₹800/Head)
@@ -576,7 +576,7 @@ export default function EventDescriptionClient() {
                 href={DISCORD_INVITE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-8 py-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 Enter Discord Server
               </a>

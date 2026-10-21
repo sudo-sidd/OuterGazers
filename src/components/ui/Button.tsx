@@ -22,8 +22,8 @@ export default function Button({
   ...props
 }: ButtonProps) {
   
-  // Base styling for that heavy, studio aesthetic
-  const baseStyles = "relative inline-flex items-center justify-center font-bold uppercase tracking-widest transition-all duration-300 overflow-hidden group focus:outline-none";
+  // Base styling for modern, crisp, studio aesthetic
+  const baseStyles = "relative inline-flex items-center justify-center font-sans font-bold uppercase tracking-wider transition-all duration-300 overflow-hidden group focus:outline-none";
   
   // Variant specifics
   const variants = {

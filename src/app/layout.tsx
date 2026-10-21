@@ -18,7 +18,11 @@ const GlobalStarfield = dynamic(
 );
 
 // Initialize the primary font
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://outergazer.in'),
@@ -66,7 +70,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[#0a0a0a] text-[#f0f0f0] antialiased overflow-x-hidden selection:bg-[#00b4d8] selection:text-[#0a0a0a]`}>
+      <body className={`${inter.variable} ${inter.className} font-sans bg-[#0a0a0a] text-[#f0f0f0] antialiased overflow-x-hidden selection:bg-[#00b4d8] selection:text-[#0a0a0a]`}>
         <SplashVideo />
         <SmoothScrollProvider>
           {/* 

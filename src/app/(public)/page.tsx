@@ -111,12 +111,16 @@ export default function HomePage() {
     setContactSubmitting(true);
     setContactStatus("idle");
     try {
-      await submitContactInquiry({
+      const res = await submitContactInquiry({
         ...contactForm,
         submittedAt: new Date().toISOString(),
       });
-      setContactStatus("success");
-      setContactForm({ name: "", email: "", subject: "", message: "" });
+      if (res.success) {
+        setContactStatus("success");
+        setContactForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setContactStatus("error");
+      }
     } catch {
       setContactStatus("error");
     } finally {
@@ -577,76 +581,163 @@ export default function HomePage() {
             >
               <form className="space-y-8" onSubmit={handleContactSubmit}>
                 {contactStatus === "success" && (
-                  <div className="p-4 rounded-lg bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span>Transmission received! Our team will respond to your comms shortly.</span>
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-5 rounded-lg bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-sm space-y-1.5"
+                  >
+                    <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs text-emerald-400">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Transmission Dispatched</span>
+                    </div>
+                    <p className="text-xs text-emerald-200/90 leading-relaxed">
+                      Your message has been received and routed directly to <span className="font-semibold text-white underline">connect@outergazer.in</span>. Our team will review and reply to your comms shortly.
+                    </p>
+                  </motion.div>
                 )}
                 {contactStatus === "error" && (
-                  <div className="p-4 rounded-lg bg-red-950/40 border border-red-500/40 text-red-300 text-xs">
-                    Comms error. Please email directly at connect@outergazer.in.
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-5 rounded-lg bg-red-950/40 border border-red-500/40 text-red-300 text-sm space-y-3"
+                  >
+                    <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs text-red-400">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                      <span>Transmission Notice</span>
+                    </div>
+                    <p className="text-xs text-red-200/90 leading-relaxed">
+                      Could not auto-transmit via relay. Click below to send your message directly via your email client to <span className="text-white font-semibold underline">connect@outergazer.in</span>:
+                    </p>
+                    <a
+                      href={`mailto:connect@outergazer.in?subject=${encodeURIComponent(
+                        contactForm.subject || "OuterGazers Studio Inquiry"
+                      )}&body=${encodeURIComponent(
+                        `Name: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMessage:\n${contactForm.message}`
+                      )}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-red-900/60 hover:bg-red-800 border border-red-500/40 rounded text-xs text-white font-bold tracking-wider uppercase transition-colors"
+                    >
+                      <span>Open Email Client (&rarr; connect@outergazer.in)</span>
+                    </a>
+                  </motion.div>
                 )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="relative group">
                     <input
+                      id="contact-name"
+                      name="name"
                       type="text"
                       required
                       value={contactForm.name}
                       onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
+                      className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-[#00b4d8] transition-colors peer placeholder-transparent text-sm"
                       placeholder="Name"
                     />
-                    <label className="absolute left-0 top-3 text-zinc-500 text-sm uppercase tracking-widest transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8] peer-valid:-top-4 peer-valid:text-[10px] font-bold">
-                      Name
+                    <label
+                      htmlFor="contact-name"
+                      className={`absolute left-0 transition-all font-bold pointer-events-none uppercase tracking-widest ${
+                        contactForm.name
+                          ? "-top-4 text-[10px] text-[#00b4d8]"
+                          : "top-3 text-sm text-zinc-500 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8]"
+                      }`}
+                    >
+                      Name *
                     </label>
                   </div>
+
                   <div className="relative group">
                     <input
+                      id="contact-email"
+                      name="email"
                       type="email"
                       required
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
+                      className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-[#00b4d8] transition-colors peer placeholder-transparent text-sm"
                       placeholder="Email"
                     />
-                    <label className="absolute left-0 top-3 text-zinc-500 text-sm uppercase tracking-widest transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8] peer-valid:-top-4 peer-valid:text-[10px] font-bold">
-                      Email
+                    <label
+                      htmlFor="contact-email"
+                      className={`absolute left-0 transition-all font-bold pointer-events-none uppercase tracking-widest ${
+                        contactForm.email
+                          ? "-top-4 text-[10px] text-[#00b4d8]"
+                          : "top-3 text-sm text-zinc-500 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8]"
+                      }`}
+                    >
+                      Email *
                     </label>
                   </div>
                 </div>
+
                 <div className="relative group">
                   <input
+                    id="contact-subject"
+                    name="subject"
                     type="text"
                     required
                     value={contactForm.subject}
                     onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
-                    className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
+                    className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-[#00b4d8] transition-colors peer placeholder-transparent text-sm"
                     placeholder="Subject"
                   />
-                  <label className="absolute left-0 top-3 text-zinc-500 text-sm uppercase tracking-widest transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8] peer-valid:-top-4 peer-valid:text-[10px] font-bold">
-                    Subject
+                  <label
+                    htmlFor="contact-subject"
+                    className={`absolute left-0 transition-all font-bold pointer-events-none uppercase tracking-widest ${
+                      contactForm.subject
+                        ? "-top-4 text-[10px] text-[#00b4d8]"
+                        : "top-3 text-sm text-zinc-500 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8]"
+                    }`}
+                  >
+                    Subject *
                   </label>
                 </div>
+
                 <div className="relative group">
                   <textarea
+                    id="contact-message"
+                    name="message"
                     required
                     rows={4}
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent resize-none"
+                    className="w-full bg-transparent border-b border-zinc-700 py-3 text-white focus:outline-none focus:border-[#00b4d8] transition-colors peer placeholder-transparent resize-none text-sm leading-relaxed"
                     placeholder="Message"
                   ></textarea>
-                  <label className="absolute left-0 top-3 text-zinc-500 text-sm uppercase tracking-widest transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8] peer-valid:-top-4 peer-valid:text-[10px] font-bold">
-                    Message
+                  <label
+                    htmlFor="contact-message"
+                    className={`absolute left-0 transition-all font-bold pointer-events-none uppercase tracking-widest ${
+                      contactForm.message
+                        ? "-top-4 text-[10px] text-[#00b4d8]"
+                        : "top-3 text-sm text-zinc-500 peer-focus:-top-4 peer-focus:text-[10px] peer-focus:text-[#00b4d8]"
+                    }`}
+                  >
+                    Message *
                   </label>
                 </div>
+
                 <button
                   type="submit"
                   disabled={contactSubmitting}
-                  className="w-full bg-white text-black font-bold uppercase tracking-widest py-4 rounded hover:bg-[#00b4d8] transition-colors flex justify-center items-center group relative overflow-hidden disabled:opacity-50"
+                  className="w-full bg-white text-black font-bold uppercase tracking-widest py-4 rounded hover:bg-[#00b4d8] hover:text-black transition-colors flex justify-center items-center group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="relative z-10">{contactSubmitting ? "Transmitting..." : "Send Message"}</span>
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {contactSubmitting ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-black" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Transmitting Message...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send Message</span>
+                        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </>
+                    )}
+                  </span>
                   <div className="absolute inset-0 h-full w-0 bg-[#00b4d8] group-hover:w-full transition-all duration-500 ease-out z-0"></div>
                 </button>
               </form>

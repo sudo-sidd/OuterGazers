@@ -99,11 +99,13 @@ export interface TeamRegistrationPayload {
   collegeName: string;
   teamSize: number;
   totalAmount: number;
-  track?: string;
   leader: TeamMember;
   members: TeamMember[];
-  paymentStatus: "PENDING" | "PAID" | "FREE" | "FAILED";
-  razorpayPaymentId?: string;
+  paymentStatus: "PENDING_VERIFICATION" | "VERIFIED" | "PENDING" | "PAID" | "FREE" | "FAILED";
+  transactionUtr?: string;
+  screenshotBase64?: string;
+  screenshotFileName?: string;
+  screenshotUrl?: string;
   notes?: string;
   submittedAt: string;
 }

@@ -18,6 +18,9 @@ const config: Config = {
           border: "#E5E5E0",   // Clean structural divider lines
         },
       },
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+      },
       letterSpacing: {
         studioWide: ".2em",
         tighter: "-.04em",
