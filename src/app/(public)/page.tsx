@@ -8,72 +8,21 @@ import { Monitor, Layers, Gamepad2, FlaskConical, Diamond } from "lucide-react";
 import Image from "next/image";
 import EyeFollowButton from "@/components/ui/EyeFollowButton";
 import { useSplashState } from "@/hooks/useSplashState";
-import ExpandedCardSection from "@/components/ui/SpatialCarousel";
+import { HeroParallax } from "@/components/ui/HeroParallax";
 import PixelHoverCard from "@/components/ui/PixelHoverCard";
-import ArcCarousel from "@/components/ui/ArcCarousel";
-import ArtworkPinBoard from "@/components/ui/ArtworkPinBoard";
 import { FOUNDERS, DISCORD_INVITE_URL } from "@/constants";
 import { Founder } from "@/types";
 import { submitContactInquiry } from "@/lib/sheets";
-
-
-
+import { CursorDrivenParticleTypography } from "@/components/ui/cursor-driven-particles-typography";
+import { WORKS_DATA } from "@/data/works";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
-
-const STATS = [
-  { value: 4, suffix: "+", label: "Platforms" },
-  { value: 100, suffix: "%", label: "Passion Driven" },
-];
 
 const TICKER_ITEMS = [
   "PC GAME DEVELOPMENT", "PHYSICS-DRIVEN MECHANICS", "CO-OP MULTIPLAYER",
   "GAME AI & LOGIC", "UNITY & GODOT ENGINES", "TECHNICAL ART & SHADERS",
   "C# DEVELOPMENT"
 ];
-
-// ─── Animated Counter ────────────────────────────────────────────────────────
-
-function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const [triggered, setTriggered] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !triggered) {
-          setTriggered(true);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [triggered]);
-
-  useEffect(() => {
-    if (!triggered) return;
-    let start = 0;
-    const duration = 1800;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * value));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [triggered, value]);
-
-  return (
-    <div ref={ref} className="tabular-nums font-[family-name:var(--font-tech)]">
-      {count}{suffix}
-    </div>
-  );
-}
-
-// Removed unused ProjectCard function
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -129,7 +78,7 @@ export default function HomePage() {
   };
 
   return (
-    <main onMouseMove={(e) => handleMouseMove(e.clientX, e.clientY)} className="bg-[#0a0a0a] text-white overflow-hidden font-[family-name:var(--font-anta)]">
+    <main onMouseMove={(e) => handleMouseMove(e.clientX, e.clientY)} className="bg-transparent text-white overflow-hidden font-[family-name:var(--font-anta)]">
 
       {/* ═══════════════════════════════════════════
           1. HERO — STARFIELD + CINEMATIC REVEAL
@@ -160,7 +109,7 @@ export default function HomePage() {
         />
 
         <motion.div
-          className="relative z-20 text-center px-6"
+          className="relative z-20 text-center w-full max-w-[1920px] mx-auto px-4 sm:px-6"
           style={{ y: heroY, opacity: heroOpacity }}
         >
           {/* Studio tag */}
@@ -177,28 +126,26 @@ export default function HomePage() {
             <div className="w-8 h-px bg-[#00b4d8]" />
           </motion.div>
 
-          {/* Main title with glow */}
-          <motion.h1
+          {/* Main title: Cursor-driven particle typography */}
+          <motion.div
             initial={{ opacity: 0, y: 80, filter: "blur(20px)" }}
             animate={splashDone ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 80, filter: "blur(20px)" }}
             transition={{ duration: 1.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative font-[family-name:var(--font-tech)] text-7xl sm:text-8xl md:text-[10rem] lg:text-[12rem] tracking-tight uppercase leading-none mb-0 group"
+            className="w-full max-w-[96vw] 2xl:max-w-[1850px] mx-auto h-[220px] sm:h-[300px] md:h-[400px] lg:h-[480px] xl:h-[540px] flex items-center justify-center relative my-2 px-2"
           >
-            <span
-              className="relative inline-block"
-              style={{
-                textShadow: "0 0 80px rgba(0,180,216,0.35), 0 0 160px rgba(0,180,216,0.15)",
-              }}
-            >
-              Outer
-            </span>
-            <span
-              className="relative inline-block gazers-outline"
-              data-text="Gazers"
-            >
-              Gazers
-            </span>
-          </motion.h1>
+            <h1 className="sr-only">OUTERGAZERS</h1>
+            <CursorDrivenParticleTypography
+              text="OUTERGAZERS"
+              fontFamily="Orbitron, Anta, 'Space Grotesk', sans-serif"
+              fontSize={280}
+              particleDensity={5.5}
+              particleSize={2.2}
+              dispersionStrength={26}
+              color="#ffffff"
+              gazerColor="#00B4D8"
+              className="w-full h-full min-h-0"
+            />
+          </motion.div>
 
           {/* Accent line */}
           <motion.div
@@ -284,106 +231,19 @@ export default function HomePage() {
       </div>
 
       {/* ═══════════════════════════════════════════
-          3. FEATURED PROJECTS -> OUR WORK
+          3. FEATURED PROJECTS -> OUR WORK (HERO PARALLAX)
       ═══════════════════════════════════════════ */}
-      <section id="work" className="relative z-20 bg-[#0a0a0a] pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6"
-          >
-            <div>
-              <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-4">
-                — Selected Works
-              </p>
-              <h2 className="font-[family-name:var(--font-tech)] text-5xl md:text-7xl font-bold tracking-tight leading-none">
-                Our Work
-              </h2>
-            </div>
-          </motion.div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-6 md:px-0">
-          <ExpandedCardSection 
-            className="z-30"
-            items={[
-              { type: "project", title: "Virtual Lab", tag: "Next-Gen EdTech", description: "A training simulation that transforms traditional chemistry education. By leveraging Meta Quest's spatial capabilities, it allows students to perform repeatable, physics-accurate experiments in a hazard-free digital laboratory.", link: "#", mediaUrl: "/images/ChemLab.jpg", mediaType: "image" },
-              { type: "project", title: "Fake It Till You Sink", tag: "Chaotic Co-Op", description: "Grab your friends and try to keep a yacht from going under. Work together to steer the ship, manage repairs, and survive the elements before the whole thing sinks.", link: "#", mediaUrl: "/videos/fake-it-till-you-sink.mp4", mediaType: "video" },
-              { type: "project", title: "MR Zombie Shooter", tag: "MR Game", description: "A mixed reality survival shooter leveraging Meta Quest 3 spatial mapping and passthrough.", link: "#", mediaUrl: "/videos/MR_Game.mp4", mediaType: "video" },
-              { type: "project", title: "Echoes of Reality", tag: "Android Mobile", description: "An immersive mobile experience exploring the echoes of reality.", link: "#", mediaUrl: "/videos/MobileGame.mp4", mediaType: "video" },
-              { type: "project", title: "BumperBlitz", tag: "Web Game", description: "A fast-paced browser-based bumper car experience with physics-driven arena combat.", link: "https://sudo-sidd.itch.io/bumperblitz", mediaUrl: "/images/bumperblitz.png", mediaType: "image" },
-            ]}
-          />
-        </div>
+      <section id="work" className="relative z-20 bg-transparent">
+        <HeroParallax products={WORKS_DATA} />
       </section>
 
-      {/* ═══════════════════════════════════════════
-          4. STATS BAR
-      ═══════════════════════════════════════════ */}
-      <section className="relative z-20 border-y border-zinc-900 bg-[#0d0d0d] py-20 px-6 md:px-12 overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] rounded-full blur-[120px] bg-[#00b4d8]/5 pointer-events-none" />
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 relative">
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="flex flex-col items-center md:items-start text-center md:text-left"
-            >
-              <div
-                className="text-5xl md:text-7xl font-extrabold tracking-tight mb-2"
-                style={{ color: "#00b4d8" }}
-              >
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              </div>
-              <p className="font-[family-name:var(--font-kode)] text-zinc-500 text-[10px] font-bold uppercase tracking-[0.3em]">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
 
-      {/* ═══════════════════════════════════════════
-          4.5. ARTWORK PIN BOARD GALLERY
-      ═══════════════════════════════════════════ */}
-      <section className="relative z-20 bg-[#0a0a0a] py-32 overflow-hidden border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-4">
-              — Visual Arts
-            </p>
-            <h2 className="font-[family-name:var(--font-tech)] text-4xl md:text-6xl font-bold tracking-tight leading-none">
-              Creative Showcase
-            </h2>
-          </motion.div>
-        </div>
-        
-        <ArtworkPinBoard 
-          items={[
-            { mediaUrl: "/videos/screen_recording.mp4", mediaType: "video", title: "Visual Demo", tag: "Gameplay" },
-            { mediaUrl: "/videos/urban_alley.mov", mediaType: "video", title: "Urban Alley", tag: "Environment" },
-            { mediaUrl: "/videos/videoplayback.webm", mediaType: "video", title: "Action Showcase", tag: "Trailer" },
-          ]}
-        />
-      </section>
 
 
       {/* ═══════════════════════════════════════════
           6. MANIFESTO / CTA
       ═══════════════════════════════════════════ */}
-      <section className="relative z-20 bg-[#0a0a0a] py-36 px-6 md:px-12 overflow-hidden">
+      <section className="relative z-20 bg-[#0a0a0a]/80 backdrop-blur-md py-36 px-6 md:px-12 overflow-hidden">
         {/* Big background text */}
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
@@ -445,7 +305,7 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           7. ABOUT SECTION
       ═══════════════════════════════════════════ */}
-      <section id="about" className="relative z-20 bg-[#0a0a0a] py-32 px-6 md:px-12 border-t border-zinc-900">
+      <section id="about" className="relative z-20 bg-[#0a0a0a]/80 backdrop-blur-md py-32 px-6 md:px-12 border-t border-zinc-900">
         <div className="max-w-7xl mx-auto mb-32">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -501,7 +361,7 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           8. CONTACT SECTION
       ═══════════════════════════════════════════ */}
-      <section id="contact" className="relative z-20 bg-[#0a0a0a] py-32 px-6 md:px-12 border-t border-zinc-900">
+      <section id="contact" className="relative z-20 bg-[#0a0a0a]/85 backdrop-blur-md py-32 px-6 md:px-12 border-t border-zinc-900">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
             <motion.div

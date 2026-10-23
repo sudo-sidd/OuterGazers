@@ -36,30 +36,37 @@ export default function EventCountdown({ targetDate = "2026-11-14T18:00:00+05:30
 
   const units = [
     { label: "DAYS", value: timeLeft.days },
-    { label: "HOURS", value: timeLeft.hours },
-    { label: "MINS", value: timeLeft.minutes },
-    { label: "SECS", value: timeLeft.seconds },
+    { label: "HRS", value: timeLeft.hours },
+    { label: "MIN", value: timeLeft.minutes },
+    { label: "SEC", value: timeLeft.seconds },
   ];
 
   return (
-    <div className="inline-flex items-center gap-2 sm:gap-4 p-2 sm:p-3 bg-black/60 border border-zinc-800 rounded-lg backdrop-blur-md">
-      {units.map((unit, idx) => (
-        <div key={unit.label} className="flex items-center gap-2 sm:gap-4">
-          <div className="flex flex-col items-center min-w-[50px] sm:min-w-[68px]">
-            <span className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-white leading-none">
-              {String(unit.value).padStart(2, "0")}
-            </span>
-            <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.25em] text-[#00b4d8] font-semibold mt-1">
-              {unit.label}
-            </span>
-          </div>
-          {idx < units.length - 1 && (
-            <span className="font-sans text-zinc-600 text-xl font-bold -mt-3 select-none">
-              :
-            </span>
-          )}
-        </div>
-      ))}
+    <div className="w-full p-3 bg-black/60 border border-zinc-800 rounded-lg backdrop-blur-md">
+      <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-0">
+        {units.map((unit, idx) => (
+          <>
+            {/* Unit cell */}
+            <div key={unit.label} className="flex flex-col items-center">
+              <span className="font-sans text-2xl font-bold tracking-tight text-white leading-none tabular-nums">
+                {String(unit.value).padStart(2, "0")}
+              </span>
+              <span className="font-sans text-[9px] tracking-[0.2em] text-[#00b4d8] font-semibold mt-1 uppercase">
+                {unit.label}
+              </span>
+            </div>
+            {/* Colon separator */}
+            {idx < units.length - 1 && (
+              <span
+                key={`sep-${idx}`}
+                className="text-zinc-600 text-lg font-bold -mt-4 select-none px-0.5 text-center"
+              >
+                :
+              </span>
+            )}
+          </>
+        ))}
+      </div>
     </div>
   );
 }

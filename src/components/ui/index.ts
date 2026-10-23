@@ -10,3 +10,6 @@ export { default as Button } from "./Button";
 export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
 export { default as FileDropzone } from "./FileDropzone";
+export { CursorDrivenParticleTypography } from "./cursor-driven-particles-typography";
+export { HeroParallax } from "./HeroParallax";
+export { WorksWheel } from "./WorksWheel";

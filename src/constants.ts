@@ -253,6 +253,9 @@ export const STUDIO_TRANSMISSIONS: StudioTransmission[] = [
   },
 ];
 
+// ─── Studio Works & Projects (Managed in src/data/works.ts) ───────────────────
+export { WORKS_DATA, type WorkItem } from "./data/works";
+
 // ─── Existing Studio Data ─────────────────────────────────────────────────────
 export const WORKS: Work[] = [
   {

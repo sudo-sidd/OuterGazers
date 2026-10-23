@@ -44,8 +44,7 @@ export default function StarfieldCanvas() {
     };
 
     const draw = () => {
-      ctx.fillStyle = "rgba(10, 10, 10, 0.25)";
-      ctx.fillRect(0, 0, W, H);
+      ctx.clearRect(0, 0, W, H);
 
       ctx.save();
       
@@ -131,11 +130,11 @@ export default function StarfieldCanvas() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
+    <div className="fixed inset-0 z-[1] pointer-events-none w-full h-full">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.7 }}
+        style={{ opacity: 0.85 }}
       />
     </div>
   );

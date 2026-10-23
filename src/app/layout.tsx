@@ -12,6 +12,11 @@ const GlobalCursor = dynamic(
   { ssr: false }
 );
 
+const GlobalNeuralVortex = dynamic(
+  () => import("@/components/animations/InteractiveNeuralVortex"),
+  { ssr: false }
+);
+
 const GlobalStarfield = dynamic(
   () => import("@/components/animations/StarfieldCanvas"),
   { ssr: false }
@@ -78,6 +83,7 @@ export default function RootLayout({
             NOTE: Inside Navbar.tsx and Footer.tsx, the `usePathname()` 
             hook returns `null` if the user is on /login or /dashboard. 
           */}
+          <GlobalNeuralVortex />
           <GlobalStarfield />
           <GlobalCursor />
           <Navbar />
