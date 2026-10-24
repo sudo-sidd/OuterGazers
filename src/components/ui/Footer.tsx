@@ -10,7 +10,11 @@ export default function Footer() {
   const pathname = usePathname();
 
   // The footer should not appear in the secure admin sectors
-  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/login")) {
+  if (
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/admin")
+  ) {
     return null;
   }
 

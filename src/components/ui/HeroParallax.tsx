@@ -90,29 +90,29 @@ export const HeroParallax = ({
         className=""
       >
         <motion.div className="flex flex-row-reverse space-x-reverse space-x-20 mb-20">
-          {firstRow.map((product) => (
+          {firstRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateX}
-              key={product.title}
+              key={`r1-${product.title}-${idx}`}
             />
           ))}
         </motion.div>
         <motion.div className="flex flex-row mb-20 space-x-20">
-          {secondRow.map((product) => (
+          {secondRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateXReverse}
-              key={product.title}
+              key={`r2-${product.title}-${idx}`}
             />
           ))}
         </motion.div>
         <motion.div className="flex flex-row-reverse space-x-reverse space-x-20">
-          {thirdRow.map((product) => (
+          {thirdRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateX}
-              key={product.title}
+              key={`r3-${product.title}-${idx}`}
             />
           ))}
         </motion.div>
@@ -140,13 +140,13 @@ export const Header = ({
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white font-[family-name:var(--font-tech)]">
         {title || (
           <>
-            The Ultimate <br /> development studio
+            Where real-time art <br /> meets responsive gameplay.
           </>
         )}
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
         {description ||
-          "We build beautiful products with the latest technologies and frameworks. We are a team of passionate developers and designers that love to build amazing products."}
+          "We build stylized games, real-time 3D environments, and interactive XR experiences where mechanics and atmosphere lead."}
       </p>
     </div>
   );
@@ -171,7 +171,6 @@ export const ProductCard = ({
       whileHover={{
         y: -20,
       }}
-      key={product.title}
       className="group/product h-96 w-[30rem] relative flex-shrink-0 rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl"
     >
       <Link

@@ -1,10 +1,11 @@
-import { FLAGSHIP_GAME_JAM } from "@/constants";
+import { getAllEvents, getEventBySlug, FLAGSHIP_GAME_JAM } from "@/constants";
 import EventDescriptionClient from "./EventDescriptionClient";
 
 export function generateStaticParams() {
-  return [{ slug: FLAGSHIP_GAME_JAM.slug }];
+  return getAllEvents().map((e) => ({ slug: e.slug }));
 }
 
-export default function EventPage() {
-  return <EventDescriptionClient />;
+export default function EventPage({ params }: { params?: { slug?: string } }) {
+  const event = (params?.slug && getEventBySlug(params.slug)) || FLAGSHIP_GAME_JAM;
+  return <EventDescriptionClient event={event} />;
 }

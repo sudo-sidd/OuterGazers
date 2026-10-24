@@ -1,22 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Diamond, Trophy, MapPin, Calendar, Users,
   Sparkles, ChevronRight, Utensils, Clock,
+  ExternalLink, Radio, FileText, ChevronDown, ChevronUp,
+  Tag, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
-import { FLAGSHIP_GAME_JAM } from "@/constants";
+import { getAllEvents, type EventItem } from "@/data/events";
+import { getPublishedNews, NEWS_TICKER, type NewsItem } from "@/data/news";
 import EventCountdown from "@/components/events/EventCountdown";
 import TeamRegistrationModal from "@/components/events/TeamRegistrationModal";
-
-// ─── Ticker ───────────────────────────────────────────────────────────────────
-const TICKER = [
-  "GAME JAM", "ESPORTS SHOWDOWN", "₹16,000 PRIZE POOL", "XR LAB · SIET",
-  "REGISTRATIONS OPEN", "DEC 17–18, 2026", "72H HYBRID FORMAT",
-  "ALL MEALS INCLUDED", "COLLEGIATE TEAMS",
-];
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function NewsHero() {
@@ -85,34 +81,17 @@ function NewsHero() {
             className="w-2.5 h-2.5 rounded-full bg-emerald-400"
           />
           <span className="font-[family-name:var(--font-kode)] text-xs font-bold uppercase tracking-[0.3em] text-emerald-400">
-            Registrations Live · Dec 17–18, 2026
+            Registrations Live · SIET Intra-College Game Jam
           </span>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
-      >
-        <span className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-600">
-          Scroll
-        </span>
-        <motion.div
-          animate={{ y: [0, 12, 0] }}
-          transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-          className="w-px h-14"
-          style={{ background: "linear-gradient(to bottom, #00b4d8, transparent)" }}
-        />
-      </motion.div>
     </section>
   );
 }
 
 // ─── Ticker ───────────────────────────────────────────────────────────────────
-function NewsTicker() {
+function NewsTicker({ tickerItems }: { tickerItems: string[] }) {
+  const items = tickerItems && tickerItems.length > 0 ? tickerItems : NEWS_TICKER;
   return (
     <div className="relative z-20 bg-[#0a0a0a] border-y border-zinc-800 py-4 overflow-hidden">
       <motion.div
@@ -120,7 +99,7 @@ function NewsTicker() {
         transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
         className="flex whitespace-nowrap gap-0"
       >
-        {[...TICKER, ...TICKER].map((item, i) => (
+        {[...items, ...items].map((item, i) => (
           <span
             key={i}
             className="font-[family-name:var(--font-vt)] inline-flex items-center gap-5 px-6 text-xl font-bold uppercase tracking-[0.3em] text-zinc-500"
@@ -135,220 +114,346 @@ function NewsTicker() {
 }
 
 // ─── Event Card ───────────────────────────────────────────────────────────────
-function EventCard({ onRegister }: { onRegister: () => void }) {
-  const jam = FLAGSHIP_GAME_JAM;
+function EventCard({
+  event,
+  onRegister,
+}: {
+  event: EventItem;
+  onRegister: (event: EventItem) => void;
+}) {
+  const isExternal = event.registrationType === "external" && !!event.registrationUrl;
 
   return (
-    <section className="relative z-20 bg-[#0a0a0a] py-28 px-6 md:px-12 border-t border-zinc-900">
-      <div className="max-w-7xl mx-auto">
-
-        {/* Header */}
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      className="relative bg-[#070707] border border-zinc-800 overflow-hidden mb-12"
+      style={{ boxShadow: "0 0 80px rgba(0,180,216,0.06)" }}
+    >
+      {/* Top ribbon */}
+      <div className="relative h-[2px] w-full">
+        <div className="h-full w-full bg-gradient-to-r from-[#00b4d8] via-[#7c3aed] to-[#00b4d8]" />
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8 }}
-          className="mb-14"
-        >
-          <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-3">
-            — Active Flagship Event
-          </p>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <h2 className="font-[family-name:var(--font-tech)] text-4xl md:text-6xl font-bold tracking-tight leading-none text-white">
-              Active &amp; Upcoming
-            </h2>
-            <div className="flex items-center gap-2">
-              <motion.span
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.2, repeat: Infinity }}
-                className="w-2.5 h-2.5 rounded-full bg-emerald-400"
-              />
-              <span className="font-[family-name:var(--font-kode)] text-xs font-bold uppercase tracking-wider text-emerald-400">
-                Registrations Live
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)" }}
+          animate={{ x: ["-100%", "200%"] }}
+          transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+        />
+      </div>
+
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00b4d8]/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#7c3aed]/5 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="relative p-8 md:p-12 lg:p-16">
+        <div className="flex flex-col xl:flex-row xl:items-start gap-12">
+          {/* Left info */}
+          <div className="flex-1 space-y-7">
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#00b4d8] border border-[#00b4d8]/30 bg-[#00b4d8]/05">
+                <motion.span
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                  className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]"
+                />
+                {event.status} · {event.badgeText}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#7c3aed] border border-[#7c3aed]/30 bg-[#7c3aed]/05">
+                <Trophy size={11} />
+                Prize Pool: {event.totalPrizePool}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 border border-zinc-800">
+                <Users size={11} />
+                {event.minTeamSize}–{event.maxTeamSize} Gazers / Team
               </span>
             </div>
-          </div>
-        </motion.div>
 
-        {/* Big card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative bg-[#070707] border border-zinc-800 overflow-hidden"
-          style={{ boxShadow: "0 0 80px rgba(0,180,216,0.06)" }}
-        >
-          {/* Top ribbon */}
-          <div className="relative h-[2px] w-full">
-            <div className="h-full w-full bg-gradient-to-r from-[#00b4d8] via-[#7c3aed] to-[#00b4d8]" />
-            <motion.div
-              className="absolute inset-0"
-              style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)" }}
-              animate={{ x: ["-100%", "200%"] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+            {/* Title */}
+            <div>
+              <h3
+                className="font-[family-name:var(--font-tech)] text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-none"
+                style={{ textShadow: "0 0 40px rgba(0,180,216,0.15)" }}
+              >
+                {event.title}
+              </h3>
+              <p className="font-[family-name:var(--font-kode)] text-sm text-[#00b4d8] mt-3 tracking-widest uppercase">
+                {event.subtitle}
+              </p>
+            </div>
+
+            <div
+              className="h-px w-full max-w-sm"
+              style={{ background: "linear-gradient(90deg, #00b4d8, rgba(124,58,237,0.4), transparent)" }}
             />
-          </div>
 
-          {/* Grid overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.025] pointer-events-none"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
-              backgroundSize: "60px 60px",
-            }}
-          />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00b4d8]/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#7c3aed]/5 blur-[100px] rounded-full pointer-events-none" />
+            <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-2xl">
+              {event.themeDescription}
+            </p>
 
-          <div className="relative p-8 md:p-12 lg:p-16">
-            <div className="flex flex-col xl:flex-row xl:items-start gap-12">
-
-              {/* Left */}
-              <div className="flex-1 space-y-7">
-
-                {/* Badges */}
-                <div className="flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#00b4d8] border border-[#00b4d8]/30 bg-[#00b4d8]/05">
-                    <motion.span
-                      animate={{ opacity: [1, 0.3, 1] }}
-                      transition={{ duration: 1.2, repeat: Infinity }}
-                      className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]"
-                    />
-                    {jam.status} · {jam.badgeText}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#7c3aed] border border-[#7c3aed]/30 bg-[#7c3aed]/05">
-                    <Trophy size={11} />
-                    Prize Pool: {jam.totalPrizePool}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 border border-zinc-800">
-                    <Users size={11} />
-                    {jam.minTeamSize}–{jam.maxTeamSize} Gazers / Team
-                  </span>
-                </div>
-
-                {/* Title */}
-                <div>
-                  <h3
-                    className="font-[family-name:var(--font-tech)] text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-none"
-                    style={{ textShadow: "0 0 40px rgba(0,180,216,0.15)" }}
-                  >
-                    {jam.title}
-                  </h3>
-                  <p className="font-[family-name:var(--font-kode)] text-sm text-[#00b4d8] mt-3 tracking-widest uppercase">
-                    {jam.subtitle}
-                  </p>
-                </div>
-
-                <div
-                  className="h-px w-full max-w-sm"
-                  style={{ background: "linear-gradient(90deg, #00b4d8, rgba(124,58,237,0.4), transparent)" }}
-                />
-
-                <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-2xl">
-                  Undergraduate collegiate game jam with{" "}
-                  <span className="text-white font-semibold">6 days of remote hacking</span>{" "}
-                  followed by a{" "}
-                  <span className="text-[#00b4d8] font-semibold">2-day in-person showcase</span>{" "}
-                  at the{" "}
-                  <span className="text-white font-semibold">
-                    XR Lab, Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore
-                  </span>
-                  . Includes all meals, refreshments, and free entry into Valorant &amp; FC 26 esports tournaments.
-                </p>
-
-                {/* Info chips */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { icon: MapPin,    label: "Venue",         value: "XR Lab, SIET CBE",  accent: "#00b4d8" },
-                    { icon: Calendar,  label: "Finale Dates",  value: "Dec 17–18, 2026",   accent: "#00b4d8" },
-                    { icon: Utensils,  label: "Hospitality",   value: "All Meals & Snacks", accent: "#7c3aed" },
-                  ].map(({ icon: Icon, label, value, accent }) => (
-                    <motion.div
-                      key={label}
-                      whileHover={{ y: -2, borderColor: accent }}
-                      className="p-4 bg-black/40 border border-zinc-800/80 flex items-center gap-3 text-xs transition-colors duration-300"
-                    >
-                      <div
-                        className="w-8 h-8 flex items-center justify-center shrink-0"
-                        style={{ background: `${accent}15`, border: `1px solid ${accent}30` }}
-                      >
-                        <Icon size={15} style={{ color: accent }} />
-                      </div>
-                      <div>
-                        <span className="text-zinc-500 font-bold block text-[9px] uppercase tracking-[0.2em] font-[family-name:var(--font-kode)]">
-                          {label}
-                        </span>
-                        <span className="text-white font-medium">{value}</span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right: pricing + countdown + CTAs */}
-              <div className="xl:w-72 w-full shrink-0 border border-zinc-800 bg-black/60 p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden">
+            {/* Info chips */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                { icon: MapPin, label: "Venue", value: event.venue, accent: "#00b4d8" },
+                { icon: Calendar, label: "Dates", value: event.dates, accent: "#00b4d8" },
+                { icon: Utensils, label: "Format", value: event.format, accent: "#7c3aed" },
+              ].map(({ icon: Icon, label, value, accent }) => (
                 <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: "linear-gradient(135deg, rgba(0,180,216,0.04) 0%, transparent 50%, rgba(124,58,237,0.04) 100%)" }}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-
-                {/* Price */}
-                <div className="relative text-center">
-                  <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.35em] text-[#00b4d8] mb-2">
-                    Registration Rate
-                  </p>
+                  key={label}
+                  whileHover={{ y: -2, borderColor: accent }}
+                  className="p-4 bg-black/40 border border-zinc-800/80 flex items-center gap-3 text-xs transition-colors duration-300"
+                >
                   <div
-                    className="font-[family-name:var(--font-tech)] text-4xl font-bold text-white"
-                    style={{ textShadow: "0 0 30px rgba(0,180,216,0.3)" }}
+                    className="w-8 h-8 flex items-center justify-center shrink-0"
+                    style={{ background: `${accent}15`, border: `1px solid ${accent}30` }}
                   >
-                    ₹{jam.pricePerPerson}
-                    <span className="text-base text-zinc-600 font-normal ml-1">/ person</span>
+                    <Icon size={15} style={{ color: accent }} />
                   </div>
-                  <p className="font-[family-name:var(--font-kode)] text-[10px] text-zinc-500 mt-1">
-                    ₹2,400 (3 Gazers) · ₹3,200 (4 Gazers)
-                  </p>
-                </div>
-
-                <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(0,180,216,0.3), transparent)" }} />
-
-                {/* Countdown */}
-                <div className="relative text-center">
-                  <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">
-                    Theme Drop Countdown
-                  </p>
-                  <EventCountdown targetDate="2026-12-11T18:00:00+05:30" />
-                </div>
-
-                <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)" }} />
-
-                {/* CTAs */}
-                <div className="relative space-y-3">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={onRegister}
-                    className="w-full py-4 px-6 bg-[#00b4d8] hover:bg-white text-black font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-colors duration-300"
-                  >
-                    <Sparkles size={14} />
-                    Register Team
-                  </motion.button>
-
-                  <Link
-                    href={`/events/${jam.slug}`}
-                    className="w-full group py-3 px-6 border border-zinc-800 hover:border-[#00b4d8]/50 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all duration-300"
-                  >
-                    View Full Brief
-                    <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </div>
+                  <div className="overflow-hidden">
+                    <span className="text-zinc-500 font-bold block text-[9px] uppercase tracking-[0.2em] font-[family-name:var(--font-kode)]">
+                      {label}
+                    </span>
+                    <span className="text-white font-medium truncate block">{value}</span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </motion.div>
+
+          {/* Right: pricing + countdown + CTAs */}
+          <div className="xl:w-72 w-full shrink-0 border border-zinc-800 bg-black/60 p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden">
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: "linear-gradient(135deg, rgba(0,180,216,0.04) 0%, transparent 50%, rgba(124,58,237,0.04) 100%)" }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+
+            {/* Price */}
+            <div className="relative text-center">
+              <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.35em] text-[#00b4d8] mb-2">
+                Registration Rate
+              </p>
+              <div
+                className="font-[family-name:var(--font-tech)] text-3xl sm:text-4xl font-bold text-white"
+                style={{ textShadow: "0 0 30px rgba(0,180,216,0.3)" }}
+              >
+                {event.pricePerPerson > 0 ? (
+                  <>
+                    ₹{event.pricePerPerson}
+                    <span className="text-base text-zinc-600 font-normal ml-1">/ person</span>
+                  </>
+                ) : (
+                  <span className="text-emerald-400">FREE ENTRY</span>
+                )}
+              </div>
+              <p className="font-[family-name:var(--font-kode)] text-[10px] text-zinc-400 mt-1">
+                {event.pricePerPerson === 0 ? "No Entry Fee · SIET Students" : `${event.minTeamSize}–${event.maxTeamSize} Members per Squad`}
+              </p>
+            </div>
+
+            <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(0,180,216,0.3), transparent)" }} />
+
+            {/* Countdown */}
+            <div className="relative text-center">
+              <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">
+                Theme Drop Countdown
+              </p>
+              <EventCountdown targetDate={event.countdownTarget || "2026-10-27T10:00:00+05:30"} />
+            </div>
+
+            <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)" }} />
+
+            {/* CTAs */}
+            <div className="relative space-y-3">
+              {isExternal ? (
+                <a
+                  href={event.registrationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-4 px-6 bg-[#00b4d8] hover:bg-white text-black font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-colors duration-300"
+                >
+                  <Sparkles size={14} />
+                  Register Now
+                  <ExternalLink size={13} />
+                </a>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onRegister(event)}
+                  className="w-full py-4 px-6 bg-[#00b4d8] hover:bg-white text-black font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-colors duration-300"
+                >
+                  <Sparkles size={14} />
+                  Register Team
+                </motion.button>
+              )}
+
+              <Link
+                href={`/events/${event.slug}`}
+                className="w-full group py-3 px-6 border border-zinc-800 hover:border-[#00b4d8]/50 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all duration-300"
+              >
+                View Full Brief
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── News & Announcements Section ─────────────────────────────────────────────
+function NewsAndAnnouncementsSection({
+  news,
+}: {
+  news: NewsItem[];
+}) {
+  const [selectedTag, setSelectedTag] = useState<string>("ALL");
+  const [expandedId, setExpandedId] = useState<string | number | null>(null);
+
+  const tags = ["ALL", ...Array.from(new Set(news.map((n) => n.tag)))];
+
+  const filtered =
+    selectedTag === "ALL" ? news : news.filter((n) => n.tag === selectedTag);
+
+  return (
+    <section className="relative z-20 bg-[#0a0a0a] py-24 px-6 md:px-12 border-t border-zinc-900">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-3">
+              — Studio Dispatch
+            </p>
+            <h2 className="font-[family-name:var(--font-tech)] text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+              Transmissions &amp; Logs
+            </h2>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setSelectedTag(tag)}
+                className={`px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded border transition-all ${
+                  selectedTag === tag
+                    ? "bg-[#00b4d8] text-black border-[#00b4d8]"
+                    : "bg-zinc-900/50 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* News Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((item) => {
+            const isExpanded = expandedId === item.id;
+            return (
+              <motion.article
+                key={item.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-[#0c0c0c] border border-zinc-800 rounded-xl p-6 flex flex-col justify-between hover:border-zinc-700 transition-colors relative overflow-hidden group"
+              >
+                <div className="space-y-4">
+                  {/* Meta Bar */}
+                  <div className="flex items-center justify-between text-[10px] font-bold tracking-wider">
+                    <span className="px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 text-[#00b4d8] uppercase">
+                      {item.tag}
+                    </span>
+                    <span className="text-zinc-500 font-mono flex items-center gap-1.5">
+                      <Clock size={12} />
+                      {item.date} · {item.readTime}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-lg font-bold text-white group-hover:text-[#00b4d8] transition-colors leading-snug">
+                    {item.title}
+                  </h3>
+
+                  {/* Excerpt */}
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {item.excerpt}
+                  </p>
+
+                  {/* Expandable full content */}
+                  <AnimatePresence>
+                    {isExpanded && item.content && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pt-4 border-t border-zinc-800/80 text-xs text-zinc-300 space-y-2 whitespace-pre-line leading-relaxed"
+                      >
+                        {item.content}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-6 mt-6 border-t border-zinc-900 flex items-center justify-between gap-3 text-xs">
+                  {item.content ? (
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                      className="text-[#00b4d8] hover:text-white font-bold flex items-center gap-1 uppercase tracking-wider text-[11px] transition-colors"
+                    >
+                      {isExpanded ? (
+                        <>
+                          Collapse <ChevronUp size={14} />
+                        </>
+                      ) : (
+                        <>
+                          Read Transmission <ChevronDown size={14} />
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <span className="text-zinc-600 text-[10px] font-mono">Transmission Log</span>
+                  )}
+
+                  {item.relatedEventSlug && (
+                    <Link
+                      href={`/events/${item.relatedEventSlug}`}
+                      className="text-zinc-400 hover:text-white flex items-center gap-1 text-[11px] font-semibold"
+                    >
+                      Event Details <ArrowRight size={13} />
+                    </Link>
+                  )}
+
+                  {item.externalLink && (
+                    <a
+                      href={item.externalLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-400 hover:text-white flex items-center gap-1 text-[11px]"
+                    >
+                      Source <ExternalLink size={13} />
+                    </a>
+                  )}
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -356,20 +461,69 @@ function EventCard({ onRegister }: { onRegister: () => void }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function NewsPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const jam = FLAGSHIP_GAME_JAM;
+  const [selectedEventForModal, setSelectedEventForModal] = useState<EventItem | null>(null);
+
+  const events = getAllEvents();
+  const news = getPublishedNews();
 
   return (
     <main className="bg-[#0a0a0a] text-white overflow-hidden font-[family-name:var(--font-anta)]">
       <NewsHero />
-      <NewsTicker />
-      <EventCard onRegister={() => setIsModalOpen(true)} />
+      <NewsTicker tickerItems={NEWS_TICKER} />
 
-      <TeamRegistrationModal
-        event={jam}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {/* Events Listings Section */}
+      <section className="relative z-20 bg-[#0a0a0a] py-28 px-6 md:px-12 border-t border-zinc-900">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8 }}
+            className="mb-14"
+          >
+            <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-3">
+              — Active Flagship Events &amp; Tournaments
+            </p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <h2 className="font-[family-name:var(--font-tech)] text-4xl md:text-6xl font-bold tracking-tight leading-none text-white uppercase">
+                Active &amp; Upcoming
+              </h2>
+              <div className="flex items-center gap-2">
+                <motion.span
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                  className="w-2.5 h-2.5 rounded-full bg-emerald-400"
+                />
+                <span className="font-[family-name:var(--font-kode)] text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  {events.length} Event{events.length > 1 ? "s" : ""} Available
+                </span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Render All Events */}
+          {events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              onRegister={(ev) => setSelectedEventForModal(ev)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Announcements & Transmissions Feed */}
+      <NewsAndAnnouncementsSection news={news} />
+
+      {/* Registration Modal */}
+      {selectedEventForModal && (
+        <TeamRegistrationModal
+          event={selectedEventForModal}
+          isOpen={!!selectedEventForModal}
+          onClose={() => setSelectedEventForModal(null)}
+        />
+      )}
     </main>
   );
 }

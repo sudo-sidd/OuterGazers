@@ -39,7 +39,11 @@ export default function Navbar() {
   }, [pathname]);
 
   // 3. Safe early return AFTER all hooks have been initialized unconditionally
-  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/login")) {
+  if (
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/admin")
+  ) {
     return null;
   }
 

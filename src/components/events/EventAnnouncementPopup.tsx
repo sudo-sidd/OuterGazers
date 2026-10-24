@@ -116,13 +116,13 @@ export default function EventAnnouncementPopup() {
   const [scanlineOffset, setScanlineOffset] = useState(0);
   const event = FLAGSHIP_GAME_JAM;
 
-  // Trigger after random 3–5 seconds
+  // Trigger after exactly 3 seconds on first visit
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const dismissed = sessionStorage.getItem("og_event_ad_dismissed");
+      const dismissed = sessionStorage.getItem("og_siet_intra_jam_dismissed_2026");
       if (dismissed === "true") return;
     }
-    const delay = 3000 + Math.random() * 2000;
+    const delay = 3000;
     const timer = setTimeout(() => setIsVisible(true), delay);
     return () => clearTimeout(timer);
   }, []);
@@ -152,7 +152,7 @@ export default function EventAnnouncementPopup() {
   const handleDismiss = () => {
     setIsVisible(false);
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("og_event_ad_dismissed", "true");
+      sessionStorage.setItem("og_siet_intra_jam_dismissed_2026", "true");
     }
   };
 
@@ -209,7 +209,7 @@ export default function EventAnnouncementPopup() {
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               data-lenis-prevent="true"
               onWheel={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[520px] max-h-[92vh] flex flex-col bg-[#080808] rounded-none overflow-hidden z-10"
+              className="relative w-full max-w-[540px] max-h-[92vh] flex flex-col bg-[#080808] rounded-none overflow-hidden z-10"
               style={{
                 border: "1px solid rgba(0,180,216,0.35)",
                 animation: "border-glow-pulse 3s ease-in-out infinite",
@@ -277,7 +277,7 @@ export default function EventAnnouncementPopup() {
                     className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#00b4d8]"
                     style={{ fontFamily: "var(--font-kode)" }}
                   >
-                    Incoming Transmission · Live Event
+                    Incoming Transmission · SIET Exclusive
                   </span>
                 </div>
                 <button
@@ -302,7 +302,7 @@ export default function EventAnnouncementPopup() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1, duration: 0.4 }}
-                  className="inline-flex items-center gap-2 mb-5"
+                  className="inline-flex items-center gap-2 mb-5 flex-wrap"
                 >
                   <span
                     className="inline-flex items-center gap-2 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] border"
@@ -313,18 +313,18 @@ export default function EventAnnouncementPopup() {
                     }}
                   >
                     <Zap size={10} />
-                    Registrations Open
+                    SIET Students Only
                   </span>
                   <span
                     className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] border"
                     style={{
-                      color: "#7c3aed",
-                      borderColor: "rgba(124,58,237,0.3)",
-                      background: "rgba(124,58,237,0.06)",
+                      color: "#10b981",
+                      borderColor: "rgba(16,185,129,0.3)",
+                      background: "rgba(16,185,129,0.06)",
                     }}
                   >
-                    <Trophy size={10} />
-                    {event.totalPrizePool} Pool
+                    <Sparkles size={10} />
+                    100% Free Entry (₹0)
                   </span>
                 </motion.div>
 
@@ -336,10 +336,10 @@ export default function EventAnnouncementPopup() {
                   className="mb-4"
                 >
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-600 mb-2"
+                    className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500 mb-2"
                     style={{ fontFamily: "var(--font-kode)" }}
                   >
-                    — OuterGazers Studio Presents
+                    — OuterGazers &amp; XR Lab SIET
                   </p>
                   <h2
                     className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white leading-none"
@@ -351,9 +351,11 @@ export default function EventAnnouncementPopup() {
                     className="h-px w-full mt-4 mb-4 origin-left"
                     style={{ background: "linear-gradient(90deg, #00b4d8, rgba(124,58,237,0.5), transparent)" }}
                   />
-                  <p className="text-sm text-zinc-400 leading-relaxed">
-                    Coimbatore&apos;s premier collegiate <span className="text-white font-semibold">72H hybrid game jam</span> &amp; esports showdown hosted at{" "}
-                    <span className="text-[#00b4d8] font-semibold">XR Lab, SIET</span>.
+                  <p className="text-sm text-zinc-300 leading-relaxed">
+                    Exclusive online game jam for students of{" "}
+                    <span className="text-[#00b4d8] font-semibold">Sri Shakthi Institute of Engineering and Technology (SIET)</span>.
+                    Build remotely, unlock XR Lab facilities &amp; mentoring, and battle for{" "}
+                    <span className="text-emerald-400 font-semibold">free entry &amp; discounts</span> into December&apos;s Inter-College Game Jam!
                   </p>
                 </motion.div>
 
@@ -364,10 +366,10 @@ export default function EventAnnouncementPopup() {
                   transition={{ delay: 0.25, duration: 0.5 }}
                   className="grid grid-cols-2 gap-2.5 mb-5"
                 >
-                  <StatBadge icon={Calendar} label="In-Person Finale" value="Dec 17–18, 2026" accent="#00b4d8" />
-                  <StatBadge icon={MapPin} label="Venue" value="XR Lab, SIET CBE" accent="#00b4d8" />
-                  <StatBadge icon={Gamepad2} label="Esports" value="Valorant · FC 26" accent="#7c3aed" />
-                  <StatBadge icon={Trophy} label="Prize Pool" value={event.totalPrizePool} accent="#7c3aed" />
+                  <StatBadge icon={Calendar} label="Jam Window" value="Oct 27 – Nov 30" accent="#00b4d8" />
+                  <StatBadge icon={MapPin} label="Mode & Venue" value="Online + XR Lab SIET" accent="#00b4d8" />
+                  <StatBadge icon={Trophy} label="Top Prize" value="Free InterCollege Entry" accent="#10b981" />
+                  <StatBadge icon={Gamepad2} label="Perks" value="XR Lab Mentorship" accent="#7c3aed" />
                 </motion.div>
 
                 {/* ── Pricing bar ── */}
@@ -377,18 +379,18 @@ export default function EventAnnouncementPopup() {
                   transition={{ delay: 0.3, duration: 0.5 }}
                   className="mb-6 relative overflow-hidden"
                   style={{
-                    border: "1px solid rgba(0,180,216,0.2)",
-                    background: "linear-gradient(135deg, rgba(0,180,216,0.05) 0%, rgba(124,58,237,0.05) 100%)",
+                    border: "1px solid rgba(16,185,129,0.3)",
+                    background: "linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(0,180,216,0.06) 100%)",
                   }}
                 >
                   <div className="px-4 py-3.5 flex items-center justify-between">
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 mb-1" style={{ fontFamily: "var(--font-kode)" }}>
-                        Team Entry Fee
+                      <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-emerald-400 mb-1" style={{ fontFamily: "var(--font-kode)" }}>
+                        Entry Fee
                       </p>
-                      <p className="text-xl font-extrabold text-white" style={{ fontFamily: "var(--font-tech)" }}>
-                        ₹{event.pricePerPerson}
-                        <span className="text-xs text-zinc-500 font-normal ml-1">/ member</span>
+                      <p className="text-xl font-extrabold text-emerald-400" style={{ fontFamily: "var(--font-tech)" }}>
+                        ₹0 · 100% FREE
+                        <span className="text-xs text-zinc-400 font-normal ml-1">/ No Entry Fee</span>
                       </p>
                     </div>
                     <div className="text-right">
@@ -399,7 +401,7 @@ export default function EventAnnouncementPopup() {
                   {/* Sweeping shimmer */}
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
-                    style={{ background: "linear-gradient(90deg, transparent, rgba(0,180,216,0.08), transparent)" }}
+                    style={{ background: "linear-gradient(90deg, transparent, rgba(16,185,129,0.1), transparent)" }}
                     animate={{ x: ["-100%", "200%"] }}
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
                   />
@@ -419,12 +421,12 @@ export default function EventAnnouncementPopup() {
                     className="flex-1 relative group py-3.5 px-5 bg-[#00b4d8] text-black font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden transition-colors duration-300 hover:bg-white"
                   >
                     <Sparkles size={14} />
-                    Register Squad
+                    Register Squad (Free)
                     <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
                   </motion.button>
 
                   <Link
-                    href={`/news/${event.slug}`}
+                    href={`/events/${event.slug}`}
                     onClick={handleDismiss}
                     className="flex-1 group py-3.5 px-5 border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 transition-all duration-300"
                   >

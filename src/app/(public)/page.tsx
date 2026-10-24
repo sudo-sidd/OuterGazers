@@ -19,9 +19,13 @@ import { WORKS_DATA } from "@/data/works";
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const TICKER_ITEMS = [
-  "PC GAME DEVELOPMENT", "PHYSICS-DRIVEN MECHANICS", "CO-OP MULTIPLAYER",
-  "GAME AI & LOGIC", "UNITY & GODOT ENGINES", "TECHNICAL ART & SHADERS",
-  "C# DEVELOPMENT"
+  "UNREAL ENGINE DEV",
+  "UNITY DEVELOPMENT",
+  "GODOT GAMES",
+  "VR EXPERIENCES",
+  "AR APPLICATIONS",
+  "PC GAME STUDIO",
+  "MOBILE GAMING"
 ];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -141,6 +145,7 @@ export default function HomePage() {
               particleDensity={5.5}
               particleSize={2.2}
               dispersionStrength={26}
+              interactionRadius={85}
               color="#ffffff"
               gazerColor="#00B4D8"
               className="w-full h-full min-h-0"
@@ -188,24 +193,6 @@ export default function HomePage() {
               Initiate Contact
             </Link>
           </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={splashDone ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
-        >
-          <span className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-600">
-            Scroll
-          </span>
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-            className="w-px h-14"
-            style={{ background: "linear-gradient(to bottom, #00b4d8, transparent)" }}
-          />
         </motion.div>
       </section>
 

@@ -48,7 +48,7 @@ export interface GameJamEvent {
   totalPrizePool: string;
   targetAudience?: string;
   inclusions?: string[];
-  tracks: {
+  tracks?: {
     name: string;
     description: string;
     icon: string;

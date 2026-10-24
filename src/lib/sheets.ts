@@ -13,9 +13,14 @@ export interface ContactPayload {
  * Sends data to the Google Apps Script Web App.
  * Uses text/plain body to prevent CORS preflight blocks across static origins.
  */
-async function postToGoogleScript(data: Record<string, unknown>): Promise<{ success: boolean; message?: string }> {
-  if (!GOOGLE_SHEET_SCRIPT_URL) {
-    console.warn("NEXT_PUBLIC_GOOGLE_SCRIPT_URL is not configured in .env. Skipping Google Sheets logging.");
+async function postToGoogleScript(
+  data: Record<string, unknown>,
+  customUrl?: string
+): Promise<{ success: boolean; message?: string }> {
+  const targetUrl = customUrl || GOOGLE_SHEET_SCRIPT_URL;
+
+  if (!targetUrl) {
+    console.warn("Google Sheet Script URL is not configured. Skipping Google Sheets logging.");
     return {
       success: false,
       message: "Google Sheet URL is not configured.",
@@ -27,7 +32,7 @@ async function postToGoogleScript(data: Record<string, unknown>): Promise<{ succ
   try {
     // Browser fetch must use mode: "no-cors" to avoid CORS blocks on Google's 302 redirect.
     // Note: keepalive is omitted here to support payloads > 64KB (such as payment proof screenshot images).
-    await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+    await fetch(targetUrl, {
       method: "POST",
       mode: "no-cors",
       cache: "no-cache",
@@ -43,7 +48,7 @@ async function postToGoogleScript(data: Record<string, unknown>): Promise<{ succ
     try {
       if (typeof navigator !== "undefined" && navigator.sendBeacon && payloadString.length < 60000) {
         const blob = new Blob([payloadString], { type: "text/plain;charset=utf-8" });
-        navigator.sendBeacon(GOOGLE_SHEET_SCRIPT_URL, blob);
+        navigator.sendBeacon(targetUrl, blob);
         return { success: true, message: "Logged via sendBeacon." };
       }
     } catch (beaconErr) {
@@ -54,15 +59,19 @@ async function postToGoogleScript(data: Record<string, unknown>): Promise<{ succ
 }
 
 /**
- * Logs a Game Jam Team Registration to the Google Sheet
+ * Logs a Game Jam Team Registration to the Google Sheet (supports per-event customSheetUrl)
  */
 export async function submitTeamRegistration(
-  payload: TeamRegistrationPayload
+  payload: TeamRegistrationPayload,
+  customSheetUrl?: string
 ): Promise<{ success: boolean; message?: string }> {
-  return postToGoogleScript({
-    formType: "gamejam_registration",
-    ...payload,
-  });
+  return postToGoogleScript(
+    {
+      formType: "gamejam_registration",
+      ...payload,
+    },
+    customSheetUrl
+  );
 }
 
 /**

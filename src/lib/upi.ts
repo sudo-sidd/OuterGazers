@@ -4,9 +4,14 @@ import { UPI_PAYMENT_CONFIG } from "@/constants";
  * Constructs a standard Indian UPI deep-link URL (upi://pay?...)
  * Supported by Google Pay, PhonePe, Paytm, BHIM, CRED, Navi, etc.
  */
-export function generateUpiPaymentUrl(amount: number, teamName: string): string {
-  const upiId = UPI_PAYMENT_CONFIG.upiId;
-  const payeeName = UPI_PAYMENT_CONFIG.payeeName;
+export function generateUpiPaymentUrl(
+  amount: number,
+  teamName: string,
+  customUpiId?: string,
+  customPayeeName?: string
+): string {
+  const upiId = customUpiId || UPI_PAYMENT_CONFIG.upiId;
+  const payeeName = customPayeeName || UPI_PAYMENT_CONFIG.payeeName;
   const note = `${teamName.slice(0, 20)} Jam Entry`;
 
   return `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;

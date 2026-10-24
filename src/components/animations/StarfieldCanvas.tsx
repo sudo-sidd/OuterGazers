@@ -76,7 +76,7 @@ export default function StarfieldCanvas() {
            const dx = sx - (mousePos.x - originX);
            const dy = sy - (mousePos.y - originY);
            const dist = Math.sqrt(dx * dx + dy * dy);
-           const repelRadius = 250;
+           const repelRadius = 130;
            
            if (dist < repelRadius) {
               const force = (repelRadius - dist) / repelRadius;

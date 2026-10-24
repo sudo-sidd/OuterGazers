@@ -18,10 +18,14 @@ export interface CursorDrivenParticleTypographyProps {
   particleDensity?: number;
   /** How strongly the cursor pushes particles away */
   dispersionStrength?: number;
+  /** Radius of the cursor force field in pixels (default: 85, previously 180) */
+  interactionRadius?: number;
   /** Speed at which particles return to origin */
   returnSpeed?: number;
-  /** Custom color for particles. Overrides inherited text color if set. */
+  /** Custom color for main text particles. Overrides inherited text color if set. */
   color?: string;
+  /** Custom color for Gazer segment (defaults to #00B4D8) */
+  gazerColor?: string;
 }
 
 class Particle {
@@ -35,6 +39,7 @@ class Particle {
   color: string;
   dispersion: number;
   returnSpd: number;
+  interactionRadius: number;
 
   constructor(
     x: number,
@@ -42,7 +47,8 @@ class Particle {
     size: number,
     color: string,
     dispersion: number,
-    returnSpd: number
+    returnSpd: number,
+    interactionRadius: number = 85
   ) {
     this.x = x + (Math.random() - 0.5) * 12; // Start with slight initial jitter
     this.y = y + (Math.random() - 0.5) * 12;
@@ -54,6 +60,7 @@ class Particle {
     this.color = color;
     this.dispersion = dispersion;
     this.returnSpd = returnSpd;
+    this.interactionRadius = interactionRadius;
   }
 
   update(mouseX: number, mouseY: number) {
@@ -62,7 +69,7 @@ class Particle {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     // Physics interaction radius
-    const interactionRadius = 180;
+    const interactionRadius = this.interactionRadius;
 
     if (distance < interactionRadius && mouseX !== -1000 && mouseY !== -1000 && distance > 0.1) {
       const forceDirectionX = dx / distance;
@@ -107,29 +114,6 @@ class Particle {
   }
 }
 
-export interface CursorDrivenParticleTypographyProps {
-  /** Additional CSS classes */
-  className?: string;
-  /** The text to render */
-  text: string;
-  /** Font size in pixels */
-  fontSize?: number;
-  /** Font family */
-  fontFamily?: string;
-  /** Size of each particle */
-  particleSize?: number;
-  /** Density of particles (lower number = more particles, minimum 1) */
-  particleDensity?: number;
-  /** How strongly the cursor pushes particles away */
-  dispersionStrength?: number;
-  /** Speed at which particles return to origin */
-  returnSpeed?: number;
-  /** Custom color for main text particles. Overrides inherited text color if set. */
-  color?: string;
-  /** Custom color for Gazer segment (defaults to #00B4D8) */
-  gazerColor?: string;
-}
-
 export function CursorDrivenParticleTypography({
   className,
   text,
@@ -138,6 +122,7 @@ export function CursorDrivenParticleTypography({
   particleSize = 2.2,
   particleDensity = 5.5,
   dispersionStrength = 26,
+  interactionRadius = 85,
   returnSpeed = 0.08,
   color = "#ffffff",
   gazerColor = "#00B4D8",
@@ -253,7 +238,8 @@ export function CursorDrivenParticleTypography({
                 particleSize,
                 particleClr,
                 dispersionStrength,
-                returnSpeed
+                returnSpeed,
+                interactionRadius
               )
             );
           }
@@ -274,11 +260,12 @@ export function CursorDrivenParticleTypography({
     const handleMouseMove = (e: MouseEvent) => {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
+      const padding = Math.max(60, interactionRadius);
       if (
-        e.clientX >= rect.left - 160 &&
-        e.clientX <= rect.right + 160 &&
-        e.clientY >= rect.top - 160 &&
-        e.clientY <= rect.bottom + 160
+        e.clientX >= rect.left - padding &&
+        e.clientX <= rect.right + padding &&
+        e.clientY >= rect.top - padding &&
+        e.clientY <= rect.bottom + padding
       ) {
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
@@ -354,7 +341,7 @@ export function CursorDrivenParticleTypography({
       canvas.removeEventListener("touchend", handleTouchEnd);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [text, fontSize, fontFamily, particleSize, particleDensity, dispersionStrength, returnSpeed, color, gazerColor]);
+  }, [text, fontSize, fontFamily, particleSize, particleDensity, dispersionStrength, interactionRadius, returnSpeed, color, gazerColor]);
 
   return (
     <div
