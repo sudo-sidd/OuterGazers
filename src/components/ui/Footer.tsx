@@ -154,10 +154,10 @@ export default function Footer() {
         </div>
 
         {/* Legal, Copyright & Discreet Admin Link */}
-        <div className="flex flex-col md:flex-row justify-between items-center border-t border-zinc-800 pt-8 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+        <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left border-t border-zinc-800 pt-8 text-[10px] font-bold uppercase tracking-widest text-zinc-500 gap-4 md:gap-0">
           <p>© {new Date().getFullYear()} OuterGazers Studio. All Rights Reserved.</p>
           
-          <div className="flex items-center space-x-6 mt-4 md:mt-0">
+          <div className="flex items-center space-x-6">
             <Link href="/" className="hover:text-[#00b4d8] transition-colors">Privacy Policy</Link>
             <Link href="/" className="hover:text-[#00b4d8] transition-colors">Terms of Service</Link>
           </div>
