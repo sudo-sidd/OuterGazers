@@ -6,7 +6,7 @@ import {
   Trophy, Calendar, MapPin, Users, Utensils, 
   Gamepad2, Sparkles, CheckCircle2, ChevronDown, 
   ArrowLeft, ExternalLink, Monitor, Globe, Smartphone,
-  FolderArchive, FileText, UploadCloud
+  FolderArchive, FileText, UploadCloud, Minimize2, Skull, Shuffle
 } from "lucide-react";
 import { FLAGSHIP_GAME_JAM, DISCORD_INVITE_URL, type EventItem } from "@/constants";
 import EventCountdown from "@/components/events/EventCountdown";
@@ -118,9 +118,9 @@ export default function EventDescriptionClient({
 
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-sans mb-3">
-                  Theme Announcement Drops In
+                  {event.countdownLabel || "Jam Submission Closes In"}
                 </p>
-                <EventCountdown targetDate={event.countdownTarget || "2026-12-11T18:00:00+05:30"} />
+                <EventCountdown targetDate={event.countdownTarget || "2026-11-27T11:00:00+05:30"} />
               </div>
 
               <div className="w-full space-y-3 pt-2">
@@ -218,6 +218,124 @@ export default function EventDescriptionClient({
         </section>
 
         {/* ═══════════════════════════════════════════
+            OFFICIAL JAM THEMES & CREATIVE FREEDOM
+        ═══════════════════════════════════════════ */}
+        <section className="mb-24">
+          <div className="relative rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900/60 via-zinc-950/80 to-black/90 p-8 md:p-12 overflow-hidden shadow-2xl shadow-black/80">
+            {/* Ambient Background Accents */}
+            <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00b4d8]/10 blur-[130px] pointer-events-none" />
+            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#7c3aed]/10 blur-[130px] pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-zinc-800/80 pb-6">
+                <div>
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
+                    — Official Jam Themes Drop
+                  </p>
+                  <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
+                    Official Game Jam Themes
+                  </h2>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider self-start md:self-auto font-sans">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  100% Creative Liberty · No Forced Themes
+                </div>
+              </div>
+
+              {/* Dual Themes Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                {/* Theme 1: Limited Space */}
+                <div className="relative p-6 sm:p-8 rounded-xl bg-gradient-to-br from-[#00b4d8]/10 via-zinc-900/60 to-zinc-950 border border-[#00b4d8]/30 group hover:border-[#00b4d8]/60 transition-all duration-300 overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#00b4d8]/10 blur-2xl pointer-events-none" />
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#00b4d8] font-mono border border-[#00b4d8]/40 px-2.5 py-0.5 rounded bg-[#00b4d8]/10">
+                      Theme Option 01
+                    </span>
+                    <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/15 border border-[#00b4d8]/30 flex items-center justify-center text-[#00b4d8] group-hover:scale-110 transition-transform">
+                      <Minimize2 size={20} />
+                    </div>
+                  </div>
+
+                  <h3 className="font-sans text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase mb-3">
+                    LIMITED SPACE
+                  </h3>
+                  <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-4">
+                    Explore boundaries and confinement. Constrain the world, the player, the interface, or the resources to evoke intense ingenuity.
+                  </p>
+
+                  <div className="space-y-1.5 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-400">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+                      <span>Single-screen puzzles, tight elevators, micro-mazes, or shrinking rooms</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+                      <span>Severe inventory constraints, minimal screen resolution, or limited memory</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+                      <span>Claustrophobic space capsules, micro-ecosystems, or tiny arenas</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Theme 2: Death Is Just A Beginning */}
+                <div className="relative p-6 sm:p-8 rounded-xl bg-gradient-to-br from-[#7c3aed]/10 via-zinc-900/60 to-zinc-950 border border-[#7c3aed]/30 group hover:border-[#7c3aed]/60 transition-all duration-300 overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#7c3aed]/10 blur-2xl pointer-events-none" />
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#d946ef] font-mono border border-[#7c3aed]/40 px-2.5 py-0.5 rounded bg-[#7c3aed]/10">
+                      Theme Option 02
+                    </span>
+                    <div className="w-10 h-10 rounded-lg bg-[#7c3aed]/15 border border-[#7c3aed]/30 flex items-center justify-center text-[#d946ef] group-hover:scale-110 transition-transform">
+                      <Skull size={20} />
+                    </div>
+                  </div>
+
+                  <h3 className="font-sans text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase mb-3">
+                    DEATH IS JUST A BEGINNING
+                  </h3>
+                  <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-4">
+                    Turn game over into a gameplay mechanic. Dying isn&apos;t failure—it&apos;s a catalyst for progression, transformation, or revelation.
+                  </p>
+
+                  <div className="space-y-1.5 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-400">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+                      <span>Corpses left behind become stepping stones, platform bridges, or triggers</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+                      <span>Reincarnating with ghostly powers, spectral forms, or mutated perks</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
+                      <span>Roguelike evolutionary loops where each demise unlocks the narrative</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Creative Liberty Banner */}
+              <div className="p-6 rounded-xl bg-zinc-900/40 border border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <Shuffle size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-sans text-base sm:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
+                      Pick One · Combine Both · Or Completely Ignore Them
+                    </h4>
+                    <p className="text-xs sm:text-sm text-zinc-300 mt-1 leading-relaxed max-w-4xl">
+                      You are totally free to choose <span className="text-[#00b4d8] font-semibold">either theme</span>, fuse them together into a hybrid concept (e.g. dying inside a shrinking room to solve puzzles), or <span className="text-emerald-400 font-semibold">completely ignore them</span> and develop whatever original game idea you want. <span className="text-white font-bold">There are zero score penalties</span> for building your own concept!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════
             SUPPORTED PLATFORMS & SUBMISSION PROTOCOL
         ═══════════════════════════════════════════ */}
         <section className="mb-24">
@@ -229,7 +347,7 @@ export default function EventDescriptionClient({
               Supported Platforms &amp; Submission Protocol
             </h2>
             <p className="text-sm text-zinc-400 mt-2 max-w-3xl leading-relaxed">
-              This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, gameplay, theme adherence, and polish.
+              This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, gameplay, creative execution, and polish.
             </p>
           </div>
 
@@ -309,11 +427,12 @@ export default function EventDescriptionClient({
                     <p className="text-xs text-zinc-400 leading-relaxed">
                       Include a <code className="text-zinc-200 font-mono text-[11px]">README.txt</code>, <code className="text-zinc-200 font-mono text-[11px]">.doc</code>, or <code className="text-zinc-200 font-mono text-[11px]">.pdf</code> containing:
                     </p>
-                    <ul className="text-[11px] text-zinc-300 space-y-1 list-disc list-inside">
+                    <ul className="text-[11px] text-zinc-300 space-y-1.5 list-disc list-inside">
                       <li>Game Title &amp; Core Concept</li>
                       <li>Squad Members &amp; SIET Roll Numbers</li>
                       <li>Controls &amp; How to Play guide</li>
-                      <li>Game Engine &amp; asset credits (if any)</li>
+                      <li><span className="text-[#00b4d8] font-semibold">AI Disclosure:</span> Mention what AI was used for coding, art, music, SFX, etc. (if any)</li>
+                      <li><span className="text-emerald-400 font-semibold">Asset Credits:</span> Credit any pre-made assets &amp; note scripts/assets reused from previous projects</li>
                     </ul>
                   </div>
 
@@ -325,10 +444,11 @@ export default function EventDescriptionClient({
                     <p className="text-xs text-zinc-400 leading-relaxed">
                       Include the complete playable build:
                     </p>
-                    <ul className="text-[11px] text-zinc-300 space-y-1 list-disc list-inside">
+                    <ul className="text-[11px] text-zinc-300 space-y-1.5 list-disc list-inside">
                       <li>Windows: Standalone executable (.exe)</li>
                       <li>Web: HTML5 / WebGL build folder</li>
                       <li>Android: Installable APK package</li>
+                      <li>Pre-made assets &amp; previous project scripts are fully allowed</li>
                       <li>Bundle build + readme together in one <span className="text-white font-bold">.ZIP</span></li>
                     </ul>
                   </div>
@@ -599,9 +719,9 @@ export default function EventDescriptionClient({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-sans text-sm">01. Theme Adherence</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">01. Innovation &amp; Creativity</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
-                  How creatively and fundamentally does the game mechanic reflect the October 27 secret theme?
+                  How creatively does the game interpret &apos;Limited Space&apos;, &apos;Death Is Just A Beginning&apos;, both combined, or execute its own unique vision? (Zero penalty for ignoring themes!)
                 </p>
               </div>
 

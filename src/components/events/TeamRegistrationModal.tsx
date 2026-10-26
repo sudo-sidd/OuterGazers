@@ -1109,12 +1109,12 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         Next Action: Join Jam Community
                       </div>
                       <span className="text-[10px] bg-emerald-400/10 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded font-bold font-sans uppercase">
-                        Theme Drop on Oct 27
+                        Themes Live
                       </span>
                     </div>
 
                     <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
-                      Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam theme will drop live on <span className="text-emerald-400 font-bold">October 27, 2026</span>. Build your game for Windows, Web, or Android. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme) will be shared in the final week before <span className="text-white font-bold">November 27, 2026 (11:00 AM IST)</span>!
+                      Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">DEATH IS JUST A BEGINNING</span> (pick one, combine them, or completely ignore them!). Build for Windows, Web, or Android. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before <span className="text-white font-bold">November 27, 2026 (11:00 AM IST)</span>!
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

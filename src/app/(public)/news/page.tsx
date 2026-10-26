@@ -201,6 +201,23 @@ function EventCard({
               {event.themeDescription}
             </p>
 
+            {/* Theme Highlights */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 pb-1">
+              <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-wider">Themes:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2.5 py-1 text-xs font-bold text-[#00b4d8] bg-[#00b4d8]/10 border border-[#00b4d8]/30 rounded">
+                  LIMITED SPACE
+                </span>
+                <span className="text-zinc-600 text-xs font-mono">or</span>
+                <span className="px-2.5 py-1 text-xs font-bold text-[#d946ef] bg-[#7c3aed]/10 border border-[#7c3aed]/30 rounded">
+                  DEATH IS JUST A BEGINNING
+                </span>
+                <span className="text-emerald-400 text-[11px] font-mono px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                  Pick · Combine · Ignore
+                </span>
+              </div>
+            </div>
+
             {/* Info chips */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
@@ -267,9 +284,9 @@ function EventCard({
             {/* Countdown */}
             <div className="relative text-center">
               <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">
-                Theme Drop Countdown
+                {event.countdownLabel || "Jam Submission Countdown"}
               </p>
-              <EventCountdown targetDate={event.countdownTarget || "2026-10-27T10:00:00+05:30"} />
+              <EventCountdown targetDate={event.countdownTarget || "2026-11-27T11:00:00+05:30"} />
             </div>
 
             <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)" }} />

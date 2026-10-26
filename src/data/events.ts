@@ -50,6 +50,7 @@ export interface EventFaq {
 export interface EventItem extends GameJamEvent {
   featured?: boolean;
   countdownTarget?: string;
+  countdownLabel?: string;
   registrationType: "modal" | "external";
   registrationUrl?: string;
   googleSheetScriptUrl?: string;
@@ -81,11 +82,12 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
   "pricePerPerson": 0,
   "minTeamSize": 3,
   "maxTeamSize": 4,
-  "theme": "Secret Theme Announced on 27 October, 2026",
-  "themeDescription": "An exclusive fully online game jam designed solely for students of Sri Shakthi Institute of Engineering and Technology. Build an original game around the secret theme, level up with XR Lab mentors, and battle for direct free entry and rank-based discounts into the December Inter-College Game Jam!",
+  "theme": "LIMITED SPACE · DEATH IS JUST A BEGINNING",
+  "themeDescription": "Official themes announced! Choose 'LIMITED SPACE', 'DEATH IS JUST A BEGINNING', combine them both into a hybrid concept, or completely ignore them and build your dream game. 100% creative freedom for all SIET squads with zero penalty.",
   "totalPrizePool": "Inter-College Passes + XR Lab Mentorship",
   "targetAudience": "Exclusively for Students of Sri Shakthi Institute of Engineering and Technology (SIET)",
-  "countdownTarget": "2026-10-27T10:00:00+05:30",
+  "countdownTarget": "2026-11-27T11:00:00+05:30",
+  "countdownLabel": "Jam Submission Closes In",
   "registrationType": "modal",
   "registrationUrl": "",
   "googleSheetScriptUrl": "",
@@ -112,7 +114,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     {
       "phase": "Phase 2: Remote Jam Phase",
       "time": "Oct 27 – Nov 27, 2026 · Online",
-      "description": "Theme drops live on Discord. Teams conceptualize and build their games (Windows, Web, or Android) with mentor check-ins and optional XR Lab testing. Google Drive submission link provided in the final week."
+      "description": "Themes are live: 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING' (pick one, combine both, or completely ignore them). Teams conceptualize and build their games (Windows, Web, or Android) with mentor check-ins and optional XR Lab testing. Google Drive submission link provided in the final week."
     },
     {
       "phase": "Phase 3: Result Announcement",
@@ -162,15 +164,29 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     "Zero Registration Fee: 100% Free Participation for all SIET students.",
     "Team Composition: Strictly a team event with 3 to 4 members per squad. All members must be currently enrolled SIET students.",
     "Unified Competition: No separate tracks or segregated divisions. All games compete under a single unified category. Supported platforms: Windows PC (.exe), Web (HTML5/WebGL), and Android (.apk).",
-    "Theme Adherence: Games must be built around the official theme announced on October 27, 2026.",
+    "Theme Freedom & Creative Choice: The official themes are 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING'. Squads have complete creative freedom—you may choose one theme, combine both into a hybrid mechanic, or completely ignore them without penalty to build whatever game concept excites you.",
+    "AI Disclosure (Mandatory in Readme): Generative AI tools are permitted during development (for coding, art, music, voiceover, etc.). However, full disclosure is mandatory: you MUST state in your submission's Readme file what AI tools were used and for which parts of the game (e.g. AI used for code debugging, 2D art generation, background music, etc.).",
+    "Pre-Made Assets & Creator Credits: You are allowed to use pre-made 3D/2D models, audio, and open-source assets from other creators, provided you give clear attribution and credit to the original creators in your Readme file.",
+    "Code & Asset Reuse from Previous Projects: You are fully allowed to reuse scripts, frameworks, shaders, and assets from your own previous projects to accelerate development.",
     "Remote Jamming: Development takes place online from Oct 27 until Nov 27, 2026. Teams may optionally request XR Lab access for testing.",
-    "Submission Package & Drive: Teams must submit a single .ZIP file containing (1) the executable game build and (2) a Readme file/doc with game instructions, controls, and squad roll numbers. An official Google Drive submission link will be provided during the last week of the jam.",
+    "Submission Package & Drive: Teams must submit a single .ZIP file containing (1) the executable game build and (2) a Readme file/doc with game instructions, controls, squad roll numbers, third-party asset credits, previous project assets noted, and mandatory AI disclosure. An official Google Drive submission link will be provided during the last week of the jam.",
     "Submission Deadline: November 27, 2026 (11:00 AM IST). Final .ZIP package must be uploaded before deadline lock.",
-    "Originality & Assets: Pre-made assets, sound libraries, and third-party engines are allowed provided they are properly credited; core gameplay must be developed during the jam.",
     "Intellectual Property: Developers retain 100% copyright and IP ownership of their creations.",
     "Advancement to Inter-College Event: Top team wins free direct entry to the December Inter-College Game Jam; top runner-up teams earn tiered registration discounts."
   ],
   "faqs": [
+    {
+      "question": "What are the official themes, and do we have to follow them?",
+      "answer": "The official themes are 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING'. You have total creative freedom: pick one theme, combine them both into a hybrid game, or completely ignore them! There are no point deductions or penalties if you choose not to use the themes."
+    },
+    {
+      "question": "Can we use AI tools, and what is the AI Disclosure rule?",
+      "answer": "Yes, AI tools are permitted! However, if AI was used at any part of the development (such as for coding, generating 2D/3D art, music, voiceovers, or writing), you MUST mention it in your submission's Readme file. Clearly specify which AI tools were used and what they were used for (e.g. ChatGPT/Claude for coding logic, Midjourney for concept art, Suno for music, etc.). Full transparency is required."
+    },
+    {
+      "question": "Can we use pre-made assets or scripts/assets from previous projects?",
+      "answer": "Yes, absolutely! You are allowed to use pre-made assets (models, sprites, sound effects, music) from other creators—just remember to give proper credit to the original creators in your Readme. You are also fully allowed to reuse your own scripts, frameworks, shaders, and assets from previous projects."
+    },
     {
       "question": "Are there separate tracks or disciplines?",
       "answer": "No! There are NO separate tracks or divisions. All squads compete together under a unified game jam theme. Teams are free to develop their game for Windows PC, Web, or Android."
@@ -181,7 +197,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     },
     {
       "question": "How do we submit our game?",
-      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp and Discord. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, and team roll numbers before the deadline on November 27, 2026 (11:00 AM IST)."
+      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp and Discord. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, team roll numbers, AI disclosure, and asset credits before the deadline on November 27, 2026 (11:00 AM IST)."
     },
     {
       "question": "Who can participate in this Game Jam?",
