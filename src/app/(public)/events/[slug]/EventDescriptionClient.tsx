@@ -347,11 +347,7 @@ export default function EventDescriptionClient({
               Supported Platforms &amp; Submission Protocol
             </h2>
             <p className="text-sm text-zinc-400 mt-2 max-w-3xl leading-relaxed">
-<<<<<<< HEAD
-              This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, gameplay, creative execution, and polish.
-=======
               This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, creative gameplay, technical execution, and polish.
->>>>>>> dev
             </p>
           </div>
 
