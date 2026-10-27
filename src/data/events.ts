@@ -162,7 +162,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     "Zero Registration Fee: 100% Free Participation for all SIET students.",
     "Team Composition: Strictly a team event with 3 to 4 members per squad. All members must be currently enrolled SIET students.",
     "Unified Competition: No separate tracks or segregated divisions. All games compete under a single unified category. Supported platforms: Windows PC (.exe), Web (HTML5/WebGL), and Android (.apk).",
-    "Theme Adherence: Games must be built around the official theme announced on October 27, 2026.",
+    "Creative Innovation & Freedom: Games are evaluated on originality, novel gameplay mechanics, and creative execution with no requirement for theme syncing.",
     "Remote Jamming: Development takes place online from Oct 27 until Nov 27, 2026. Teams may optionally request XR Lab access for testing.",
     "Submission Package & Drive: Teams must submit a single .ZIP file containing (1) the executable game build and (2) a Readme file/doc with game instructions, controls, and squad roll numbers. An official Google Drive submission link will be provided during the last week of the jam.",
     "Submission Deadline: November 27, 2026 (11:00 AM IST). Final .ZIP package must be uploaded before deadline lock.",

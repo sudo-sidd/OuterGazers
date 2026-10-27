@@ -229,7 +229,7 @@ export default function EventDescriptionClient({
               Supported Platforms &amp; Submission Protocol
             </h2>
             <p className="text-sm text-zinc-400 mt-2 max-w-3xl leading-relaxed">
-              This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, gameplay, theme adherence, and polish.
+              This game jam is open and unified: there are no separate tracks or divisions. Squads can craft games targeting Windows, Web, or Android. All submissions will be evaluated collectively on innovation, creative gameplay, technical execution, and polish.
             </p>
           </div>
 
@@ -592,16 +592,15 @@ export default function EventDescriptionClient({
                 Judging &amp; Rating Framework
               </h2>
               <p className="text-zinc-400 text-xs md:text-sm leading-relaxed">
-                Evaluation is split between <span className="text-white font-bold">Official Judges (70% weight)</span> and{" "}
-                <span className="text-white font-bold">Participant Peer Voting (30% weight)</span> to ensure grassroots gamer endorsement alongside technical scrutiny.
+                Evaluation is conducted entirely by <span className="text-white font-bold">Official Judges (100% weight)</span> to ensure fair, impartial assessment alongside technical and creative scrutiny.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
               <div className="p-5 bg-zinc-950 border border-zinc-800/80 rounded-xl space-y-2">
-                <span className="text-[#00b4d8] font-bold font-sans text-sm">01. Theme Adherence</span>
+                <span className="text-[#00b4d8] font-bold font-sans text-sm">01. Innovation &amp; Creativity</span>
                 <p className="text-zinc-400 text-[11px] leading-relaxed">
-                  How creatively and fundamentally does the game mechanic reflect the October 27 secret theme?
+                  Novelty of gameplay mechanics, originality of concept, and creative execution of fresh, out-of-the-box ideas.
                 </p>
               </div>
 
