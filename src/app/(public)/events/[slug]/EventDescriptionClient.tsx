@@ -712,8 +712,7 @@ export default function EventDescriptionClient({
                 Judging &amp; Rating Framework
               </h2>
               <p className="text-zinc-400 text-xs md:text-sm leading-relaxed">
-                Evaluation is split between <span className="text-white font-bold">Official Judges (70% weight)</span> and{" "}
-                <span className="text-white font-bold">Participant Peer Voting (30% weight)</span> to ensure grassroots gamer endorsement alongside technical scrutiny.
+                Evaluation is conducted entirely by <span className="text-white font-bold">Official Judges (100% weight)</span> to ensure fair, impartial assessment alongside technical and creative scrutiny.
               </p>
             </div>
 
