@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { X, Sparkles, Calendar, MapPin, Trophy, Gamepad2, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
@@ -115,9 +116,22 @@ export default function EventAnnouncementPopup() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [scanlineOffset, setScanlineOffset] = useState(0);
   const event = FLAGSHIP_GAME_JAM;
+  const pathname = usePathname();
 
-  // Trigger after exactly 3 seconds on first visit
+  // Check if current route is the event page
+  const isEventPage = Boolean(
+    pathname && (
+      pathname.includes("/events/intracollege-gamejam-2026") ||
+      pathname.includes(event.slug)
+    )
+  );
+
+  // Trigger after exactly 3 seconds on first visit (only when not already on the event page)
   useEffect(() => {
+    if (isEventPage) {
+      setIsVisible(false);
+      return;
+    }
     if (typeof window !== "undefined") {
       const dismissed = sessionStorage.getItem("og_siet_intra_jam_dismissed_2026");
       if (dismissed === "true") return;
@@ -125,7 +139,14 @@ export default function EventAnnouncementPopup() {
     const delay = 3000;
     const timer = setTimeout(() => setIsVisible(true), delay);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isEventPage]);
+
+  // Dismiss immediately if route navigates to the event page
+  useEffect(() => {
+    if (isEventPage && isVisible) {
+      setIsVisible(false);
+    }
+  }, [isEventPage, isVisible]);
 
   // Animate scanline sweep
   useEffect(() => {
@@ -160,6 +181,8 @@ export default function EventAnnouncementPopup() {
     setIsVisible(false);
     setIsRegisterOpen(true);
   };
+
+  if (isEventPage) return null;
 
   return (
     <>
