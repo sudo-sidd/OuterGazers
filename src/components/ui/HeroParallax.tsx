@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useRef, useMemo } from "react";
 import {
   motion,
   useScroll,
@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight, ExternalLink, Grid, LayoutGrid } from "lucide-react";
 
 export interface ParallaxProduct {
   title: string;
@@ -19,6 +20,7 @@ export interface ParallaxProduct {
   mediaType?: "image" | "video";
 }
 
+// ─── Main HeroParallax Component ─────────────────────────────────────────────
 export const HeroParallax = ({
   products,
   id = "work",
@@ -32,11 +34,48 @@ export const HeroParallax = ({
   headerTitle?: React.ReactNode;
   headerDescription?: string;
 }) => {
+  return (
+    <>
+      {/* ── MOBILE VIEW (< md) : Touch-First, Silky-Smooth Showcase ── */}
+      <div className="block md:hidden">
+        <MobileWorksShowcase
+          products={products}
+          headerTag={headerTag}
+          headerTitle={headerTitle}
+          headerDescription={headerDescription}
+        />
+      </div>
+
+      {/* ── DESKTOP VIEW (>= md) : Cinematic 3D Parallax ── */}
+      <div className="hidden md:block">
+        <DesktopParallax
+          products={products}
+          headerTag={headerTag}
+          headerTitle={headerTitle}
+          headerDescription={headerDescription}
+        />
+      </div>
+    </>
+  );
+};
+
+// ─── Desktop 3D Parallax ─────────────────────────────────────────────────────
+const DesktopParallax = ({
+  products,
+  headerTag,
+  headerTitle,
+  headerDescription,
+}: {
+  products: ParallaxProduct[];
+  headerTag?: string;
+  headerTitle?: React.ReactNode;
+  headerDescription?: string;
+}) => {
   const itemsPerRow = Math.max(5, Math.ceil(products.length / 3));
   const firstRow = products.slice(0, itemsPerRow);
   const secondRow = products.slice(itemsPerRow, itemsPerRow * 2);
   const thirdRow = products.slice(itemsPerRow * 2, itemsPerRow * 3);
-  const ref = React.useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -71,7 +110,6 @@ export const HeroParallax = ({
 
   return (
     <div
-      id={id}
       ref={ref}
       className="h-[300vh] py-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
@@ -87,9 +125,8 @@ export const HeroParallax = ({
           translateY,
           opacity,
         }}
-        className=""
       >
-        <motion.div className="flex flex-row-reverse space-x-reverse space-x-20 mb-20">
+        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 lg:space-x-8 xl:space-x-10 mb-8 lg:mb-12">
           {firstRow.map((product, idx) => (
             <ProductCard
               product={product}
@@ -98,7 +135,7 @@ export const HeroParallax = ({
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row mb-20 space-x-20">
+        <motion.div className="flex flex-row mb-8 lg:mb-12 space-x-6 lg:space-x-8 xl:space-x-10">
           {secondRow.map((product, idx) => (
             <ProductCard
               product={product}
@@ -107,7 +144,7 @@ export const HeroParallax = ({
             />
           ))}
         </motion.div>
-        <motion.div className="flex flex-row-reverse space-x-reverse space-x-20">
+        <motion.div className="flex flex-row-reverse space-x-reverse space-x-6 lg:space-x-8 xl:space-x-10">
           {thirdRow.map((product, idx) => (
             <ProductCard
               product={product}
@@ -121,6 +158,317 @@ export const HeroParallax = ({
   );
 };
 
+// ─── Mobile Works Showcase ───────────────────────────────────────────────────
+export const MobileWorksShowcase = ({
+  products,
+  headerTag,
+  headerTitle,
+  headerDescription,
+}: {
+  products: ParallaxProduct[];
+  headerTag?: string;
+  headerTitle?: React.ReactNode;
+  headerDescription?: string;
+}) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [viewMode, setViewMode] = useState<"reel" | "grid">("reel");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Extract distinct unique projects by title
+  const uniqueProducts = useMemo(() => {
+    const seen = new Set<string>();
+    const list: ParallaxProduct[] = [];
+    for (const p of products) {
+      if (!seen.has(p.title)) {
+        seen.add(p.title);
+        list.push(p);
+      }
+    }
+    return list;
+  }, [products]);
+
+  // Extract category tags
+  const categories = useMemo(() => {
+    const tags = new Set<string>();
+    for (const p of uniqueProducts) {
+      if (p.tag) tags.add(p.tag);
+    }
+    return ["All", ...Array.from(tags)];
+  }, [uniqueProducts]);
+
+  // Filter products by selected category
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "All") return uniqueProducts;
+    return uniqueProducts.filter((p) => p.tag === selectedCategory);
+  }, [uniqueProducts, selectedCategory]);
+
+  // Track active slide in horizontal reel
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const cardWidth = (el.firstElementChild as HTMLElement)?.offsetWidth || 300;
+    const gap = 16;
+    const idx = Math.round(el.scrollLeft / (cardWidth + gap));
+    setActiveIndex(Math.min(Math.max(0, idx), filteredProducts.length - 1));
+  };
+
+  const scrollToIndex = (idx: number) => {
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const card = el.children[idx] as HTMLElement | undefined;
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  };
+
+  const nextSlide = () => {
+    if (activeIndex < filteredProducts.length - 1) {
+      scrollToIndex(activeIndex + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (activeIndex > 0) {
+      scrollToIndex(activeIndex - 1);
+    }
+  };
+
+  return (
+    <div className="py-16 px-4 bg-transparent relative overflow-hidden">
+      {/* Background glow blob */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[120px] bg-[#00b4d8]/10 pointer-events-none" />
+
+      {/* Header */}
+      <div className="mb-8">
+        <p className="font-[family-name:var(--font-kode)] text-[10px] font-bold uppercase tracking-[0.35em] text-[#00b4d8] mb-3">
+          {headerTag || "— Selected Works"}
+        </p>
+        <h2 className="text-3xl font-extrabold text-white font-[family-name:var(--font-tech)] tracking-tight leading-tight mb-4">
+          {headerTitle || "Where real-time art meets responsive gameplay."}
+        </h2>
+        <p className="text-sm text-zinc-400 font-sans leading-relaxed">
+          {headerDescription ||
+            "We build stylized games, real-time 3D environments, and interactive XR experiences."}
+        </p>
+      </div>
+
+      {/* Controls: Category Filter Chips & View Mode Toggle */}
+      <div className="flex flex-col gap-3 mb-6">
+        {/* Category Filter Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setActiveIndex(0);
+                  if (scrollRef.current) scrollRef.current.scrollLeft = 0;
+                }}
+                className={`text-[11px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full transition-all duration-300 shrink-0 ${
+                  isSelected
+                    ? "bg-[#00b4d8] text-black shadow-[0_0_15px_rgba(0,180,216,0.5)]"
+                    : "bg-zinc-900/80 text-zinc-400 border border-zinc-800 hover:border-zinc-700 hover:text-white"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* View Switcher & Slide Counter */}
+        <div className="flex items-center justify-between pt-1">
+          <div className="text-[11px] font-mono tracking-widest text-zinc-500 font-bold">
+            SHOWING <span className="text-[#00b4d8]">{filteredProducts.length}</span> PROJECTS
+          </div>
+          <div className="flex items-center gap-1 bg-zinc-900/80 p-1 rounded-lg border border-zinc-800">
+            <button
+              onClick={() => setViewMode("reel")}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === "reel" ? "bg-zinc-800 text-[#00b4d8]" : "text-zinc-500"
+              }`}
+              title="Carousel View"
+              aria-label="Carousel View"
+            >
+              <LayoutGrid size={14} />
+            </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === "grid" ? "bg-zinc-800 text-[#00b4d8]" : "text-zinc-500"
+              }`}
+              title="List View"
+              aria-label="List View"
+            >
+              <Grid size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── VIEW 1: HORIZONTAL SWIPE REEL ── */}
+      {viewMode === "reel" ? (
+        <div>
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-none scroll-smooth touch-pan-x"
+          >
+            {filteredProducts.map((product, idx) => (
+              <MobileProductCard
+                key={`mobile-${product.title}-${idx}`}
+                product={product}
+                isFullWidth={false}
+              />
+            ))}
+          </div>
+
+          {/* Navigation Controls & Dot Indicators */}
+          <div className="flex items-center justify-between mt-3 px-1">
+            {/* Dots */}
+            <div className="flex items-center gap-1.5">
+              {filteredProducts.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => scrollToIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeIndex === i
+                      ? "w-6 bg-[#00b4d8] shadow-[0_0_8px_rgba(0,180,216,0.8)]"
+                      : "w-1.5 bg-zinc-700"
+                  }`}
+                  aria-label={`Jump to project ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Slide Arrows & Counter */}
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs font-bold tracking-widest text-zinc-400">
+                <span className="text-[#00b4d8]">0{activeIndex + 1}</span> / 0{filteredProducts.length}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={prevSlide}
+                  disabled={activeIndex === 0}
+                  className="w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900/90 flex items-center justify-center text-white disabled:opacity-30 disabled:pointer-events-none hover:border-[#00b4d8] transition-colors"
+                  aria-label="Previous Project"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  disabled={activeIndex === filteredProducts.length - 1}
+                  className="w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900/90 flex items-center justify-center text-white disabled:opacity-30 disabled:pointer-events-none hover:border-[#00b4d8] transition-colors"
+                  aria-label="Next Project"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* ── VIEW 2: VERTICAL STACK / GRID ── */
+        <div className="flex flex-col gap-5">
+          {filteredProducts.map((product, idx) => (
+            <MobileProductCard
+              key={`mobile-grid-${product.title}-${idx}`}
+              product={product}
+              isFullWidth={true}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Single Mobile Product Card ──────────────────────────────────────────────
+const MobileProductCard = ({
+  product,
+  isFullWidth = false,
+}: {
+  product: ParallaxProduct;
+  isFullWidth?: boolean;
+}) => {
+  const isVideo =
+    product.mediaType === "video" ||
+    /\.(mp4|webm|mov|ogg)$/i.test(product.thumbnail);
+
+  return (
+    <div
+      className={`relative rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl flex flex-col justify-end ${
+        isFullWidth
+          ? "w-full h-[380px]"
+          : "w-[84vw] max-w-[340px] h-[390px] shrink-0 snap-center"
+      }`}
+    >
+      {/* Media Background */}
+      <div className="absolute inset-0 w-full h-full">
+        {isVideo ? (
+          <video
+            src={product.thumbnail}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="object-cover object-center absolute h-full w-full inset-0 pointer-events-none"
+          />
+        ) : (
+          <Image
+            src={product.thumbnail}
+            alt={product.title}
+            fill
+            className="object-cover object-center absolute inset-0"
+            sizes="(max-width: 768px) 90vw, 380px"
+          />
+        )}
+      </div>
+
+      {/* Top subtle badge indicating media type */}
+      <div className="absolute top-4 right-4 z-20">
+        <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-zinc-300 border border-white/10">
+          {isVideo ? "Video" : "Still"}
+        </span>
+      </div>
+
+      {/* Bottom high-contrast gradient overlay */}
+      <div className="relative z-10 p-5 bg-gradient-to-t from-black via-black/80 to-transparent pt-16">
+        {product.tag && (
+          <span className="inline-block px-2.5 py-0.5 mb-2 text-[10px] font-bold tracking-widest uppercase rounded bg-[#00b4d8]/20 text-[#00b4d8] border border-[#00b4d8]/40">
+            {product.tag}
+          </span>
+        )}
+        <h3 className="text-xl font-bold font-[family-name:var(--font-tech)] text-white tracking-wide leading-snug">
+          {product.title}
+        </h3>
+        {product.description && (
+          <p className="text-xs text-zinc-300 line-clamp-3 mt-1.5 font-sans leading-relaxed">
+            {product.description}
+          </p>
+        )}
+        {product.link && product.link !== "#" && (
+          <div className="mt-3">
+            <Link
+              href={product.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00b4d8] text-black text-[11px] font-bold tracking-wider uppercase hover:bg-white transition-colors"
+            >
+              <span>Explore Project</span>
+              <ExternalLink size={12} />
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ─── Header ──────────────────────────────────────────────────────────────────
 export const Header = ({
   tag,
   title,
@@ -152,6 +500,7 @@ export const Header = ({
   );
 };
 
+// ─── Desktop ProductCard ─────────────────────────────────────────────────────
 export const ProductCard = ({
   product,
   translate,
@@ -169,9 +518,9 @@ export const ProductCard = ({
         x: translate,
       }}
       whileHover={{
-        y: -20,
+        y: -16,
       }}
-      className="group/product h-96 w-[30rem] relative flex-shrink-0 rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl"
+      className="group/product h-80 lg:h-[22rem] xl:h-[24rem] w-[22rem] lg:w-[25rem] xl:w-[27rem] relative flex-shrink-0 rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl"
     >
       <Link
         href={product.link}
@@ -217,3 +566,4 @@ export const ProductCard = ({
 };
 
 export default HeroParallax;
+

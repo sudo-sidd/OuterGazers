@@ -346,7 +346,7 @@ export function CursorDrivenParticleTypography({
   return (
     <div
       ref={containerRef}
-      className={cn("w-full h-full min-h-[300px] flex items-center justify-center relative touch-none select-none", className)}
+      className={cn("w-full h-full min-h-[160px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center relative touch-pan-y select-none", className)}
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
     </div>

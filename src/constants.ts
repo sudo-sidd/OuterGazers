@@ -44,7 +44,7 @@ export {
 } from "./data/news";
 
 // ─── Studio Works & Projects (Managed in src/data/works.ts) ───────────────────
-export { WORKS_DATA, type WorkItem } from "./data/works";
+export { WORKS_DATA, FEATURED_WORKS, type WorkItem } from "./data/works";
 
 // ─── Existing Studio Data ─────────────────────────────────────────────────────
 export const WORKS: Work[] = [

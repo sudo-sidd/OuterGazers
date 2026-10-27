@@ -103,12 +103,13 @@ export default function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative z-50 text-xs font-bold uppercase tracking-widest text-white focus:outline-none"
+            className="md:hidden relative z-50 text-xs font-bold uppercase tracking-widest text-white focus:outline-none w-16 h-10 flex items-center justify-end px-2"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            <motion.span animate={{ opacity: mobileMenuOpen ? 0 : 1 }} className="absolute right-0 top-1/2 -translate-y-1/2">
+            <motion.span animate={{ opacity: mobileMenuOpen ? 0 : 1 }} className="absolute right-2 top-1/2 -translate-y-1/2">
               Menu
             </motion.span>
-            <motion.span animate={{ opacity: mobileMenuOpen ? 1 : 0 }} className="absolute right-0 top-1/2 -translate-y-1/2">
+            <motion.span animate={{ opacity: mobileMenuOpen ? 1 : 0 }} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#00b4d8]">
               Close
             </motion.span>
           </button>
