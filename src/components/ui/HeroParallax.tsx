@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ExternalLink, Grid, LayoutGrid } from "lucide-react";
+import { AsciiMedia } from "@/components/ui/AsciiMediaLoader";
 
 export interface ParallaxProduct {
   title: string;
@@ -406,26 +407,14 @@ const MobileProductCard = ({
           : "w-[84vw] max-w-[340px] h-[390px] shrink-0 snap-center"
       }`}
     >
-      {/* Media Background */}
+      {/* Media Background with ASCII Loading Placeholder */}
       <div className="absolute inset-0 w-full h-full">
-        {isVideo ? (
-          <video
-            src={product.thumbnail}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="object-cover object-center absolute h-full w-full inset-0 pointer-events-none"
-          />
-        ) : (
-          <Image
-            src={product.thumbnail}
-            alt={product.title}
-            fill
-            className="object-cover object-center absolute inset-0"
-            sizes="(max-width: 768px) 90vw, 380px"
-          />
-        )}
+        <AsciiMedia
+          mediaType={isVideo ? "video" : "image"}
+          src={product.thumbnail}
+          alt={product.title}
+          className="object-cover object-center absolute inset-0 pointer-events-none"
+        />
       </div>
 
       {/* Top subtle badge indicating media type */}
@@ -526,24 +515,12 @@ export const ProductCard = ({
         href={product.link}
         className="block absolute inset-0 w-full h-full z-10"
       >
-        {isVideo ? (
-          <video
-            src={product.thumbnail}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="object-cover object-center absolute h-full w-full inset-0 transition-transform duration-500 group-hover/product:scale-105 pointer-events-none"
-          />
-        ) : (
-          <Image
-            src={product.thumbnail}
-            height={600}
-            width={600}
-            className="object-cover object-center absolute h-full w-full inset-0 transition-transform duration-500 group-hover/product:scale-105"
-            alt={product.title}
-          />
-        )}
+        <AsciiMedia
+          mediaType={isVideo ? "video" : "image"}
+          src={product.thumbnail}
+          alt={product.title}
+          className="object-cover object-center absolute h-full w-full inset-0 transition-transform duration-500 group-hover/product:scale-105 pointer-events-none"
+        />
       </Link>
       <div className="absolute inset-0 h-full w-full opacity-25 group-hover/product:opacity-80 bg-black pointer-events-none transition-opacity duration-300 z-10" />
       <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none z-20">

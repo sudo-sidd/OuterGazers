@@ -50,6 +50,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [teamSize, setTeamSize] = useState<3 | 4>(3);
   const [teamName, setTeamName] = useState("");
+  const [selectedTheme, setSelectedTheme] = useState<"LIMITED SPACE" | "LOOPS" | "HYBRID (BOTH)">("LIMITED SPACE");
   const [collegeName, setCollegeName] = useState(
     "Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore"
   );
@@ -106,13 +107,21 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
   const upiPaymentUrl = generateUpiPaymentUrl(totalAmount, teamName || "OuterGazer", eventUpiId, eventPayeeName);
   const upiQrCodeUrl = generateUpiQrCodeUrl(upiPaymentUrl, 280);
 
-  // Lock body scroll when modal is open
+  // Lock body scroll and pause heavy background canvases when modal is open
   useEffect(() => {
     if (!isOpen) return;
+    document.body.classList.add("modal-open");
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("outergazers:modal-open", { detail: { open: true } }));
+    }
     return () => {
+      document.body.classList.remove("modal-open");
       document.body.style.overflow = prevOverflow;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("outergazers:modal-open", { detail: { open: false } }));
+      }
     };
   }, [isOpen]);
 
@@ -272,13 +281,14 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       collegeName: `${collegeName.trim()} ${department.trim() ? `(${department.trim()})` : ""}`,
       teamSize,
       totalAmount,
+      theme: selectedTheme,
       leader,
       members: membersList,
       paymentStatus: isFreeEvent ? "FREE" : "PENDING_VERIFICATION",
       transactionUtr: isFreeEvent ? "SIET_FREE_ENTRY" : transactionUtr.trim() || undefined,
       screenshotBase64: isFreeEvent ? undefined : screenshotBase64 || undefined,
       screenshotFileName: isFreeEvent ? undefined : `${generatedRegId}_${teamSafe}_payment.jpg`,
-      notes: `SIET Intra Jam | Leader Roll: ${leaderRollNo.trim()} | Dept: ${department.trim() || "N/A"}`,
+      notes: `SIET Intra Jam | Theme: ${selectedTheme} | Leader Roll: ${leaderRollNo.trim()} | Dept: ${department.trim() || "N/A"}`,
       submittedAt: new Date().toISOString(),
     };
 
@@ -320,13 +330,13 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden"
           onWheel={(e) => e.stopPropagation()}
         >
-          {/* Backdrop */}
+          {/* Backdrop (solid high-opacity on mobile to eliminate costly gaussian blur) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/85 backdrop-blur-md"
+            className="fixed inset-0 bg-black/95 md:bg-black/85 md:backdrop-blur-md"
           />
 
           {/* Modal Container */}
@@ -356,7 +366,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                   </h3>
                   {isFreeEvent ? (
                     <p className="text-xs text-emerald-400 font-sans tracking-wider font-semibold">
-                      100% Free Entry (₹0) · Exclusively for SIET Students
+                      100% Free Entry (₹0) · Exclusively for SIET Students · Closes Nov 29 (11:59 PM)
                     </p>
                   ) : (
                     <p className="text-xs text-zinc-400 font-sans tracking-wider">
@@ -397,7 +407,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               {step <= 3 && (
                 <div className="px-5 md:px-6 py-2.5 bg-zinc-950/40 border-b border-zinc-900 flex items-center justify-between text-xs font-sans">
                   <span className={step === 1 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
-                    01. Team Name &amp; Count
+                    01. Squad &amp; Theme
                   </span>
                   <span className="text-zinc-700">───</span>
                   <span className={step === 2 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
@@ -421,7 +431,8 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
             {/* Scrollable Step Body */}
             <div 
-              className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8"
+              className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8 touch-pan-y"
+              style={{ WebkitOverflowScrolling: "touch" }}
               data-lenis-prevent="true"
               onWheel={(e) => e.stopPropagation()}
             >
@@ -473,6 +484,45 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         </button>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Mandatory Jam Theme Selection */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 font-sans">
+                        Selected Theme (Mandatory) *
+                      </label>
+                      <span className="text-[10px] uppercase font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded font-sans">
+                        Themes Not Optional
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      {[
+                        { id: "LIMITED SPACE" as const, title: "LIMITED SPACE", desc: "Bounds, single-screens & micro spaces", color: "text-[#00b4d8]" },
+                        { id: "LOOPS" as const, title: "LOOPS", desc: "Time loops, cycles & recursive mechanics", color: "text-[#d946ef]" },
+                        { id: "HYBRID (BOTH)" as const, title: "HYBRID (BOTH)", desc: "Combine both themes into one game", color: "text-emerald-400" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedTheme(item.id)}
+                          className={`p-3.5 rounded-xl border text-left transition-all ${
+                            selectedTheme === item.id
+                              ? "bg-[#00b4d8]/10 border-[#00b4d8] text-white shadow-md shadow-[#00b4d8]/10"
+                              : "bg-zinc-900/40 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className={`font-bold text-xs ${item.color}`}>{item.title}</span>
+                            {selectedTheme === item.id && <CheckCircle2 size={14} className="text-[#00b4d8]" />}
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-tight">{item.desc}</p>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-zinc-400 mt-2 font-sans">
+                      Themes are mandatory for all SIET squads. Choose Theme 1, Theme 2, or combine both into a hybrid mechanic.
+                    </p>
                   </div>
 
                   {/* Free Notice Box */}
@@ -530,7 +580,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Leader Full Name"
                           value={leaderName}
                           onChange={(e) => setLeaderName(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -544,7 +594,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="e.g. 714022104001 or 22AD045"
                           value={leaderRollNo}
                           onChange={(e) => setLeaderRollNo(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
                       </div>
 
@@ -558,7 +608,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="name@siet.ac.in or personal email"
                           value={leaderEmail}
                           onChange={(e) => setLeaderEmail(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -572,7 +622,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="10-digit WhatsApp Number"
                           value={leaderPhone}
                           onChange={(e) => setLeaderPhone(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -585,7 +635,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Discord username or handle"
                           value={leaderDiscord}
                           onChange={(e) => setLeaderDiscord(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -611,7 +661,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Full Name"
                           value={member2Name}
                           onChange={(e) => setMember2Name(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -625,7 +675,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Roll Number"
                           value={member2RollNo}
                           onChange={(e) => setMember2RollNo(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
                       </div>
 
@@ -639,7 +689,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="10-digit WhatsApp"
                           value={member2Phone}
                           onChange={(e) => setMember2Phone(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -652,7 +702,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Discord username"
                           value={member2Discord}
                           onChange={(e) => setMember2Discord(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -678,7 +728,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Full Name"
                           value={member3Name}
                           onChange={(e) => setMember3Name(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -692,7 +742,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Roll Number"
                           value={member3RollNo}
                           onChange={(e) => setMember3RollNo(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
                       </div>
 
@@ -706,7 +756,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="10-digit WhatsApp"
                           value={member3Phone}
                           onChange={(e) => setMember3Phone(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
 
@@ -719,7 +769,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           placeholder="Discord username"
                           value={member3Discord}
                           onChange={(e) => setMember3Discord(e.target.value)}
-                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                          className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -746,7 +796,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             placeholder="Full Name"
                             value={member4Name}
                             onChange={(e) => setMember4Name(e.target.value)}
-                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                           />
                         </div>
 
@@ -760,7 +810,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             placeholder="Roll Number"
                             value={member4RollNo}
                             onChange={(e) => setMember4RollNo(e.target.value)}
-                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                           />
                         </div>
 
@@ -774,7 +824,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             placeholder="10-digit WhatsApp"
                             value={member4Phone}
                             onChange={(e) => setMember4Phone(e.target.value)}
-                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                           />
                         </div>
 
@@ -787,7 +837,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             placeholder="Discord username"
                             value={member4Discord}
                             onChange={(e) => setMember4Discord(e.target.value)}
-                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none"
+                            className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none"
                           />
                         </div>
                       </div>
@@ -840,6 +890,13 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       <span className="text-xs text-zinc-400 font-sans">Squad Size</span>
                       <span className="text-xs text-zinc-300">
                         {teamSize} Members · Contact: {leaderPhone}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <span className="text-xs text-zinc-400 font-sans">Mandatory Theme</span>
+                      <span className="text-xs font-bold text-[#00b4d8] text-right">
+                        {selectedTheme}
                       </span>
                     </div>
 
@@ -1093,6 +1150,11 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       </span>
                     </div>
 
+                    <div className="flex justify-between border-b border-zinc-900 pb-2">
+                      <span className="text-zinc-500 uppercase">Selected Theme</span>
+                      <span className="text-[#00b4d8] font-bold">{selectedTheme}</span>
+                    </div>
+
                     <div className="flex justify-between items-center pt-0.5">
                       <span className="text-zinc-400 uppercase font-bold">Registration Fee</span>
                       <span className="text-emerald-400 font-bold text-sm">
@@ -1109,12 +1171,12 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         Next Action: Join Jam Community
                       </div>
                       <span className="text-[10px] bg-emerald-400/10 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded font-bold font-sans uppercase">
-                        Themes Live
+                        Themes Mandatory
                       </span>
                     </div>
 
                     <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
-                      Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">DEATH IS JUST A BEGINNING</span> (pick one, combine them, or completely ignore them!). Build for Windows, Web, or Android. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before <span className="text-white font-bold">November 27, 2026 (11:00 AM IST)</span>!
+                      Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live and mandatory: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">LOOPS</span> (pick either theme or combine both!). Build for Windows, Web, or Android. Both registrations and submissions close on <span className="text-white font-bold">November 29, 2026 (11:59 PM IST)</span>. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before the deadline!
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

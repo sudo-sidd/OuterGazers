@@ -27,8 +27,8 @@ function NewsHero() {
           backgroundSize: "80px 80px",
         }}
       />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#00b4d8]/8 blur-[140px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-[#7c3aed]/6 blur-[160px] rounded-full pointer-events-none z-0" />
+      <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#00b4d8]/8 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="hidden sm:block absolute bottom-0 right-0 w-[500px] h-[400px] bg-[#7c3aed]/6 blur-[160px] rounded-full pointer-events-none z-0" />
 
       <div className="relative z-20 text-center w-full max-w-6xl mx-auto px-6">
         <motion.div
@@ -152,8 +152,8 @@ function EventCard({
           backgroundSize: "60px 60px",
         }}
       />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00b4d8]/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#7c3aed]/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute top-0 right-0 w-[500px] h-[500px] bg-[#00b4d8]/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#7c3aed]/5 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative p-8 md:p-12 lg:p-16">
         <div className="flex flex-col xl:flex-row xl:items-start gap-12">
@@ -210,10 +210,10 @@ function EventCard({
                 </span>
                 <span className="text-zinc-600 text-xs font-mono">or</span>
                 <span className="px-2.5 py-1 text-xs font-bold text-[#d946ef] bg-[#7c3aed]/10 border border-[#7c3aed]/30 rounded">
-                  DEATH IS JUST A BEGINNING
+                  LOOPS
                 </span>
-                <span className="text-emerald-400 text-[11px] font-mono px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded">
-                  Pick · Combine · Ignore
+                <span className="text-amber-400 text-[11px] font-mono px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded font-bold">
+                  Mandatory: Pick or Combine Both
                 </span>
               </div>
             </div>
@@ -284,9 +284,9 @@ function EventCard({
             {/* Countdown */}
             <div className="relative text-center">
               <p className="font-[family-name:var(--font-kode)] text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">
-                {event.countdownLabel || "Jam Submission Countdown"}
+                {event.countdownLabel || "Registrations & Submissions Close In"}
               </p>
-              <EventCountdown targetDate={event.countdownTarget || "2026-11-27T11:00:00+05:30"} />
+              <EventCountdown targetDate={event.countdownTarget || "2026-11-29T23:59:59+05:30"} />
             </div>
 
             <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)" }} />

@@ -44,6 +44,17 @@ export default function InteractiveNeuralVortex({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Detect mobile or touch devices for ultra-lightweight rendering
+    const isMobileDevice =
+      window.innerWidth < 768 ||
+      ("ontouchstart" in window) ||
+      (navigator.maxTouchPoints > 0) ||
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+
+    // Dynamic layer clamping: 1 layer on mobile for silky-smooth 60-120fps
+    const effectiveLayers = isMobileDevice ? 1 : Math.min(3, Math.max(1, layers));
+    const shaderIterations = isMobileDevice ? 4 : 8;
+
     // Initialize pointer to center of viewport
     const initialCenterX = window.innerWidth * 0.5;
     const initialCenterY = window.innerHeight * 0.5;
@@ -63,6 +74,7 @@ export default function InteractiveNeuralVortex({
         depth: false,
         stencil: false,
         preserveDrawingBuffer: false,
+        powerPreference: "low-power",
       }) ||
       (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
 
@@ -100,14 +112,13 @@ export default function InteractiveNeuralVortex({
         return mat2(c, s, -s, c) * uv;
       }
 
-      // Harmonic fractal neural synthesis layer
+      // Harmonic fractal neural synthesis layer (dynamic iterations)
       float neuro_layer(vec2 uv, float t, float p, float baseScale, float angle) {
         vec2 sine_acc = vec2(0.0);
         vec2 res = vec2(0.0);
         float scale = baseScale;
 
-        // 9 iterations yields intricate cosmic filament networks with 60fps performance
-        for (int j = 0; j < 9; j++) {
+        for (int j = 0; j < ${shaderIterations}; j++) {
           uv = rotate(uv, angle);
           sine_acc = rotate(sine_acc, angle);
           vec2 layer = uv * scale + float(j) * 1.18 + sine_acc - t;
@@ -135,59 +146,50 @@ export default function InteractiveNeuralVortex({
         // Vignette falloff to prevent harsh screen borders and maintain subtlety
         float vignette = 1.0 - smoothstep(0.35, 0.95, length(vUv - 0.5));
 
-        // ── LAYER 1: Deep Nebula Abyss (Cosmic Void & Deep Violet #2e1065 / #1e1b4b) ──
+        // ── LAYER 1: Deep Nebula Abyss ──
         vec2 uv1 = uv * 0.72;
         float shape1 = neuro_layer(uv1, t * 0.35, pForce * 0.35, 4.2, 0.82);
         float n1 = smoothstep(0.18, 0.85, shape1);
         n1 = 0.85 * pow(n1, 2.2);
 
-        vec3 colVoid = vec3(0.05, 0.02, 0.15); // Deep midnight abyss
-        vec3 colIndigo = vec3(0.15, 0.04, 0.32); // Luminous cosmic violet
+        vec3 colVoid = vec3(0.05, 0.02, 0.15);
+        vec3 colIndigo = vec3(0.15, 0.04, 0.32);
         vec3 col1 = mix(colVoid, colIndigo, 0.5 + 0.5 * sin(t * 0.3 + u_scroll_progress * 1.5));
         vec4 layer1 = vec4(col1 * n1, n1 * 0.38);
 
-        // ── LAYER 2: Primary Neural Matrix (OuterGazers Electric Cyan #00b4d8 to Azure #0077b6) ──
-        vec2 uv2 = uv * 1.0;
-        float shape2 = neuro_layer(uv2, t * 0.65, pForce * 0.95, 7.5, 1.0);
-        float n2 = max(0.0, shape2 - 0.22);
-        n2 = 1.05 * pow(n2, 2.6);
-        n2 += 0.22 * pow(n2, 5.0); // Gentle synaptic glow, not blinding
+        vec3 finalColor = layer1.rgb * 0.45;
+        float finalAlpha = layer1.a * 0.40;
 
-        vec3 cyan = vec3(0.0, 0.706, 0.847); // #00b4d8 - OuterGazers Studio Cyan
-        vec3 oceanBlue = vec3(0.0, 0.467, 0.714); // #0077b6 - Deep Accent Blue
-        float scrollCyanShift = 0.45 + 0.35 * sin(2.0 * u_scroll_progress + 1.2);
-        vec3 col2 = mix(oceanBlue, cyan, scrollCyanShift);
-        vec4 layer2 = vec4(col2 * n2, n2 * 0.48);
-
-        // ── LAYER 3: Ethereal Filament Veil (Cyber Purple #7c3aed & Aqua Teal #06b6d4) ──
-        vec2 uv3 = uv * 1.35;
-        float shape3 = neuro_layer(uv3, t * 0.52 + 1.4, pForce * 0.55, 11.2, 1.18);
-        float n3 = max(0.0, shape3 - 0.30);
-        n3 = 0.95 * pow(n3, 3.0);
-        n3 += 0.20 * pow(n3, 6.0);
-
-        vec3 cyberPurple = vec3(0.486, 0.227, 0.929); // #7c3aed - Neon Violet
-        vec3 aquaTeal = vec3(0.024, 0.714, 0.831); // #06b6d4 - Aqua Accent
-        float scrollPurpleShift = 0.5 + 0.5 * cos(1.8 * u_scroll_progress + t * 0.3);
-        vec3 col3 = mix(cyberPurple, aquaTeal, scrollPurpleShift);
-        vec4 layer3 = vec4(col3 * n3, n3 * 0.32);
-
-        // ── Multi-Layer Composition (Max 3 layers, blended smoothly) ──
-        vec3 finalColor = vec3(0.0);
-        float finalAlpha = 0.0;
-
-        // Layer 1 is foundational
-        finalColor += layer1.rgb * 0.45;
-        finalAlpha += layer1.a * 0.40;
-
-        // Layer 2 addition (if u_active_layers >= 2.0)
+        // ── LAYER 2: Primary Neural Matrix (Executed conditionally) ──
         if (u_active_layers > 1.5) {
+          vec2 uv2 = uv * 1.0;
+          float shape2 = neuro_layer(uv2, t * 0.65, pForce * 0.95, 7.5, 1.0);
+          float n2 = max(0.0, shape2 - 0.22);
+          n2 = 1.05 * pow(n2, 2.6);
+          n2 += 0.22 * pow(n2, 5.0);
+
+          vec3 cyan = vec3(0.0, 0.706, 0.847);
+          vec3 oceanBlue = vec3(0.0, 0.467, 0.714);
+          float scrollCyanShift = 0.45 + 0.35 * sin(2.0 * u_scroll_progress + 1.2);
+          vec3 col2 = mix(oceanBlue, cyan, scrollCyanShift);
+          vec4 layer2 = vec4(col2 * n2, n2 * 0.48);
           finalColor += layer2.rgb * 0.55;
           finalAlpha += layer2.a * 0.48;
         }
 
-        // Layer 3 addition (if u_active_layers >= 2.5)
+        // ── LAYER 3: Ethereal Filament Veil (Executed conditionally) ──
         if (u_active_layers > 2.5) {
+          vec2 uv3 = uv * 1.35;
+          float shape3 = neuro_layer(uv3, t * 0.52 + 1.4, pForce * 0.55, 11.2, 1.18);
+          float n3 = max(0.0, shape3 - 0.30);
+          n3 = 0.95 * pow(n3, 3.0);
+          n3 += 0.20 * pow(n3, 6.0);
+
+          vec3 cyberPurple = vec3(0.486, 0.227, 0.929);
+          vec3 aquaTeal = vec3(0.024, 0.714, 0.831);
+          float scrollPurpleShift = 0.5 + 0.5 * cos(1.8 * u_scroll_progress + t * 0.3);
+          vec3 col3 = mix(cyberPurple, aquaTeal, scrollPurpleShift);
+          vec4 layer3 = vec4(col3 * n3, n3 * 0.32);
           finalColor += layer3.rgb * 0.40;
           finalAlpha += layer3.a * 0.35;
         }
@@ -196,7 +198,7 @@ export default function InteractiveNeuralVortex({
         finalColor *= vignette;
         finalAlpha *= vignette;
 
-        // Subtlety calibration to keep ambient background serene and text readable
+        // Subtlety calibration
         finalAlpha = clamp(finalAlpha * u_intensity, 0.0, 0.60);
         finalColor = finalColor * u_intensity;
 
@@ -260,17 +262,24 @@ export default function InteractiveNeuralVortex({
     const uIntensity = gl.getUniformLocation(program, "u_intensity");
 
     // Static uniform values
-    gl.uniform1f(uActiveLayers, Math.min(3, Math.max(1, layers)));
+    gl.uniform1f(uActiveLayers, effectiveLayers);
     gl.uniform1f(uIntensity, 1.0);
 
-    // Resize handler with devicePixelRatio clamp to preserve high framerates
+    // Canvas scaling: On mobile devices, downscale internal resolution to 0.45x
+    // which drops GPU fill-rate by 75-80% while retaining ambient cosmic beauty!
     const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const isMobile =
+        window.innerWidth < 768 ||
+        ("ontouchstart" in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+
+      const dpr = isMobile ? 0.45 : Math.min(window.devicePixelRatio || 1, 1.25);
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
 
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform1f(uRatio, width / Math.max(height, 1));
@@ -279,8 +288,12 @@ export default function InteractiveNeuralVortex({
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // Pointer events
+    // Pointer events with throttling for mobile
+    let lastPointerUpdate = 0;
     const handlePointerMove = (e: PointerEvent | MouseEvent) => {
+      const now = performance.now();
+      if (now - lastPointerUpdate < 16) return;
+      lastPointerUpdate = now;
       pointerRef.current.tX = e.clientX;
       pointerRef.current.tY = e.clientY;
       pointerRef.current.hasInteracted = true;
@@ -288,6 +301,9 @@ export default function InteractiveNeuralVortex({
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches[0]) {
+        const now = performance.now();
+        if (now - lastPointerUpdate < 25) return;
+        lastPointerUpdate = now;
         pointerRef.current.tX = e.touches[0].clientX;
         pointerRef.current.tY = e.touches[0].clientY;
         pointerRef.current.hasInteracted = true;
@@ -297,17 +313,38 @@ export default function InteractiveNeuralVortex({
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
-    // Render loop
+    // Render loop with Auto-Pause when tab is hidden or when Modal is open
     let isTabVisible = true;
+    let isModalOpen = false;
+
     const handleVisibilityChange = () => {
       isTabVisible = !document.hidden;
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    const render = () => {
-      if (!isTabVisible) {
+    const handleModalToggle = (e: Event) => {
+      const customEvt = e as CustomEvent<{ open: boolean }>;
+      isModalOpen = !!customEvt.detail?.open || document.body.classList.contains("modal-open");
+    };
+    window.addEventListener("outergazers:modal-open", handleModalToggle);
+
+    let lastFrameTime = 0;
+    const frameInterval = isMobileDevice ? 1000 / 45 : 0; // 45fps cap on mobile saves battery and eliminates heat
+
+    const render = (time: number) => {
+      // Completely pause render loop if tab is inactive or modal is open
+      if (!isTabVisible || isModalOpen || document.body.classList.contains("modal-open")) {
         animationRef.current = requestAnimationFrame(render);
         return;
+      }
+
+      if (frameInterval > 0) {
+        const delta = time - lastFrameTime;
+        if (delta < frameInterval) {
+          animationRef.current = requestAnimationFrame(render);
+          return;
+        }
+        lastFrameTime = time - (delta % frameInterval);
       }
 
       const currentTime = performance.now() * speed;
@@ -341,13 +378,14 @@ export default function InteractiveNeuralVortex({
       animationRef.current = requestAnimationFrame(render);
     };
 
-    render();
+    animationRef.current = requestAnimationFrame(render);
 
     // Cleanup resources
     return () => {
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("outergazers:modal-open", handleModalToggle);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
 
       if (animationRef.current) {

@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { AsciiMedia } from "@/components/ui/AsciiMediaLoader";
 
 export interface CarouselProjectCardProps {
   type: "project" | "artwork";
@@ -23,28 +26,18 @@ export default function CarouselProjectCard({
 }: CarouselProjectCardProps) {
   return (
     <div className="w-[85vw] max-w-[800px] h-[55vh] md:h-[65vh] rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#0d0d0d] border border-zinc-800 shadow-2xl relative group">
-      {/* Media Background */}
+      {/* Media Background with ASCII Loading Animation */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {mediaType === "video" ? (
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
-            src={mediaUrl}
-          />
-        ) : (
-          <Image
-            src={mediaUrl}
-            alt={title || "Artwork"}
-            fill
-            className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 group-hover:scale-105"
-          />
-        )}
+        <AsciiMedia
+          mediaType={mediaType}
+          src={mediaUrl}
+          alt={title || "Project"}
+          className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-opacity duration-500"
+        />
+
         {/* Gradient Overlay for Project Cards */}
         {type === "project" && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
         )}
       </div>
 
@@ -64,8 +57,6 @@ export default function CarouselProjectCard({
               {description}
             </p>
           )}
-
-
         </div>
       )}
     </div>

@@ -75,19 +75,19 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
   "badgeText": "Registrations Open · SIET Only",
   "featured": true,
   "venue": "Primarily Online, and optionally XR Lab, Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore",
-  "dates": "Oct 27 – Nov 30, 2026",
-  "inPersonDates": "November 30, 2026 (~12:00 PM at XR Lab, SIET)",
-  "duration": "Online Jam + XR Lab Finale (Oct 27 – Nov 30)",
+  "dates": "Oct 29 – Nov 29, 2026",
+  "inPersonDates": "Oct 29 – Nov 29, 2026",
+  "duration": "Online Game Jam (Oct 29 – Nov 29, 2026)",
   "format": "Primarily Online Game Jam + Optional XR Lab Access",
   "pricePerPerson": 0,
   "minTeamSize": 3,
   "maxTeamSize": 4,
-  "theme": "LIMITED SPACE · DEATH IS JUST A BEGINNING",
-  "themeDescription": "Official themes announced! Choose 'LIMITED SPACE', 'DEATH IS JUST A BEGINNING', combine them both into a hybrid concept, or completely ignore them and build your dream game. 100% creative freedom for all SIET squads with zero penalty.",
+  "theme": "LIMITED SPACE · LOOPS",
+  "themeDescription": "Official themes announced! Themes are mandatory for all SIET squads: choose 'LIMITED SPACE', 'LOOPS', or combine them both into a hybrid concept. Games must incorporate at least one of the official themes to qualify for judging and prizes.",
   "totalPrizePool": "Inter-College Passes + XR Lab Mentorship",
   "targetAudience": "Exclusively for Students of Sri Shakthi Institute of Engineering and Technology (SIET)",
-  "countdownTarget": "2026-11-27T11:00:00+05:30",
-  "countdownLabel": "Jam Submission Closes In",
+  "countdownTarget": "2026-11-29T23:59:59+05:30",
+  "countdownLabel": "Registrations & Submissions Close In",
   "registrationType": "modal",
   "registrationUrl": "",
   "googleSheetScriptUrl": "",
@@ -108,18 +108,18 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
   "schedule": [
     {
       "phase": "Phase 1: Registration Window",
-      "time": "Oct 27 – Nov 27, 2026 · Online",
-      "description": "Open online registration portal. Verify SIET student roll numbers and form squads of 3 to 4 members. 100% Free Entry."
+      "time": "Oct 29 – Nov 29, 2026 · Online",
+      "description": "Open online registration portal. Verify SIET student roll numbers and form squads of 3 to 4 members. 100% Free Entry. Registrations strictly close on November 29, 2026 (11:59 PM IST)."
     },
     {
       "phase": "Phase 2: Remote Jam Phase",
-      "time": "Oct 27 – Nov 27, 2026 · Online",
-      "description": "Themes are live: 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING' (pick one, combine both, or completely ignore them). Teams conceptualize and build their games (Windows, Web, or Android) with mentor check-ins and optional XR Lab testing. Google Drive submission link provided in the final week."
+      "time": "Oct 29 – Nov 29, 2026 · Online",
+      "description": "Themes are live and mandatory: 'LIMITED SPACE' and 'LOOPS' (pick either theme or combine both). Teams conceptualize and build their games (Windows, Web, or Android) with mentor check-ins and optional XR Lab testing. Submissions close November 29, 2026 (11:59 PM IST)."
     },
     {
-      "phase": "Phase 3: Result Announcement",
-      "time": "Nov 30, 2026 (~12:00 PM) · XR Lab, SIET",
-      "description": "Official results and rankings announcement at XR Lab, SIET. Winner felicitations, certificates, and instructions for the December Inter-College event."
+      "phase": "Phase 3: Submissions & Evaluation",
+      "time": "Nov 29, 2026 (11:59 PM IST) · Online",
+      "description": "Hard submission lockdown. Squads upload their executable builds (.ZIP package + readme) to Google Drive. Jury evaluation begins online with results announced via Discord."
     }
   ],
   "prizes": [
@@ -164,20 +164,24 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     "Zero Registration Fee: 100% Free Participation for all SIET students.",
     "Team Composition: Strictly a team event with 3 to 4 members per squad. All members must be currently enrolled SIET students.",
     "Unified Competition: No separate tracks or segregated divisions. All games compete under a single unified category. Supported platforms: Windows PC (.exe), Web (HTML5/WebGL), and Android (.apk).",
-    "Theme Freedom & Creative Choice: The official themes are 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING'. Squads have complete creative freedom—you may choose one theme, combine both into a hybrid mechanic, or completely ignore them without penalty to build whatever game concept excites you. Judging evaluates innovation and creative mechanics with zero requirement for theme syncing.",
+    "Mandatory Jam Themes: The official themes are 'LIMITED SPACE' and 'LOOPS'. Themes are mandatory—squads must choose either 'LIMITED SPACE', 'LOOPS', or combine both into a hybrid game mechanic. Games must incorporate at least one of the official themes to be eligible for judging, scoring, and prizes.",
     "AI Disclosure (Mandatory in Readme): Generative AI tools are permitted during development (for coding, art, music, voiceover, etc.). However, full disclosure is mandatory: you MUST state in your submission's Readme file what AI tools were used and for which parts of the game (e.g. AI used for code debugging, 2D art generation, background music, etc.).",
     "Pre-Made Assets & Creator Credits: You are allowed to use pre-made 3D/2D models, audio, and open-source assets from other creators, provided you give clear attribution and credit to the original creators in your Readme file.",
     "Code & Asset Reuse from Previous Projects: You are fully allowed to reuse scripts, frameworks, shaders, and assets from your own previous projects to accelerate development.",
-    "Remote Jamming: Development takes place online from Oct 27 until Nov 27, 2026. Teams may optionally request XR Lab access for testing.",
-    "Submission Package & Drive: Teams must submit a single .ZIP file containing (1) the executable game build and (2) a Readme file/doc with game instructions, controls, squad roll numbers, third-party asset credits, previous project assets noted, and mandatory AI disclosure. An official Google Drive submission link will be provided during the last week of the jam.",
-    "Submission Deadline: November 27, 2026 (11:00 AM IST). Final .ZIP package must be uploaded before deadline lock.",
+    "Remote Jamming: Development takes place online from Oct 29 until Nov 29, 2026. Teams may optionally request XR Lab access for testing.",
+    "Submission Package & Drive: Teams must submit a single .ZIP file containing (1) the executable game build and (2) a Readme file/doc with game instructions, controls, squad roll numbers, chosen theme, third-party asset credits, previous project assets noted, and mandatory AI disclosure. An official Google Drive submission link will be provided during the last week of the jam.",
+    "Registration & Submission Deadline: November 29, 2026 (11:59 PM IST). Both registrations and final .ZIP submissions strictly close at deadline lock.",
     "Intellectual Property: Developers retain 100% copyright and IP ownership of their creations.",
     "Advancement to Inter-College Event: Top team wins free direct entry to the December Inter-College Game Jam; top runner-up teams earn tiered registration discounts."
   ],
   "faqs": [
     {
       "question": "What are the official themes, and do we have to follow them?",
-      "answer": "The official themes are 'LIMITED SPACE' and 'DEATH IS JUST A BEGINNING'. You have total creative freedom: pick one theme, combine them both into a hybrid game, or completely ignore them! There are no point deductions or penalties if you choose not to use the themes."
+      "answer": "Yes, following the themes is mandatory! The official themes are 'LIMITED SPACE' and 'LOOPS'. Squads must choose 'LIMITED SPACE', 'LOOPS', or combine both into a hybrid mechanic. Incorporating at least one official theme is required for judging and scoring."
+    },
+    {
+      "question": "When do registrations and project submissions close?",
+      "answer": "Both registrations and project submissions close on November 29, 2026 (11:59 PM IST). Teams must complete their squad registration and upload their playable game .ZIP before the deadline."
     },
     {
       "question": "Can we use AI tools, and what is the AI Disclosure rule?",
@@ -189,7 +193,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     },
     {
       "question": "Are there separate tracks or disciplines?",
-      "answer": "No! There are NO separate tracks or divisions. All squads compete together under a unified game jam theme. Teams are free to develop their game for Windows PC, Web, or Android."
+      "answer": "No! There are NO separate tracks or divisions. All squads compete together under the unified game jam themes. Teams are free to develop their game for Windows PC, Web, or Android."
     },
     {
       "question": "What platforms can we develop for?",
@@ -197,7 +201,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     },
     {
       "question": "How do we submit our game?",
-      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp and Discord. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, team roll numbers, AI disclosure, and asset credits before the deadline on November 27, 2026 (11:00 AM IST)."
+      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp and Discord. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, team roll numbers, chosen theme, AI disclosure, and asset credits before the deadline on November 29, 2026 (11:59 PM IST)."
     },
     {
       "question": "Who can participate in this Game Jam?",
@@ -213,7 +217,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     },
     {
       "question": "Where will the event take place?",
-      "answer": "The game jam is primarily ONLINE. You can brainstorm and build from home or hostel between Oct 27 and Nov 27. Optional access to the SIET XR Lab is available for testing. Results will be announced on November 30, 2026 (~12:00 PM) at the XR Lab, SIET."
+      "answer": "The game jam is primarily ONLINE. You can brainstorm and build from home or hostel between Oct 29 and Nov 29. Registrations and submissions both end on November 29, 2026 (11:59 PM IST). Optional access to the SIET XR Lab is available for testing. Results will be announced on November 30, 2026 (~12:00 PM) at the XR Lab, SIET."
     },
     {
       "question": "What are the prizes and perks?",

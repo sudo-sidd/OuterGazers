@@ -21,7 +21,14 @@ export default function StarfieldCanvas() {
     if (!ctx) return;
 
     let animationId: number;
-    const STAR_COUNT = 280;
+    const isMobile =
+      window.innerWidth < 768 ||
+      ("ontouchstart" in window) ||
+      (navigator.maxTouchPoints > 0) ||
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+
+    // 45 stars on mobile vs 200 on desktop ensures 0% CPU overhead
+    const STAR_COUNT = isMobile ? 45 : 200;
     const stars: Star[] = [];
     let W = 0;
     let H = 0;
@@ -43,19 +50,38 @@ export default function StarfieldCanvas() {
       }
     };
 
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
+    let isTabVisible = true;
+    let isModalOpen = false;
 
+    const handleVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const handleModalToggle = (e: Event) => {
+      const customEvt = e as CustomEvent<{ open: boolean }>;
+      isModalOpen = !!customEvt.detail?.open || document.body.classList.contains("modal-open");
+    };
+    window.addEventListener("outergazers:modal-open", handleModalToggle);
+
+    const draw = () => {
+      // Pause completely if tab is not visible or modal is open
+      if (!isTabVisible || isModalOpen || document.body.classList.contains("modal-open")) {
+        animationId = requestAnimationFrame(draw);
+        return;
+      }
+
+      ctx.clearRect(0, 0, W, H);
       ctx.save();
-      
+
       const mousePos = mousePosRef.current;
-      // Shift origin towards mouse for parallax effect
       const originX = W / 2 + (mousePos ? (mousePos.x - W / 2) * 0.1 : 0);
       const originY = H / 2 + (mousePos ? (mousePos.y - H / 2) * 0.1 : 0);
-      
+
       ctx.translate(originX, originY);
 
-      for (const star of stars) {
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
         star.pz = star.z;
         star.z -= 1.8;
 
@@ -68,25 +94,24 @@ export default function StarfieldCanvas() {
 
         const sx = (star.x / star.z) * W;
         const sy = (star.y / star.z) * H;
-        let px = (star.x / star.pz) * W;
-        let py = (star.y / star.pz) * H;
-        
-        // Repel effect based on mouse position
-        if (mousePos) {
-           const dx = sx - (mousePos.x - originX);
-           const dy = sy - (mousePos.y - originY);
-           const dist = Math.sqrt(dx * dx + dy * dy);
-           const repelRadius = 130;
-           
-           if (dist < repelRadius) {
-              const force = (repelRadius - dist) / repelRadius;
-              // Push star away from mouse
-              star.x += (dx / dist) * force * 5;
-              star.y += (dy / dist) * force * 5;
-           }
+        const px = (star.x / star.pz) * W;
+        const py = (star.y / star.pz) * H;
+
+        // Repel effect based on mouse position (desktop only)
+        if (mousePos && !isMobile) {
+          const dx = sx - (mousePos.x - originX);
+          const dy = sy - (mousePos.y - originY);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const repelRadius = 130;
+
+          if (dist < repelRadius) {
+            const force = (repelRadius - dist) / repelRadius;
+            star.x += (dx / dist) * force * 5;
+            star.y += (dy / dist) * force * 5;
+          }
         }
 
-        const size = Math.max(0.1, (1 - star.z / W) * 2.5);
+        const size = Math.max(0.1, (1 - star.z / W) * 2.2);
         const alpha = 1 - star.z / W;
 
         const colorMix = Math.min(1, (1 - star.z / W) * 3);
@@ -97,7 +122,7 @@ export default function StarfieldCanvas() {
         ctx.beginPath();
         ctx.moveTo(px, py);
         ctx.lineTo(sx, sy);
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.85})`;
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.8})`;
         ctx.lineWidth = size;
         ctx.stroke();
       }
@@ -114,18 +139,20 @@ export default function StarfieldCanvas() {
       resize();
       initStars();
     };
-    
+
     const handleMouseMove = (e: MouseEvent) => {
-       mousePosRef.current = { x: e.clientX, y: e.clientY };
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("outergazers:modal-open", handleModalToggle);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
@@ -134,7 +161,7 @@ export default function StarfieldCanvas() {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.85 }}
+        style={{ opacity: 0.8 }}
       />
     </div>
   );

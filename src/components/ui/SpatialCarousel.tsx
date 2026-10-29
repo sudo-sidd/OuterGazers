@@ -4,6 +4,7 @@ import { useState, ReactNode } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { AsciiMedia } from "@/components/ui/AsciiMediaLoader";
 
 /* ───────────────────────────────────────────────────────
    Expanded Card — Accordion-style expanding flex cards
@@ -90,28 +91,14 @@ function ExpandingCard({ item, index, isActive, onActivate, total }: ExpandingCa
       onClick={onActivate}
       onMouseEnter={onActivate}
     >
-      {/* Background media */}
+      {/* Background media with ASCII Loading Animation */}
       <div className="absolute inset-0 z-0">
-        {item.mediaType === "video" ? (
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            src={item.mediaUrl}
-          />
-        ) : (
-          <Image
-            src={item.mediaUrl}
-            alt={item.title || "Project"}
-            fill
-            className="object-cover transition-transform duration-700 ease-out"
-            style={{
-              transform: isActive ? "scale(1.05)" : "scale(1.15)",
-            }}
-          />
-        )}
+        <AsciiMedia
+          mediaType={item.mediaType}
+          src={item.mediaUrl}
+          alt={item.title || "Project"}
+          className="w-full h-full object-cover transition-transform duration-500 ease-out"
+        />
       </div>
 
       {/* Dark overlay — heavier when collapsed */}
@@ -265,25 +252,14 @@ function MobileCard({ item, index, isActive, onActivate }: MobileCardProps) {
       }}
       onClick={onActivate}
     >
-      {/* Background media */}
+      {/* Background media with ASCII Loading Animation */}
       <div className="absolute inset-0 z-0">
-        {item.mediaType === "video" ? (
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            src={item.mediaUrl}
-          />
-        ) : (
-          <Image
-            src={item.mediaUrl}
-            alt={item.title || "Project"}
-            fill
-            className="object-cover"
-          />
-        )}
+        <AsciiMedia
+          mediaType={item.mediaType}
+          src={item.mediaUrl}
+          alt={item.title || "Project"}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Overlay */}

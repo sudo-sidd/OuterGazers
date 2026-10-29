@@ -148,26 +148,22 @@ export default function EventAnnouncementPopup() {
     }
   }, [isEventPage, isVisible]);
 
-  // Animate scanline sweep
+  // Lock body scroll and pause background canvases
   useEffect(() => {
     if (!isVisible) return;
-    let frame: number;
-    let offset = 0;
-    const animate = () => {
-      offset = (offset + 0.5) % 100;
-      setScanlineOffset(offset);
-      frame = requestAnimationFrame(animate);
-    };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [isVisible]);
-
-  // Lock body scroll
-  useEffect(() => {
-    if (!isVisible) return;
+    document.body.classList.add("modal-open");
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("outergazers:modal-open", { detail: { open: true } }));
+    }
+    return () => {
+      document.body.classList.remove("modal-open");
+      document.body.style.overflow = prev;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("outergazers:modal-open", { detail: { open: false } }));
+      }
+    };
   }, [isVisible]);
 
   const handleDismiss = () => {
@@ -221,7 +217,7 @@ export default function EventAnnouncementPopup() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
               onClick={handleDismiss}
-              className="fixed inset-0 bg-black/85 backdrop-blur-md"
+              className="fixed inset-0 bg-black/95 md:bg-black/85 md:backdrop-blur-md"
             />
 
             {/* Popup */}
@@ -389,7 +385,7 @@ export default function EventAnnouncementPopup() {
                   transition={{ delay: 0.25, duration: 0.5 }}
                   className="grid grid-cols-2 gap-2.5 mb-5"
                 >
-                  <StatBadge icon={Calendar} label="Jam Window" value="Oct 27 – Nov 30" accent="#00b4d8" />
+                  <StatBadge icon={Calendar} label="Jam Window" value="Oct 29 – Nov 29" accent="#00b4d8" />
                   <StatBadge icon={MapPin} label="Mode & Venue" value="Online + XR Lab SIET" accent="#00b4d8" />
                   <StatBadge icon={Trophy} label="Top Prize" value="Free InterCollege Entry" accent="#10b981" />
                   <StatBadge icon={Gamepad2} label="Perks" value="XR Lab Mentorship" accent="#7c3aed" />

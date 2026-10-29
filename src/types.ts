@@ -99,6 +99,7 @@ export interface TeamRegistrationPayload {
   collegeName: string;
   teamSize: number;
   totalAmount: number;
+  theme?: string;
   leader: TeamMember;
   members: TeamMember[];
   paymentStatus: "PENDING_VERIFICATION" | "VERIFIED" | "PENDING" | "PAID" | "FREE" | "FAILED";

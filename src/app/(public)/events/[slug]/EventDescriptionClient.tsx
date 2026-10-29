@@ -6,7 +6,7 @@ import {
   Trophy, Calendar, MapPin, Users, Utensils, 
   Gamepad2, Sparkles, CheckCircle2, ChevronDown, 
   ArrowLeft, ExternalLink, Monitor, Globe, Smartphone,
-  FolderArchive, FileText, UploadCloud, Minimize2, Skull, Shuffle
+  FolderArchive, FileText, UploadCloud, Minimize2, Repeat, Shuffle
 } from "lucide-react";
 import { FLAGSHIP_GAME_JAM, DISCORD_INVITE_URL, type EventItem } from "@/constants";
 import EventCountdown from "@/components/events/EventCountdown";
@@ -26,9 +26,9 @@ export default function EventDescriptionClient({
   return (
     <main className="bg-[#0a0a0a] text-white min-h-screen pt-28 pb-32 font-sans overflow-hidden">
       
-      {/* Background Ambient Glows */}
-      <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#00b4d8]/10 blur-[140px] rounded-full pointer-events-none -z-10" />
-      <div className="fixed bottom-10 right-10 w-[600px] h-[500px] bg-[#7c3aed]/8 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Background Ambient Glows (Rendered on larger screens to avoid mobile GPU compositor stalls) */}
+      <div className="hidden sm:block fixed top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#00b4d8]/10 blur-[140px] rounded-full pointer-events-none -z-10" />
+      <div className="hidden sm:block fixed bottom-10 right-10 w-[600px] h-[500px] bg-[#7c3aed]/8 blur-[160px] rounded-full pointer-events-none -z-10" />
 
       {/* Grid texture overlay */}
       <div
@@ -118,9 +118,9 @@ export default function EventDescriptionClient({
 
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-sans mb-3">
-                  {event.countdownLabel || "Jam Submission Closes In"}
+                  {event.countdownLabel || "Registrations & Submissions Close In"}
                 </p>
-                <EventCountdown targetDate={event.countdownTarget || "2026-11-27T11:00:00+05:30"} />
+                <EventCountdown targetDate={event.countdownTarget || "2026-11-29T23:59:59+05:30"} />
               </div>
 
               <div className="w-full space-y-3 pt-2">
@@ -218,7 +218,7 @@ export default function EventDescriptionClient({
         </section>
 
         {/* ═══════════════════════════════════════════
-            OFFICIAL JAM THEMES & CREATIVE FREEDOM
+            OFFICIAL JAM THEMES (MANDATORY)
         ═══════════════════════════════════════════ */}
         <section className="mb-24">
           <div className="relative rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900/60 via-zinc-950/80 to-black/90 p-8 md:p-12 overflow-hidden shadow-2xl shadow-black/80">
@@ -230,15 +230,15 @@ export default function EventDescriptionClient({
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-zinc-800/80 pb-6">
                 <div>
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[0.4em] text-[#00b4d8] mb-2">
-                    — Official Jam Themes Drop
+                    — Official Jam Themes (Mandatory)
                   </p>
                   <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
                     Official Game Jam Themes
                   </h2>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider self-start md:self-auto font-sans">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  100% Creative Liberty · No Forced Themes
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00b4d8]/10 border border-[#00b4d8]/30 text-[#00b4d8] text-xs font-bold uppercase tracking-wider self-start md:self-auto font-sans">
+                  <span className="w-2 h-2 rounded-full bg-[#00b4d8] animate-pulse" />
+                  Mandatory Theme Requirement · Pick Either or Combine Both
                 </div>
               </div>
 
@@ -249,7 +249,7 @@ export default function EventDescriptionClient({
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#00b4d8]/10 blur-2xl pointer-events-none" />
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#00b4d8] font-mono border border-[#00b4d8]/40 px-2.5 py-0.5 rounded bg-[#00b4d8]/10">
-                      Theme Option 01
+                      Theme 01
                     </span>
                     <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/15 border border-[#00b4d8]/30 flex items-center justify-center text-[#00b4d8] group-hover:scale-110 transition-transform">
                       <Minimize2 size={20} />
@@ -279,54 +279,54 @@ export default function EventDescriptionClient({
                   </div>
                 </div>
 
-                {/* Theme 2: Death Is Just A Beginning */}
+                {/* Theme 2: Loops */}
                 <div className="relative p-6 sm:p-8 rounded-xl bg-gradient-to-br from-[#7c3aed]/10 via-zinc-900/60 to-zinc-950 border border-[#7c3aed]/30 group hover:border-[#7c3aed]/60 transition-all duration-300 overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#7c3aed]/10 blur-2xl pointer-events-none" />
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#d946ef] font-mono border border-[#7c3aed]/40 px-2.5 py-0.5 rounded bg-[#7c3aed]/10">
-                      Theme Option 02
+                      Theme 02
                     </span>
                     <div className="w-10 h-10 rounded-lg bg-[#7c3aed]/15 border border-[#7c3aed]/30 flex items-center justify-center text-[#d946ef] group-hover:scale-110 transition-transform">
-                      <Skull size={20} />
+                      <Repeat size={20} />
                     </div>
                   </div>
 
                   <h3 className="font-sans text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase mb-3">
-                    DEATH IS JUST A BEGINNING
+                    LOOPS
                   </h3>
                   <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-4">
-                    Turn game over into a gameplay mechanic. Dying isn&apos;t failure—it&apos;s a catalyst for progression, transformation, or revelation.
+                    Turn repetition and recursion into core gameplay mechanics. Time loops, geometric loops, feedback cycles, or reality resets where each iteration reveals new truths.
                   </p>
 
                   <div className="space-y-1.5 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-400">
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
-                      <span>Corpses left behind become stepping stones, platform bridges, or triggers</span>
+                      <span>Time loops, reset cycles, temporal echoes, or recording player ghosts</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
-                      <span>Reincarnating with ghostly powers, spectral forms, or mutated perks</span>
+                      <span>Infinite recursive puzzles, non-Euclidean geometry, or circular corridors</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />
-                      <span>Roguelike evolutionary loops where each demise unlocks the narrative</span>
+                      <span>Systemic automation loops, feedback cycles, or escalating rogue-lite repetitions</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Creative Liberty Banner */}
-              <div className="p-6 rounded-xl bg-zinc-900/40 border border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              {/* Mandatory Policy Banner */}
+              <div className="p-6 rounded-xl bg-zinc-900/40 border border-[#00b4d8]/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                  <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/10 border border-[#00b4d8]/30 flex items-center justify-center text-[#00b4d8] shrink-0 mt-0.5">
                     <Shuffle size={20} />
                   </div>
                   <div>
                     <h4 className="font-sans text-base sm:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
-                      Pick One · Combine Both · Or Completely Ignore Them
+                      Themes Are Mandatory · Pick Theme 1, Theme 2, or Combine Both
                     </h4>
                     <p className="text-xs sm:text-sm text-zinc-300 mt-1 leading-relaxed max-w-4xl">
-                      You are totally free to choose <span className="text-[#00b4d8] font-semibold">either theme</span>, fuse them together into a hybrid concept (e.g. dying inside a shrinking room to solve puzzles), or <span className="text-emerald-400 font-semibold">completely ignore them</span> and develop whatever original game idea you want. <span className="text-white font-bold">There are zero score penalties</span> for building your own concept!
+                      Themes are <span className="text-[#00b4d8] font-bold">not optional</span>. Every participating squad must construct their game around <span className="text-[#00b4d8] font-semibold">Theme 01 (LIMITED SPACE)</span>, <span className="text-[#d946ef] font-semibold">Theme 02 (LOOPS)</span>, or a <span className="text-white font-semibold">hybrid fusion</span> of both mechanics (e.g. looping time cycles within a shrinking room). <span className="text-white font-bold">Theme adherence is required</span> for judging, scoring, and awards!
                     </p>
                   </div>
                 </div>
@@ -462,7 +462,7 @@ export default function EventDescriptionClient({
                       Google Drive Submission Link (Last Week Release)
                     </span>
                     <p className="text-zinc-300 leading-relaxed font-sans">
-                      The official Google Drive submission folder link will be shared directly with all registered squads via WhatsApp &amp; Discord during the <span className="text-[#00b4d8] font-bold">final week of the jam</span>. Upload your squad&apos;s .ZIP archive before <span className="text-white font-bold">November 27, 2026 · 11:00 AM IST</span>.
+                      The official Google Drive submission folder link will be shared directly with all registered squads via WhatsApp &amp; Discord during the <span className="text-[#00b4d8] font-bold">final week of the jam</span>. Upload your squad&apos;s .ZIP archive before <span className="text-white font-bold">November 29, 2026 · 11:59 PM IST</span>.
                     </p>
                   </div>
                 </div>
@@ -615,7 +615,7 @@ export default function EventDescriptionClient({
             <div className="p-8 bg-zinc-900/30 border border-zinc-800 rounded-xl space-y-6">
               <div className="border-b border-zinc-800 pb-4">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b4d8] font-sans">
-                  October 27 – November 30, 2026
+                  October 29 – November 29, 2026
                 </span>
                 <h3 className="text-2xl font-bold text-white font-sans">
                   Phase-by-Phase Execution
@@ -624,10 +624,10 @@ export default function EventDescriptionClient({
 
               <div className="space-y-4 text-xs">
                 {[
-                  { time: "Oct 27 – Nov 27, 2026", act: "Registration & Student ID Verification", notes: "Online registration open for all SIET students. Free entry; student roll numbers verified." },
-                  { time: "October 27, 2026", act: "Official Theme Announcement", notes: "The secret jam theme is broadcast live on Discord. Teams begin conceptualization and prototyping." },
-                  { time: "Oct 27 – Nov 27, 2026", act: "Remote Jamming & Mentor Check-Ins", notes: "Teams build their games remotely with technical guidance and optional testing at the SIET XR Lab." },
-                  { time: "Nov 27, 2026 · 11:00 AM", act: "HARD SUBMISSION LOCKDOWN", notes: "Final .zip package (executable build + readme) must be uploaded to the official Google Drive before the deadline closes.", highlight: true },
+                  { time: "Oct 29 – Nov 29, 2026", act: "Registration & Student ID Verification", notes: "Online registration open for all SIET students. Free entry; registrations close Nov 29 (11:59 PM IST)." },
+                  { time: "October 29, 2026", act: "Official Theme Announcement", notes: "The mandatory jam themes are live. Teams begin conceptualization and prototyping." },
+                  { time: "Oct 29 – Nov 29, 2026", act: "Remote Jamming & Mentor Check-Ins", notes: "Teams build their games remotely with technical guidance and optional testing at the SIET XR Lab." },
+                  { time: "Nov 29, 2026 · 11:59 PM", act: "HARD SUBMISSION & REGISTRATION LOCKDOWN", notes: "Final .zip package (executable build + readme) and squad registrations strictly close at 11:59 PM IST.", highlight: true },
                   { time: "Nov 30, 2026 · ~12:00 PM", act: "Result Announcement & Inter-College Briefing", notes: "Gather at XR Lab, SIET for rankings release, winner felicitations, and entry instructions for the December Inter-College event." },
                 ].map((item, i) => (
                   <div
