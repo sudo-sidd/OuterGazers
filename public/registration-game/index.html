@@ -288,10 +288,6 @@
       </div>
 
       <div class="relative pointer-events-auto flex items-center gap-1.5">
-        <button id="btn-quick-dev" type="button" class="candy-pill px-2.5 py-1.5 flex items-center gap-1 active:translate-y-0.5 transition bg-rose-500 text-white border-2 border-indigo-950 font-arcade text-xs" title="Open Dev & Debug Tools (Key: `)">
-          <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-current"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          <span>DEV</span>
-        </button>
         <button id="btn-menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu-panel" class="candy-box menu-btn">
           <svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="none" stroke="#1e1b4b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
         </button>
@@ -311,11 +307,6 @@
           <button id="btn-open-tutorial" type="button" class="menu-row">
             <svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="none" stroke="#1e1b4b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="#c084fc"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5" stroke="#fffdf7"/><circle cx="12" cy="16.5" r="1" fill="#fffdf7"/></svg>
             <span>How to play</span>
-          </button>
-          <button id="btn-open-dev-menu" type="button" class="menu-row text-rose-600 font-bold">
-            <svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="none" stroke="#1e1b4b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="#fde047"/></svg>
-            <span>Dev & Debug Tools</span>
-            <span class="ml-auto px-1.5 py-0.5 rounded bg-rose-600 text-white font-arcade text-[9px]">DEV</span>
           </button>
           <button id="btn-toggle-audio" type="button" class="menu-row">
             <svg id="icon-sound-on" viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="none" stroke="#1e1b4b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#22d3ee"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
@@ -434,114 +425,6 @@
     <span id="end-score"></span>
     <span id="end-accuracy"></span>
     <span id="end-combo"></span>
-  </div>
-
-  <!-- Layer 7.6: Developer / Debug & Cheats Modal -->
-  <div id="dev-modal" class="hidden fixed inset-0 z-40 pointer-events-auto bg-indigo-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
-    <div class="candy-card max-w-lg w-full p-4 sm:p-5 text-center relative animate-pop max-h-[92vh] overflow-y-auto">
-
-      <div class="flex items-center justify-between border-b-2 border-indigo-950 pb-2 mb-3">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-arcade text-xs">DEV BUILD</span>
-          <h2 class="font-arcade text-lg sm:text-xl text-indigo-950">DEBUG TOOLS</h2>
-        </div>
-        <button id="btn-close-dev-modal" type="button" class="candy-pill px-2.5 py-1 text-xs font-arcade active:scale-95">✕ CLOSE</button>
-      </div>
-
-      <div class="space-y-2.5 text-left">
-
-        <!-- Section 1: Gameplay Cheats -->
-        <div class="bg-amber-50 border-2 border-indigo-950 rounded-xl p-2.5">
-          <div class="font-arcade text-xs text-amber-900 mb-1.5 flex items-center justify-between">
-            <span>🛡️ CHEATS & SURVIVAL</span>
-            <span class="text-[10px] text-amber-700 font-sans font-semibold">Hotkeys: [G] God, [I] Ammo</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <button id="dev-btn-godmode" type="button" class="candy-pill py-1.5 px-2 font-arcade flex items-center justify-center gap-1.5 bg-white active:scale-95">
-              <span>GOD MODE:</span><span id="dev-godmode-status" class="text-rose-600 font-bold">OFF</span>
-            </button>
-            <button id="dev-btn-infammo" type="button" class="candy-pill py-1.5 px-2 font-arcade flex items-center justify-center gap-1.5 bg-white active:scale-95">
-              <span>INF AMMO:</span><span id="dev-infammo-status" class="text-rose-600 font-bold">OFF</span>
-            </button>
-            <button id="dev-btn-heal" type="button" class="candy-pill py-1.5 px-2 font-arcade bg-cyan-100 active:scale-95">
-              + HEAL FULL (5)
-            </button>
-            <button id="dev-btn-damage" type="button" class="candy-pill py-1.5 px-2 font-arcade bg-rose-100 active:scale-95">
-              - TAKE DAMAGE (-1)
-            </button>
-          </div>
-        </div>
-
-        <!-- Section 2: Enemy Spawning & Speed Control -->
-        <div class="bg-sky-50 border-2 border-indigo-950 rounded-xl p-2.5">
-          <div class="font-arcade text-xs text-sky-900 mb-1.5 flex items-center justify-between">
-            <span>👻 ENEMY SPAWN & SPEED</span>
-            <span id="dev-enemy-count-label" class="font-arcade text-rose-600 text-[11px]">ALIVE: 0</span>
-          </div>
-          <div class="grid grid-cols-3 gap-1.5 text-xs mb-2">
-            <button id="dev-btn-spawn-1" type="button" class="candy-pill py-1.5 font-arcade bg-emerald-100 active:scale-95">
-              +1 GHOST
-            </button>
-            <button id="dev-btn-spawn-3" type="button" class="candy-pill py-1.5 font-arcade bg-emerald-200 active:scale-95">
-              +3 GHOSTS
-            </button>
-            <button id="dev-btn-kill-all" type="button" class="candy-pill py-1.5 font-arcade bg-rose-200 active:scale-95">
-              KILL ALL
-            </button>
-          </div>
-
-          <div class="text-[11px] font-arcade text-indigo-950 mb-1">ENEMY MOVEMENT SPEED:</div>
-          <div class="grid grid-cols-4 gap-1 text-[11px]">
-            <button id="dev-spd-0" type="button" class="candy-pill py-1 text-center font-arcade bg-white">0x (FREEZE)</button>
-            <button id="dev-spd-05" type="button" class="candy-pill py-1 text-center font-arcade bg-white">0.5x</button>
-            <button id="dev-spd-1" type="button" class="candy-pill py-1 text-center font-arcade bg-cyan-300 font-bold">1x (NORM)</button>
-            <button id="dev-spd-2" type="button" class="candy-pill py-1 text-center font-arcade bg-white">2x (FAST)</button>
-          </div>
-        </div>
-
-        <!-- Section 3: Waves & Game State -->
-        <div class="bg-purple-50 border-2 border-indigo-950 rounded-xl p-2.5">
-          <div class="font-arcade text-xs text-purple-900 mb-1.5">
-            <span>🌊 WAVE SELECTOR & FLOW</span>
-          </div>
-          <div class="grid grid-cols-3 gap-1.5 text-xs mb-2">
-            <button id="dev-btn-wave-1" type="button" class="candy-pill py-1.5 font-arcade bg-white active:scale-95">WAVE 1</button>
-            <button id="dev-btn-wave-2" type="button" class="candy-pill py-1.5 font-arcade bg-white active:scale-95">WAVE 2</button>
-            <button id="dev-btn-wave-3" type="button" class="candy-pill py-1.5 font-arcade bg-white active:scale-95">WAVE 3</button>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 text-xs">
-            <button id="dev-btn-win" type="button" class="candy-pill py-1.5 font-arcade bg-emerald-300 text-indigo-950 active:scale-95">
-              🏆 TRIGGER WIN
-            </button>
-            <button id="dev-btn-loss" type="button" class="candy-pill py-1.5 font-arcade bg-rose-300 text-indigo-950 active:scale-95">
-              💀 TRIGGER LOSS
-            </button>
-          </div>
-        </div>
-
-        <!-- Section 4: Live Debug Stats HUD Toggle -->
-        <div class="bg-slate-100 border-2 border-indigo-950 rounded-xl p-2.5 flex items-center justify-between">
-          <div>
-            <div class="font-arcade text-xs text-indigo-950">LIVE STATS OVERLAY</div>
-            <div class="text-[10px] text-slate-600">Shows FPS, Camera Pos, Angles & Active Pools</div>
-          </div>
-          <button id="dev-btn-toggle-stats" type="button" class="candy-pill py-1 px-3 font-arcade text-xs bg-white">
-            <span id="dev-stats-status" class="text-indigo-950 font-bold">OFF</span>
-          </button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Live Stats Overlay on screen -->
-  <div id="dev-live-stats" class="hidden fixed left-2.5 bottom-24 z-30 pointer-events-none font-mono text-[10px] text-emerald-400 bg-black/85 border border-emerald-500/40 rounded p-2 leading-relaxed max-w-xs shadow-lg">
-    <div id="dev-stats-fps" class="font-bold text-amber-300">FPS: --</div>
-    <div id="dev-stats-wave">Wave: - | Enemies: -/-</div>
-    <div id="dev-stats-cam">Cam: x=0.0, y=1.6, z=0.0</div>
-    <div id="dev-stats-aim">Yaw: 0° | Pitch: 0° | Anchor: 0°</div>
-    <div id="dev-stats-pools">Pools: G=0/7, B=0/4, P=0/24</div>
-    <div id="dev-stats-cheats" class="text-cyan-300">God: OFF | InfAmmo: OFF | Spd: 1x</div>
   </div>
 
   <!-- Layer 7.5: Interactive Visual Tutorial Modal -->
@@ -1574,10 +1457,6 @@
         invuln: 0,
         countdownTimer: null,
         spawnLaneCursor: 0,
-        godMode: false,
-        infAmmo: false,
-        debugSpeedMultiplier: 1.0,
-        showDebugStats: false
       };
 
       // =========================================================================
@@ -1950,17 +1829,6 @@
       // =========================================================================
       // OBJECT POOLS (100% Preallocated, Zero Mid-Game Allocations or Leaks)
       // =========================================================================
-      // Profiler & section timings
-      const P = {};                                           // worst ms per section since last readout
-      let _pt = 0, _dbgT = 0;
-      function lap(name) { const n = performance.now(); const d = n - _pt; if (d > (P[name] || 0)) P[name] = d; _pt = n; }
-      function timed(name, fn) {
-        return function () {
-          const t = performance.now(), r = fn.apply(this, arguments), d = performance.now() - t;
-          if (d > (P[name] || 0)) P[name] = d;
-          return r;
-        };
-      }
       const MAX_GHOSTS = 16;
       const freeGhosts = [], freeFang = [], freeBlob = [], freeRing = [], freeBeams = [], freeAnimeBursts = [];
       const _barrel = new THREE.Vector3();
@@ -2198,7 +2066,6 @@
         await SoundFX.bake();
         tick('Baking sound…');
         if (SoundFX.bank) {
-          SoundFX.playEnemyPop = timed('snd', SoundFX.playEnemyPop.bind(SoundFX));
         }
         buildPools();
         tick('Compiling shaders…');
@@ -2909,11 +2776,7 @@
           STATE.gunBaseCylinderDeg = (STATE.gunBaseCylinderDeg + 60) % 360;
         }
 
-        if (STATE.infAmmo) {
-          STATE.ammo = STATE.maxAmmo;
-        } else {
-          STATE.ammo -= 1;
-        }
+        STATE.ammo -= 1;
         STATE.shotsFired += 1;
 
         STATE.gunAnimMode = 'shoot';
@@ -3006,10 +2869,6 @@
         addFloatingPopup(label, enemy.group.position, '#fde047');
       }
 
-      createGhostEnemy3D = timed('spawn', createGhostEnemy3D);
-      killEnemyOneShot = timed('kill', killEnemyOneShot);
-      spawnStylizedKillExplosion = timed('burst', spawnStylizedKillExplosion);
-
       function announceWave(waveCfg) {
         waveBannerTitle.textContent = waveCfg.title;
         waveBannerSub.textContent = waveCfg.sub;
@@ -3049,10 +2908,6 @@
       }
 
       function takePlayerBite() {
-        if (STATE.godMode) {
-          addFloatingPopup('BLOCKED!', camera.position.clone().add(new THREE.Vector3(0, 0, -2).applyQuaternion(camera.quaternion)), '#22d3ee');
-          return;
-        }
         if (STATE.invuln > 0) return;
         STATE.invuln = 1.05;
         STATE.hearts = Math.max(0, STATE.hearts - 1);
@@ -3679,10 +3534,9 @@
             _vPerp.set(-_vToPlayer.z, 0, _vToPlayer.x).normalize();
             const weaveVel = Math.cos(e.phase) * e.weaveAmp;
 
-            const spdMul = STATE.debugSpeedMultiplier !== undefined ? STATE.debugSpeedMultiplier : 1.0;
-            e.group.position.addScaledVector(_vToPlayer, e.speed * dt * spdMul);
-            e.group.position.addScaledVector(_vPerp, weaveVel * dt * spdMul);
-            e.group.position.y += Math.sin(e.phase * 1.5) * 0.55 * dt * spdMul;
+            e.group.position.addScaledVector(_vToPlayer, e.speed * dt);
+            e.group.position.addScaledVector(_vPerp, weaveVel * dt);
+            e.group.position.y += Math.sin(e.phase * 1.5) * 0.55 * dt;
 
             // Keep ghost comfortably inside the ±42° front cone around AimController.anchorYaw
             const dx = e.group.position.x - camera.position.x;
@@ -3757,112 +3611,9 @@
           b.mat.opacity = b.life / 0.14;
         }
 
-        lap('sim');
         renderer.render(scene, camera);
-        lap('render');
         updateAndRenderFPSWeapon(dt, now);
-        lap('weapon');
         renderOffscreenIndicatorsAndFX(dt, now);
-        lap('fx');
-        updateLiveStatsHUD(dt);
-        debugTick(now);
-      }
-
-      // =========================================================================
-      // 12.5 DEV BUILD DEBUG & EVALUATION SYSTEM
-      // =========================================================================
-      const devModal = document.getElementById('dev-modal');
-      const devLiveStats = document.getElementById('dev-live-stats');
-      let devFpsCounter = 0, devFpsTimer = 0, devFpsDisplay = 60;
-
-      function toggleDevModal(force = null) {
-        if (!devModal) return;
-        const willShow = force !== null ? force : devModal.classList.contains('hidden');
-        devModal.classList.toggle('hidden', !willShow);
-        if (willShow) updateDevUI();
-      }
-
-      function updateDevUI() {
-        const gmStatus = document.getElementById('dev-godmode-status');
-        if (gmStatus) {
-          gmStatus.textContent = STATE.godMode ? 'ON' : 'OFF';
-          gmStatus.className = STATE.godMode ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold';
-        }
-        const iaStatus = document.getElementById('dev-infammo-status');
-        if (iaStatus) {
-          iaStatus.textContent = STATE.infAmmo ? 'ON' : 'OFF';
-          iaStatus.className = STATE.infAmmo ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold';
-        }
-        const countLabel = document.getElementById('dev-enemy-count-label');
-        if (countLabel) {
-          countLabel.textContent = `ALIVE: ${enemies.length} (POOL FREE: ${freeGhosts.length})`;
-        }
-        const statsStatus = document.getElementById('dev-stats-status');
-        if (statsStatus) {
-          statsStatus.textContent = STATE.showDebugStats ? 'ON' : 'OFF';
-          statsStatus.className = STATE.showDebugStats ? 'text-emerald-600 font-bold' : 'text-indigo-950 font-bold';
-        }
-        [0, 0.5, 1, 2].forEach((s) => {
-          const btn = document.getElementById(`dev-spd-${String(s).replace('.', '')}`);
-          if (!btn) return;
-          const isActive = Math.abs(STATE.debugSpeedMultiplier - s) < 0.05;
-          btn.className = isActive
-            ? 'candy-pill py-1 text-center font-arcade bg-cyan-300 font-bold border-2 border-indigo-950'
-            : 'candy-pill py-1 text-center font-arcade bg-white';
-        });
-      }
-
-      function devSpawnGhost(yawOffset = 0) {
-        unlockMobilePermissionsOnce();
-        if (enemies.length >= MAX_GHOSTS) {
-          if (SoundFX.playEmptyClick) SoundFX.playEmptyClick();
-          return;
-        }
-        const cfg = WAVES[STATE.currentWaveIdx] || WAVES[0];
-        const e = freeGhosts.pop();
-        if (!e) return;
-        const a = AimController.currentYaw + yawOffset;
-        const d = 5.8 + Math.random() * 2.5;
-        const h = 0.4 + Math.random() * 0.8;
-        const g = e.group;
-        g.position.set(camera.position.x - Math.sin(a) * d, camera.position.y + h, camera.position.z - Math.cos(a) * d);
-        g.scale.set(1, 1, 1);
-        g.visible = true;
-        g.lookAt(camera.position);
-        e.animFrame = Math.floor(Math.random() * enemyTextures.length);
-        e.faceMat.map = enemyTextures[e.animFrame];
-        e.speed = cfg.speedMin;
-        e.spawnAngle = a;
-        e.weaveAmp = cfg.weaveAmp;
-        e.weaveFreq = 1.6;
-        e.phase = Math.random() * Math.PI * 2;
-        e.animTimer = 0;
-        e.animFrameDuration = 0.14;
-        e.dying = false;
-        e.deathTimer = 0;
-        enemies.push(e);
-        STATE.waveEnemiesAlive = (STATE.waveEnemiesAlive || 0) + 1;
-        enemiesLeftText.textContent = String(STATE.waveEnemiesAlive).padStart(2, '0');
-        SoundFX.playBeep(true);
-        addFloatingPopup('+1 GHOST', g.position, '#22d3ee');
-        updateDevUI();
-      }
-
-      function updateLiveStatsHUD(dt) {
-        if (!STATE.showDebugStats || !devLiveStats) return;
-        devFpsCounter++;
-        devFpsTimer += dt;
-        if (devFpsTimer < 0.5) return;                       // 2 Hz instead of 60 Hz
-        devFpsDisplay = Math.round(devFpsCounter / devFpsTimer);
-        devFpsCounter = 0;
-        devFpsTimer = 0;
-        const r = 180 / Math.PI;
-        document.getElementById('dev-stats-fps').textContent = `FPS: ${devFpsDisplay} | Shake: ${STATE.screenShake.toFixed(2)}`;
-        document.getElementById('dev-stats-wave').textContent = `Wave ${STATE.currentWaveIdx + 1}/3 | Alive: ${enemies.length} | Rem: ${STATE.waveEnemiesToSpawn}`;
-        document.getElementById('dev-stats-cam').textContent = `Cam: x=${camera.position.x.toFixed(1)}, y=${camera.position.y.toFixed(1)}, z=${camera.position.z.toFixed(1)}`;
-        document.getElementById('dev-stats-aim').textContent = `Yaw: ${(AimController.currentYaw * r).toFixed(0)}° | Pitch: ${(AimController.currentPitch * r).toFixed(0)}° | Anchor: ${(AimController.anchorYaw * r).toFixed(0)}°`;
-        document.getElementById('dev-stats-pools').textContent = `Pools: Ghosts=${enemies.length}/${freeGhosts.length} | Beams=${laserBeams.length}/${freeBeams.length} | Parts=${particles3D.length}/${freeFang.length + freeBlob.length + freeRing.length} | Bursts=${animeBursts2D.length}/${freeAnimeBursts.length}`;
-        document.getElementById('dev-stats-cheats').textContent = `God: ${STATE.godMode ? 'ON' : 'OFF'} | InfAmmo: ${STATE.infAmmo ? 'ON' : 'OFF'} | Spd: ${STATE.debugSpeedMultiplier}x`;
       }
 
       // =========================================================================
@@ -3871,25 +3622,6 @@
       let xrSession = null, xrSupported = false, xrPreferred = true;
       try { xrPreferred = localStorage.getItem('wr_xr') !== '0'; } catch (e) {}
 
-      const DEBUG = location.search.includes('debug');
-      const dbgEl = DEBUG ? Object.assign(document.createElement('div'), { style: 'position:fixed;left:8px;bottom:84px;z-index:60;font:11px monospace;color:#0f0;background:#000a;padding:2px 4px;pointer-events:none' }) : null;
-      if (dbgEl) overlayEl.appendChild(dbgEl);
-      function debugTick(now) {
-        if (!DEBUG || now - _dbgT < 500) return;
-        _dbgT = now;
-        let vp = '';
-        if (xrSession && STATE.xrActive) {
-          const bl = xrSession.renderState.baseLayer, gl = renderer.getContext();
-          vp = `layer ${bl.framebufferWidth}x${bl.framebufferHeight} vp ${Array.from(gl.getParameter(gl.VIEWPORT)).join(',')}\n`;
-        }
-        const f = (k) => (P[k] || 0).toFixed(1);
-        if (dbgEl) {
-          dbgEl.style.whiteSpace = 'pre';
-          dbgEl.textContent = vp + `sim ${f('sim')} render ${f('render')} weapon ${f('weapon')} fx ${f('fx')}\n` +
-                              `spawn ${f('spawn')} kill ${f('kill')} burst ${f('burst')} snd ${f('snd')} | gap ${f('gap')}ms`;
-        }
-        for (const k in P) P[k] = 0;
-      }
       const xrRow = document.getElementById('btn-toggle-xr');
       const _shift = new THREE.Vector3();
 
@@ -4015,135 +3747,6 @@
           if (STATE.running) STATE.paused = true;
           if (tutorialModal) tutorialModal.classList.remove('hidden');
         });
-      }
-
-      // Quick Dev Button & Modal Bindings
-      const btnQuickDev = document.getElementById('btn-quick-dev');
-      if (btnQuickDev) btnQuickDev.addEventListener('click', (e) => { e.stopPropagation(); toggleDevModal(); });
-
-      const btnOpenDevMenu = document.getElementById('btn-open-dev-menu');
-      if (btnOpenDevMenu) btnOpenDevMenu.addEventListener('click', (e) => { e.stopPropagation(); closeMenu(); toggleDevModal(true); });
-
-      const btnCloseDevModal = document.getElementById('btn-close-dev-modal');
-      if (btnCloseDevModal) btnCloseDevModal.addEventListener('click', (e) => { e.stopPropagation(); toggleDevModal(false); });
-
-      const btnGodMode = document.getElementById('dev-btn-godmode');
-      if (btnGodMode) btnGodMode.addEventListener('click', (e) => {
-        e.stopPropagation();
-        STATE.godMode = !STATE.godMode;
-        SoundFX.playBeep(STATE.godMode);
-        updateDevUI();
-      });
-
-      const btnInfAmmo = document.getElementById('dev-btn-infammo');
-      if (btnInfAmmo) btnInfAmmo.addEventListener('click', (e) => {
-        e.stopPropagation();
-        STATE.infAmmo = !STATE.infAmmo;
-        if (STATE.infAmmo) { STATE.ammo = STATE.maxAmmo; updateAmmoHUD(STATE.ammo, 0); }
-        SoundFX.playBeep(STATE.infAmmo);
-        updateDevUI();
-      });
-
-      const btnHeal = document.getElementById('dev-btn-heal');
-      if (btnHeal) btnHeal.addEventListener('click', (e) => {
-        e.stopPropagation();
-        STATE.hearts = STATE.maxHearts;
-        renderShieldCoresHUD();
-        SoundFX.playWaveFanfare();
-        updateDevUI();
-      });
-
-      const btnDamage = document.getElementById('dev-btn-damage');
-      if (btnDamage) btnDamage.addEventListener('click', (e) => {
-        e.stopPropagation();
-        STATE.hearts = Math.max(1, STATE.hearts - 1);
-        renderShieldCoresHUD();
-        SoundFX.playPlayerBiteDamage();
-        updateDevUI();
-      });
-
-      const btnSpawn1 = document.getElementById('dev-btn-spawn-1');
-      if (btnSpawn1) btnSpawn1.addEventListener('click', (e) => { e.stopPropagation(); devSpawnGhost(0); });
-
-      const btnSpawn3 = document.getElementById('dev-btn-spawn-3');
-      if (btnSpawn3) btnSpawn3.addEventListener('click', (e) => {
-        e.stopPropagation();
-        devSpawnGhost(-0.25);
-        devSpawnGhost(0);
-        devSpawnGhost(0.25);
-      });
-
-      const btnKillAll = document.getElementById('dev-btn-kill-all');
-      if (btnKillAll) btnKillAll.addEventListener('click', (e) => {
-        e.stopPropagation();
-        enemies.forEach((e) => { spawnStylizedKillExplosion(e.group.position); releaseEnemy(e); });
-        enemies.length = 0;
-        STATE.waveEnemiesAlive = 0;
-        enemiesLeftText.textContent = '00';
-        SoundFX.playEnemyPop(4);
-        updateDevUI();
-      });
-
-      [
-        { id: 'dev-spd-0', val: 0.0 },
-        { id: 'dev-spd-05', val: 0.5 },
-        { id: 'dev-spd-1', val: 1.0 },
-        { id: 'dev-spd-2', val: 2.0 }
-      ].forEach(({ id, val }) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          STATE.debugSpeedMultiplier = val;
-          SoundFX.playBeep(val > 0);
-          updateDevUI();
-        });
-      });
-
-      const btnWave1 = document.getElementById('dev-btn-wave-1');
-      if (btnWave1) btnWave1.addEventListener('click', (e) => { e.stopPropagation(); recycleAll(); startWave(0); toggleDevModal(false); });
-      const btnWave2 = document.getElementById('dev-btn-wave-2');
-      if (btnWave2) btnWave2.addEventListener('click', (e) => { e.stopPropagation(); recycleAll(); startWave(1); toggleDevModal(false); });
-      const btnWave3 = document.getElementById('dev-btn-wave-3');
-      if (btnWave3) btnWave3.addEventListener('click', (e) => { e.stopPropagation(); recycleAll(); startWave(2); toggleDevModal(false); });
-
-      const btnDevWin = document.getElementById('dev-btn-win');
-      if (btnDevWin) btnDevWin.addEventListener('click', (e) => { e.stopPropagation(); toggleDevModal(false); finishGame(true); });
-      const btnDevLoss = document.getElementById('dev-btn-loss');
-      if (btnDevLoss) btnDevLoss.addEventListener('click', (e) => { e.stopPropagation(); toggleDevModal(false); finishGame(false); });
-
-      const btnToggleStats = document.getElementById('dev-btn-toggle-stats');
-      if (btnToggleStats) btnToggleStats.addEventListener('click', (e) => {
-        e.stopPropagation();
-        STATE.showDebugStats = !STATE.showDebugStats;
-        if (devLiveStats) devLiveStats.classList.toggle('hidden', !STATE.showDebugStats);
-        updateDevUI();
-      });
-
-      // Keyboard dev hotkeys
-      window.addEventListener('keydown', (e) => {
-        if (e.key === '`' || e.key === '~' || (e.key === 'd' && (e.ctrlKey || e.altKey))) {
-          toggleDevModal();
-        } else if (e.key === 'g' && !e.target.matches('input, textarea')) {
-          STATE.godMode = !STATE.godMode;
-          updateDevUI();
-        } else if (e.key === 'i' && !e.target.matches('input, textarea')) {
-          STATE.infAmmo = !STATE.infAmmo;
-          if (STATE.infAmmo) { STATE.ammo = STATE.maxAmmo; updateAmmoHUD(STATE.ammo, 0); }
-          updateDevUI();
-        } else if (e.key === 'p' && !e.target.matches('input, textarea')) {
-          devSpawnGhost(0);
-        } else if (e.key === 'k' && !e.target.matches('input, textarea')) {
-          enemies.forEach((en) => { spawnStylizedKillExplosion(en.group.position); releaseEnemy(en); });
-          enemies.length = 0;
-          STATE.waveEnemiesAlive = 0;
-          enemiesLeftText.textContent = '00';
-          updateDevUI();
-        }
-      });
-
-      if (location.search.includes('debug') || location.search.includes('dev')) {
-        STATE.showDebugStats = true;
-        if (devLiveStats) devLiveStats.classList.remove('hidden');
       }
 
       // Quick Recenter button on bottom HUD
