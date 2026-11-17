@@ -46,13 +46,14 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
   // 4: Success Confirmation & Pass
   // 5: Failed / Retry
   const isFreeEvent = event.pricePerPerson === 0;
+  const isSietIntraEvent = event.id === "siet-intra-gamejam-2026";
 
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [teamSize, setTeamSize] = useState<3 | 4>(3);
   const [teamName, setTeamName] = useState("");
-  const [selectedTheme, setSelectedTheme] = useState<"LIMITED SPACE" | "LOOPS" | "HYBRID (BOTH)">("LIMITED SPACE");
+  const [selectedTheme, setSelectedTheme] = useState("LIMITED SPACE");
   const [collegeName, setCollegeName] = useState(
-    "Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore"
+    isSietIntraEvent ? "Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore" : ""
   );
   const [department, setDepartment] = useState("");
 
@@ -97,9 +98,9 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
   const [copiedId, setCopiedId] = useState(false);
 
   // Per-event overrides with fallback to studio defaults
-  const eventUpiId = (event as any).upiId || UPI_PAYMENT_CONFIG.upiId;
-  const eventPayeeName = (event as any).upiPayeeName || UPI_PAYMENT_CONFIG.payeeName;
-  const eventSheetUrl = (event as any).googleSheetScriptUrl || undefined;
+  const eventUpiId = event.upiId || UPI_PAYMENT_CONFIG.upiId;
+  const eventPayeeName = event.upiPayeeName || UPI_PAYMENT_CONFIG.payeeName;
+  const eventSheetUrl = event.googleSheetScriptUrl || undefined;
   const eventDiscordUrl = (event as any).discordInviteUrl || DISCORD_INVITE_URL;
   const eventWhatsappUrl = (event as any).whatsappGroupUrl || WHATSAPP_GROUP_INVITE_URL;
 
@@ -175,7 +176,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
     setStep(2);
   };
 
-  // Validate Step 2 (Squad Roster - Roll Number is mandatory, Discord is the only optional field)
+  // Validate Step 2 (all participants need contact details; SIET roll numbers are intra-event only)
   const handleProceedToReview = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -185,7 +186,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       setErrorMessage("Please complete all Team Leader required fields (Full Name, Email, WhatsApp Number).");
       return;
     }
-    if (!leaderRollNo.trim()) {
+    if (isSietIntraEvent && !leaderRollNo.trim()) {
       setErrorMessage("Please enter the Team Leader's SIET Roll Number.");
       return;
     }
@@ -195,7 +196,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       setErrorMessage("Please enter Full Name and WhatsApp Number for Member 02.");
       return;
     }
-    if (!member2RollNo.trim()) {
+    if (isSietIntraEvent && !member2RollNo.trim()) {
       setErrorMessage("Please enter Member 02's SIET Roll Number.");
       return;
     }
@@ -205,7 +206,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       setErrorMessage("Please enter Full Name and WhatsApp Number for Member 03.");
       return;
     }
-    if (!member3RollNo.trim()) {
+    if (isSietIntraEvent && !member3RollNo.trim()) {
       setErrorMessage("Please enter Member 03's SIET Roll Number.");
       return;
     }
@@ -216,7 +217,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
         setErrorMessage("Please enter Full Name and WhatsApp Number for Member 04.");
         return;
       }
-      if (!member4RollNo.trim()) {
+      if (isSietIntraEvent && !member4RollNo.trim()) {
         setErrorMessage("Please enter Member 04's SIET Roll Number.");
         return;
       }
@@ -225,7 +226,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
     setStep(3);
   };
 
-  // Submit Registration (Handles both 100% Free SIET events & Paid UPI events)
+  // Submit Registration (handles free and paid team registrations)
   const handleSubmitRegistration = async () => {
     setErrorMessage(null);
 
@@ -238,11 +239,13 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
     const generatedRegId =
       confirmedRegId ||
-      `SIET-INTRA-${Math.floor(100000 + Math.random() * 900000)}`;
+      `${isSietIntraEvent ? "SIET-INTRA" : "OG-INTER"}-${Math.floor(100000 + Math.random() * 900000)}`;
     setConfirmedRegId(generatedRegId);
 
     const leader: TeamMember = {
-      name: `${leaderName.trim()} [Roll No: ${leaderRollNo.trim()}]`,
+      name: isSietIntraEvent
+        ? `${leaderName.trim()} [Roll No: ${leaderRollNo.trim()}]`
+        : leaderName.trim(),
       email: leaderEmail.trim(),
       phone: leaderPhone.trim(),
       discordTag: leaderDiscord.trim() || undefined,
@@ -252,23 +255,32 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
     const membersList: TeamMember[] = [];
     if (member2Name.trim()) {
       membersList.push({
-        name: `${member2Name.trim()} [Roll No: ${member2RollNo.trim()}]`,
+        name: isSietIntraEvent
+          ? `${member2Name.trim()} [Roll No: ${member2RollNo.trim()}]`
+          : member2Name.trim(),
         phone: member2Phone.trim(),
         discordTag: member2Discord.trim() || undefined,
+        college: collegeName.trim(),
       });
     }
     if (member3Name.trim()) {
       membersList.push({
-        name: `${member3Name.trim()} [Roll No: ${member3RollNo.trim()}]`,
+        name: isSietIntraEvent
+          ? `${member3Name.trim()} [Roll No: ${member3RollNo.trim()}]`
+          : member3Name.trim(),
         phone: member3Phone.trim(),
         discordTag: member3Discord.trim() || undefined,
+        college: collegeName.trim(),
       });
     }
     if (teamSize === 4 && member4Name.trim()) {
       membersList.push({
-        name: `${member4Name.trim()} [Roll No: ${member4RollNo.trim()}]`,
+        name: isSietIntraEvent
+          ? `${member4Name.trim()} [Roll No: ${member4RollNo.trim()}]`
+          : member4Name.trim(),
         phone: member4Phone.trim(),
         discordTag: member4Discord.trim() || undefined,
+        college: collegeName.trim(),
       });
     }
 
@@ -281,14 +293,16 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
       collegeName: `${collegeName.trim()} ${department.trim() ? `(${department.trim()})` : ""}`,
       teamSize,
       totalAmount,
-      theme: selectedTheme,
+      theme: isSietIntraEvent ? selectedTheme : undefined,
       leader,
       members: membersList,
       paymentStatus: isFreeEvent ? "FREE" : "PENDING_VERIFICATION",
       transactionUtr: isFreeEvent ? "SIET_FREE_ENTRY" : transactionUtr.trim() || undefined,
       screenshotBase64: isFreeEvent ? undefined : screenshotBase64 || undefined,
       screenshotFileName: isFreeEvent ? undefined : `${generatedRegId}_${teamSafe}_payment.jpg`,
-      notes: `SIET Intra Jam | Theme: ${selectedTheme} | Leader Roll: ${leaderRollNo.trim()} | Dept: ${department.trim() || "N/A"}`,
+      notes: isSietIntraEvent
+        ? `SIET Intra Jam | Theme: ${selectedTheme} | Leader Roll: ${leaderRollNo.trim()} | Dept: ${department.trim() || "N/A"}`
+        : `Inter-College Game Jam | College: ${collegeName.trim()} | Theme announced at event`,
       submittedAt: new Date().toISOString(),
     };
 
@@ -359,7 +373,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                 <div>
                   <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#00b4d8]/10 border border-[#00b4d8]/30 text-[#00b4d8] text-[10px] font-bold uppercase tracking-wider mb-1.5 font-sans">
                     <ShieldCheck size={12} />
-                    SIET Coimbatore · Official Registration Portal
+                    {isSietIntraEvent ? "SIET Coimbatore" : "OuterGazers"} · Official Registration Portal
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold font-sans tracking-tight text-white">
                     {event.title}
@@ -370,7 +384,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </p>
                   ) : (
                     <p className="text-xs text-zinc-400 font-sans tracking-wider">
-                      ₹{event.pricePerPerson} / Member · All Inclusive
+                      ₹{event.pricePerPerson} / person · All Inclusive
                     </p>
                   )}
                 </div>
@@ -387,19 +401,19 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
               {/* Inclusions Pill Ribbon */}
               <div className="px-5 md:px-6 py-2 bg-zinc-950/80 border-b border-zinc-900 flex flex-wrap items-center gap-4 text-[11px] text-zinc-400 font-sans">
-                <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-                  <ShieldCheck size={13} className="text-emerald-400" />
-                  No Entry Fee (100% Free)
+                <span className={`flex items-center gap-1.5 font-medium ${isFreeEvent ? "text-emerald-400" : "text-[#00b4d8]"}`}>
+                  <ShieldCheck size={13} />
+                  {isFreeEvent ? "No Entry Fee (100% Free)" : `₹${event.pricePerPerson} per person`}
                 </span>
                 <span className="text-zinc-700">•</span>
                 <span className="flex items-center gap-1.5 text-[#00b4d8] font-medium">
                   <Trophy size={13} className="text-[#00b4d8]" />
-                  Qualify for Dec Inter-College Jam
+                  {isSietIntraEvent ? "Qualify for Dec Inter-College Jam" : `${event.minTeamSize}–${event.maxTeamSize} members per team`}
                 </span>
                 <span className="text-zinc-700">•</span>
                 <span className="flex items-center gap-1.5 text-zinc-300">
                   <Gamepad2 size={13} className="text-[#7c3aed]" />
-                  XR Lab Mentorship &amp; Itch.io
+                  {isSietIntraEvent ? "XR Lab Mentorship & Itch.io" : "Onsite 24-hour jam"}
                 </span>
               </div>
 
@@ -407,7 +421,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
               {step <= 3 && (
                 <div className="px-5 md:px-6 py-2.5 bg-zinc-950/40 border-b border-zinc-900 flex items-center justify-between text-xs font-sans">
                   <span className={step === 1 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
-                    01. Squad &amp; Theme
+                    01. {isSietIntraEvent ? "Squad & Theme" : "Team Details"}
                   </span>
                   <span className="text-zinc-700">───</span>
                   <span className={step === 2 ? "text-[#00b4d8] font-bold" : "text-zinc-500"}>
@@ -455,10 +469,26 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     />
                   </div>
 
+                  {!isSietIntraEvent && (
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2 font-sans">
+                        College / Institution *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={collegeName}
+                        onChange={(e) => setCollegeName(e.target.value)}
+                        placeholder="Enter your college or institution"
+                        className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-[#00b4d8] rounded-lg px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none transition-colors text-sm"
+                      />
+                    </div>
+                  )}
+
                   {/* Team Count Selector (3 or 4 Members) */}
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2 font-sans">
-                      Team Count (3 or 4 Members) *
+                      Team Count ({event.minTeamSize}–{event.maxTeamSize} Members) *
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {[
@@ -480,14 +510,16 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             <Users size={16} className={teamSize === item.size ? "text-[#00b4d8]" : "text-zinc-600"} />
                           </div>
                           <p className="text-xs text-zinc-400 font-sans">{item.desc}</p>
-                          <span className="text-[10px] text-emerald-400 font-bold block mt-1.5">100% Free Entry (₹0)</span>
+                          <span className="text-[10px] text-emerald-400 font-bold block mt-1.5">
+                            {isFreeEvent ? "100% Free Entry (₹0)" : `₹${item.size * event.pricePerPerson} total`}
+                          </span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Mandatory Jam Theme Selection */}
-                  <div>
+                  {/* The intra-college event has pre-announced themes; the inter-college themes are revealed at kickoff. */}
+                  {isSietIntraEvent ? <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-xs font-bold uppercase tracking-wider text-zinc-300 font-sans">
                         Selected Theme (Mandatory) *
@@ -523,15 +555,19 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     <p className="text-[11px] text-zinc-400 mt-2 font-sans">
                       Themes are mandatory for all SIET squads. Choose Theme 1, Theme 2, or combine both into a hybrid mechanic.
                     </p>
-                  </div>
+                  </div> : (
+                    <div className="rounded-lg border border-[#00b4d8]/30 bg-[#00b4d8]/5 p-4 text-sm text-zinc-300">
+                      Five official themes will be announced at 9:00 AM on December 15. Teams will choose their theme(s) at the onsite kickoff.
+                    </div>
+                  )}
 
                   {/* Free Notice Box */}
-                  <div className="p-3.5 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3">
+                  {isSietIntraEvent && <div className="p-3.5 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3">
                     <Sparkles size={16} className="text-emerald-400 shrink-0 mt-0.5" />
                     <p className="text-xs text-emerald-200 leading-relaxed font-sans">
                       <span className="font-bold text-white">SIET Intra-College Game Jam</span> is exclusive for SIET students with zero registration fees.
                     </p>
-                  </div>
+                  </div>}
 
                   <div className="pt-2 flex justify-end">
                     <button
@@ -555,7 +591,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       Squad Roster ({teamSize} Members)
                     </span>
                     <span className="text-[11px] text-emerald-400 font-sans">
-                      SIET Student Verification
+                      {isSietIntraEvent ? "SIET Student Verification" : "Student team details"}
                     </span>
                   </div>
 
@@ -584,7 +620,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         />
                       </div>
 
-                      <div>
+                      {isSietIntraEvent && <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
                           SIET Roll Number *
                         </label>
@@ -596,7 +632,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           onChange={(e) => setLeaderRollNo(e.target.value)}
                           className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
-                      </div>
+                      </div>}
 
                       <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
@@ -665,7 +701,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         />
                       </div>
 
-                      <div>
+                      {isSietIntraEvent && <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
                           SIET Roll Number *
                         </label>
@@ -677,7 +713,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           onChange={(e) => setMember2RollNo(e.target.value)}
                           className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
-                      </div>
+                      </div>}
 
                       <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
@@ -732,7 +768,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         />
                       </div>
 
-                      <div>
+                      {isSietIntraEvent && <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
                           SIET Roll Number *
                         </label>
@@ -744,7 +780,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           onChange={(e) => setMember3RollNo(e.target.value)}
                           className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                         />
-                      </div>
+                      </div>}
 
                       <div>
                         <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
@@ -800,7 +836,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                           />
                         </div>
 
-                        <div>
+                        {isSietIntraEvent && <div>
                           <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
                             SIET Roll Number *
                           </label>
@@ -812,7 +848,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                             onChange={(e) => setMember4RollNo(e.target.value)}
                             className="w-full bg-zinc-900/80 border border-zinc-800 focus:border-[#00b4d8] rounded px-3 py-2 text-base sm:text-xs text-white placeholder-zinc-600 focus:outline-none font-mono"
                           />
-                        </div>
+                        </div>}
 
                         <div>
                           <label className="block text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-1 font-sans">
@@ -880,9 +916,12 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </div>
 
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <span className="text-xs text-zinc-400 font-sans">Leader &amp; Roll Number</span>
+                      <span className="text-xs text-zinc-400 font-sans">
+                        {isSietIntraEvent ? "Leader & Roll Number" : "Team Leader"}
+                      </span>
                       <span className="text-xs text-zinc-300 text-right">
-                        <span className="text-white font-semibold">{leaderName}</span> · <span className="font-mono text-[#00b4d8]">{leaderRollNo}</span>
+                        <span className="text-white font-semibold">{leaderName}</span>
+                        {isSietIntraEvent && <> · <span className="font-mono text-[#00b4d8]">{leaderRollNo}</span></>}
                       </span>
                     </div>
 
@@ -893,12 +932,14 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <span className="text-xs text-zinc-400 font-sans">Mandatory Theme</span>
-                      <span className="text-xs font-bold text-[#00b4d8] text-right">
-                        {selectedTheme}
-                      </span>
-                    </div>
+                    {isSietIntraEvent && (
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <span className="text-xs text-zinc-400 font-sans">Mandatory Theme</span>
+                        <span className="text-xs font-bold text-[#00b4d8] text-right">
+                          {selectedTheme}
+                        </span>
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-between pt-1">
                       <span className="text-sm font-bold uppercase tracking-wider text-white">Registration Fee</span>
@@ -972,8 +1013,8 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         <div className="shrink-0 p-3 bg-white rounded-xl shadow-lg shadow-black/60 flex flex-col items-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={upiQrCodeUrl}
-                            alt="OuterGazers UPI QR Code"
+                            src={event.upiQrImageUrl || upiQrCodeUrl}
+                            alt={`UPI payment QR code for ${eventUpiId}`}
                             width={190}
                             height={190}
                             className="w-44 h-44 sm:w-48 sm:h-48 object-contain"
@@ -1104,7 +1145,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
                   <div>
                     <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-emerald-400">
-                      Registration Confirmed · SIET Intra-College Game Jam
+                      Registration Submitted · {event.title}
                     </span>
                     <h3 className="font-sans text-3xl font-bold text-white mt-1">
                       {teamName}
@@ -1133,13 +1174,15 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
 
                     <div className="flex justify-between border-b border-zinc-900 pb-2">
                       <span className="text-zinc-500 uppercase">Team Leader</span>
-                      <span className="text-white font-bold">{leaderName} ({leaderRollNo})</span>
+                      <span className="text-white font-bold">
+                        {leaderName}{isSietIntraEvent ? ` (${leaderRollNo})` : ""}
+                      </span>
                     </div>
 
                     <div className="flex justify-between border-b border-zinc-900 pb-2">
                       <span className="text-zinc-500 uppercase">Institution</span>
                       <span className="text-zinc-300 font-medium text-right">
-                        SIET Coimbatore
+                        {collegeName}
                       </span>
                     </div>
 
@@ -1150,15 +1193,17 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       </span>
                     </div>
 
-                    <div className="flex justify-between border-b border-zinc-900 pb-2">
-                      <span className="text-zinc-500 uppercase">Selected Theme</span>
-                      <span className="text-[#00b4d8] font-bold">{selectedTheme}</span>
-                    </div>
+                    {isSietIntraEvent && (
+                      <div className="flex justify-between border-b border-zinc-900 pb-2">
+                        <span className="text-zinc-500 uppercase">Selected Theme</span>
+                        <span className="text-[#00b4d8] font-bold">{selectedTheme}</span>
+                      </div>
+                    )}
 
                     <div className="flex justify-between items-center pt-0.5">
                       <span className="text-zinc-400 uppercase font-bold">Registration Fee</span>
                       <span className="text-emerald-400 font-bold text-sm">
-                        ₹0 · 100% FREE (VERIFIED)
+                        {isFreeEvent ? "₹0 · 100% FREE" : `₹${totalAmount} · PAYMENT PENDING VERIFICATION`}
                       </span>
                     </div>
                   </div>
@@ -1168,18 +1213,26 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider font-sans">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                        Next Action: Join Jam Community
+                      {isSietIntraEvent ? "Next Action: Join Jam Community" : "Next Action: Payment Verification"}
                       </div>
                       <span className="text-[10px] bg-emerald-400/10 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded font-bold font-sans uppercase">
-                        Themes Mandatory
+                      {isSietIntraEvent ? "Themes Mandatory" : "Themes Revealed on Day 1"}
                       </span>
                     </div>
 
                     <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
-                      Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live and mandatory: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">LOOPS</span> (pick either theme or combine both!). Build for Windows, Web, or Android. Both registrations and submissions close on <span className="text-white font-bold">November 29, 2026 (11:59 PM IST)</span>. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before the deadline!
+                      {isSietIntraEvent ? (
+                        <>
+                          Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live and mandatory: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">LOOPS</span> (pick either theme or combine both!). Build for Windows, Web, or Android. Both registrations and submissions close on <span className="text-white font-bold">November 29, 2026 (11:59 PM IST)</span>. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before the deadline!
+                        </>
+                      ) : (
+                        <>
+                          Your team registration has been submitted. Payment is pending verification. Organizers will share event updates and participant community invite links using the contact details provided. Five themes will be announced at 9:00 AM on December 15.
+                        </>
+                      )}
                     </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {isSietIntraEvent && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <a
                         href={eventWhatsappUrl}
                         target="_blank"
@@ -1201,7 +1254,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                         <span>Join Discord Server</span>
                         <ExternalLink size={13} className="opacity-80" />
                       </a>
-                    </div>
+                    </div>}
                   </div>
 
                   <div className="pt-2">
@@ -1248,7 +1301,9 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-500">ENTRY STATUS</span>
-                      <span className="text-emerald-400 font-bold">100% Free Entry (₹0)</span>
+                      <span className="text-emerald-400 font-bold">
+                        {isFreeEvent ? "100% Free Entry (₹0)" : `Payment pending · ₹${totalAmount}`}
+                      </span>
                     </div>
                   </div>
 

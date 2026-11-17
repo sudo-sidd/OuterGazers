@@ -25,6 +25,7 @@ export const UPI_PAYMENT_CONFIG = {
 // ─── Studio Events (Managed in src/data/events.ts) ───────────────────────────
 export {
   FLAGSHIP_GAME_JAM,
+  INTERCOLLEGE_GAME_JAM,
   EVENTS_DATA,
   type EventItem,
   getAllEvents,

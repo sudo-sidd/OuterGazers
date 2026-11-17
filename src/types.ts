@@ -41,6 +41,10 @@ export interface GameJamEvent {
   duration: string;
   format: string;
   pricePerPerson: number;
+  upiId?: string;
+  upiPayeeName?: string;
+  upiQrImageUrl?: string;
+  googleSheetScriptUrl?: string;
   minTeamSize: number;
   maxTeamSize: number;
   theme: string;

@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/private/', '/admin/', '/api/admin/'],
+      disallow: ['/private/', '/admin/', '/api/admin/', '/registration-game/'],
     },
     sitemap: 'https://outergazer.in/sitemap.xml',
   };

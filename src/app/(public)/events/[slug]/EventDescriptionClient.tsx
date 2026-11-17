@@ -11,6 +11,7 @@ import {
 import { FLAGSHIP_GAME_JAM, DISCORD_INVITE_URL, type EventItem } from "@/constants";
 import EventCountdown from "@/components/events/EventCountdown";
 import TeamRegistrationModal from "@/components/events/TeamRegistrationModal";
+import InterCollegeEventDescription from "./InterCollegeEventDescription";
 
 export default function EventDescriptionClient({
   event = FLAGSHIP_GAME_JAM,
@@ -19,6 +20,10 @@ export default function EventDescriptionClient({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  if (event.id === "intercollege-gamejam-2026") {
+    return <InterCollegeEventDescription event={event} />;
+  }
 
   const discordUrl = event.discordInviteUrl || DISCORD_INVITE_URL;
   const isExternal = event.registrationType === "external" && !!event.registrationUrl;

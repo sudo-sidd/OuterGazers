@@ -73,7 +73,10 @@ function doPost(e) {
 }
 
 function handleGameJamRegistration(ss, data) {
-  let sheet = ss.getSheetByName("GameJam_Registrations");
+  const sheetName = data.eventId === "intercollege-gamejam-2026"
+    ? "InterCollege_Registrations"
+    : "GameJam_Registrations";
+  let sheet = ss.getSheetByName(sheetName);
   const headers = [
     "Timestamp",
     "Registration ID",
@@ -97,9 +100,9 @@ function handleGameJamRegistration(ss, data) {
     const allSheets = ss.getSheets();
     if (allSheets.length === 1 && allSheets[0].getLastRow() === 0) {
       sheet = allSheets[0];
-      sheet.setName("GameJam_Registrations");
+      sheet.setName(sheetName);
     } else {
-      sheet = ss.insertSheet("GameJam_Registrations");
+      sheet = ss.insertSheet(sheetName);
     }
     sheet.appendRow(headers);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#00b4d8").setFontColor("#000000");

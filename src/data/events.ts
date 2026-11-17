@@ -53,11 +53,8 @@ export interface EventItem extends GameJamEvent {
   countdownLabel?: string;
   registrationType: "modal" | "external";
   registrationUrl?: string;
-  googleSheetScriptUrl?: string;
   discordInviteUrl?: string;
   whatsappGroupUrl?: string;
-  upiId?: string;
-  upiPayeeName?: string;
   venue: string;
   inPersonDates: string;
   targetAudience: string;
@@ -226,8 +223,147 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
   ]
 };
 
+export const INTERCOLLEGE_GAME_JAM: EventItem = {
+  id: "intercollege-gamejam-2026",
+  slug: "intercollege-gamejam-2026",
+  title: "InterCollege - GameJam",
+  subtitle: "A 24-hour onsite game jam for undergraduate students",
+  status: "Upcoming",
+  badgeText: "Registrations Open · Inter-College",
+  venue: "XR Lab, Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore",
+  dates: "December 15–16, 2026",
+  inPersonDates: "December 15, 2026 (9:00 AM) – December 16, 2026 (12:00 PM)",
+  duration: "24-hour onsite jam · December 15 (9:00 AM) – December 16 (9:00 AM)",
+  format: "Two-day onsite game jam · 24-hour development window",
+  pricePerPerson: 500,
+  minTeamSize: 3,
+  maxTeamSize: 4,
+  theme: "5 themes announced at the jam",
+  themeDescription:
+    "All five official themes will be announced at 9:00 AM on Day 1. Teams create a small game within the 24-hour onsite jam window.",
+  totalPrizePool: "₹18,000 estimated",
+  targetAudience: "Undergraduate / bachelor's degree college students",
+  countdownTarget: "2026-12-02T23:59:59+05:30",
+  countdownLabel: "Registrations Close In",
+  registrationType: "modal",
+  googleSheetScriptUrl: "",
+  discordInviteUrl: "https://discord.gg/N4w7gGfdq",
+  whatsappGroupUrl: "https://chat.whatsapp.com/invite/temp-outergazers-siet-jam",
+  upiId: "theprosidd@okicici",
+  upiPayeeName: "The Prosidd",
+  upiQrImageUrl: "/images/intercollege-upi-qr.png",
+  inclusions: [
+    "Full access to the two-day onsite XR Lab event",
+    "Day 1 lunch and dinner; Day 2 breakfast",
+    "Snacks, tea, coffee, and refreshments",
+    "Official OuterGazers Studio certificate of participation",
+  ],
+  hospitality: [
+    { day: "Day 1 · December 15", items: ["Lunch", "Dinner", "Snacks", "Tea, coffee, and refreshments"] },
+    { day: "Day 2 · December 16", items: ["Breakfast", "Snacks", "Tea, coffee, and refreshments"] },
+  ],
+  tracks: [],
+  schedule: [
+    {
+      phase: "Registration Window",
+      time: "November 2 – December 2, 2026 · Online",
+      description: "Register a team of 3 to 4 undergraduate students. The registration fee is ₹500 per participant.",
+    },
+    {
+      phase: "Day 1 · Jam Kickoff & Theme Reveal",
+      time: "December 15, 2026 · 9:00 AM",
+      description: "Check in at the SIET XR Lab. Organizers announce all five themes and start the 24-hour onsite game jam.",
+    },
+    {
+      phase: "Day 1 · Build & Hospitality",
+      time: "December 15, 2026 · Onsite",
+      description: "Teams design and build a small game at the venue. Lunch, dinner, snacks, tea, coffee, and refreshments are included.",
+    },
+    {
+      phase: "Day 2 · Jam End & Submission",
+      time: "December 16, 2026 · 9:00 AM – 10:00 AM",
+      description: "The 24-hour development window ends at 9:00 AM. Final game submissions close at 10:00 AM.",
+    },
+    {
+      phase: "Day 2 · Judging & Results",
+      time: "December 16, 2026 · Results by 12:00 PM",
+      description: "Judges evaluate the completed games and announce the results by noon.",
+    },
+  ],
+  prizes: [
+    {
+      place: "Overall Winner",
+      reward: "₹12,000",
+      perks: ["Awarded to the team with the strongest overall game and player experience."],
+      gradient: "from-[#00b4d8] to-[#7c3aed]",
+    },
+    {
+      place: "Best Art",
+      reward: "₹3,000",
+      perks: ["Recognizes visual identity, asset quality, lighting, and cohesive artistic direction."],
+      gradient: "from-[#7c3aed] to-[#d946ef]",
+    },
+    {
+      place: "Best Game Mechanic",
+      reward: "₹3,000",
+      perks: ["Recognizes an inventive core mechanic and strong gameplay implementation."],
+      gradient: "from-[#06b6d4] to-[#3b82f6]",
+    },
+  ],
+  rules: [
+    "Eligibility: Open to undergraduate / bachelor's degree college students. Participants may be asked to provide a valid student ID for verification.",
+    "Team Composition: Participation is team-based, with 3 to 4 members per team.",
+    "Registration Fee: ₹500 per participant. Each team member must be included in the team's registration and fee.",
+    "Event Format: This is an onsite, 24-hour game jam at the SIET XR Lab. The jam starts at 9:00 AM on December 15, 2026. Participants must create their game during the jam window.",
+    "Themes: Five official themes will be announced at 9:00 AM on Day 1. Teams must make a small game based on the announced themes within the jam timeframe.",
+    "Submission Deadline: The 24-hour development period ends at 9:00 AM on December 16. Final submissions close at 10:00 AM on December 16, 2026. Late submissions may not be judged.",
+    "AI Disclosure (Mandatory in Readme): Generative AI tools are permitted. Participants must disclose in their submission Readme which AI tools were used and for what (for example, coding, art, music, or voiceover).",
+    "Pre-Made Assets & Creator Credits: Pre-made models, sprites, audio, and other third-party assets may be used if their original creators are clearly credited in the Readme.",
+    "Code & Asset Reuse: Participants may reuse their own scripts, frameworks, shaders, and assets from previous projects. Any reused or third-party work must be identified and credited in the Readme.",
+    "Submission Package: Submit a playable game build with a Readme containing the game description, controls, team members, theme(s), asset credits, and mandatory AI disclosure. Submission instructions will be provided to registered teams.",
+    "Judging & Results: Games will be evaluated by the organizers/judges. Results will be announced by 12:00 PM on December 16, 2026.",
+    "Intellectual Property: Participants retain copyright and intellectual-property ownership of their original creations.",
+    "Conduct & Safety: Participants must follow venue instructions, respect other teams and equipment, and maintain a safe and inclusive environment throughout the onsite event.",
+  ],
+  faqs: [
+    {
+      question: "When and where is the event?",
+      answer: "The onsite event is at the XR Lab, Sri Shakthi Institute of Engineering and Technology (SIET), Coimbatore, on December 15–16, 2026. The jam starts at 9:00 AM on December 15.",
+    },
+    {
+      question: "How long is the game jam?",
+      answer: "The development window is 24 hours, from 9:00 AM on December 15 until 9:00 AM on December 16. Teams have until 10:00 AM on Day 2 to submit their final build.",
+    },
+    {
+      question: "What are the themes?",
+      answer: "Five official themes will be announced at the 9:00 AM kickoff on Day 1. Teams create a small game based on the announced themes during the jam.",
+    },
+    {
+      question: "Who can participate and how large can a team be?",
+      answer: "The event is open to undergraduate / bachelor's degree college students. Teams must have 3 to 4 members.",
+    },
+    {
+      question: "What is the registration fee?",
+      answer: "Registration is ₹500 per person. The fee includes the two-day onsite event, meals, snacks, tea, coffee, and refreshments listed in the event brief.",
+    },
+    {
+      question: "What should we include in our game submission?",
+      answer: "Submit a playable game build and a Readme with the game description, controls, team members, selected theme(s), third-party asset credits, and any AI tools used. Submission instructions will be shared with registered teams.",
+    },
+    {
+      question: "Can we use AI or pre-made assets?",
+      answer: "AI tools and pre-made assets are permitted. Disclose AI use and credit third-party assets in the submission Readme.",
+    },
+    {
+      question: "When will results be announced?",
+      answer: "Results will be announced by 12:00 PM on December 16, 2026.",
+    },
+  ],
+};
+
 export const EVENTS_DATA: EventItem[] = [
-  EMPTY_EVENT_TEMPLATE
+  INTERCOLLEGE_GAME_JAM,
+  EMPTY_EVENT_TEMPLATE,
 ];
 
 export const FLAGSHIP_GAME_JAM: EventItem =

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { X, Sparkles, Calendar, MapPin, Trophy, Gamepad2, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
-import { FLAGSHIP_GAME_JAM } from "@/constants";
+import { INTERCOLLEGE_GAME_JAM } from "@/constants";
 import TeamRegistrationModal from "./TeamRegistrationModal";
 
 // ─── Corner Bracket SVG ─────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export default function EventAnnouncementPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [scanlineOffset, setScanlineOffset] = useState(0);
-  const event = FLAGSHIP_GAME_JAM;
+  const event = INTERCOLLEGE_GAME_JAM;
   const pathname = usePathname();
 
   // Check if current route is the event page
@@ -133,7 +133,7 @@ export default function EventAnnouncementPopup() {
       return;
     }
     if (typeof window !== "undefined") {
-      const dismissed = sessionStorage.getItem("og_siet_intra_jam_dismissed_2026");
+      const dismissed = sessionStorage.getItem("og_intercollege_jam_dismissed_2026");
       if (dismissed === "true") return;
     }
     const delay = 3000;
@@ -169,7 +169,7 @@ export default function EventAnnouncementPopup() {
   const handleDismiss = () => {
     setIsVisible(false);
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("og_siet_intra_jam_dismissed_2026", "true");
+      sessionStorage.setItem("og_intercollege_jam_dismissed_2026", "true");
     }
   };
 
@@ -296,7 +296,7 @@ export default function EventAnnouncementPopup() {
                     className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#00b4d8]"
                     style={{ fontFamily: "var(--font-kode)" }}
                   >
-                    Incoming Transmission · SIET Exclusive
+                    Incoming Transmission · Inter-College Game Jam
                   </span>
                 </div>
                 <button
@@ -332,7 +332,7 @@ export default function EventAnnouncementPopup() {
                     }}
                   >
                     <Zap size={10} />
-                    SIET Students Only
+                    Undergraduate Students
                   </span>
                   <span
                     className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] border"
@@ -343,7 +343,7 @@ export default function EventAnnouncementPopup() {
                     }}
                   >
                     <Sparkles size={10} />
-                    100% Free Entry (₹0)
+                    ₹500 Per Person
                   </span>
                 </motion.div>
 
@@ -371,10 +371,8 @@ export default function EventAnnouncementPopup() {
                     style={{ background: "linear-gradient(90deg, #00b4d8, rgba(124,58,237,0.5), transparent)" }}
                   />
                   <p className="text-sm text-zinc-300 leading-relaxed">
-                    Exclusive online game jam for students of{" "}
-                    <span className="text-[#00b4d8] font-semibold">Sri Shakthi Institute of Engineering and Technology (SIET)</span>.
-                    Build remotely, unlock XR Lab facilities &amp; mentoring, and battle for{" "}
-                    <span className="text-emerald-400 font-semibold">free entry &amp; discounts</span> into December&apos;s Inter-College Game Jam!
+                    Join us at the <span className="text-[#00b4d8] font-semibold">SIET XR Lab, Coimbatore</span> for a 24-hour onsite game jam.
+                    Five themes will be announced at the Day 1 kickoff; make a small game with your team and submit by 10:00 AM on Day 2.
                   </p>
                 </motion.div>
 
@@ -385,10 +383,10 @@ export default function EventAnnouncementPopup() {
                   transition={{ delay: 0.25, duration: 0.5 }}
                   className="grid grid-cols-2 gap-2.5 mb-5"
                 >
-                  <StatBadge icon={Calendar} label="Jam Window" value="Oct 29 – Nov 29" accent="#00b4d8" />
-                  <StatBadge icon={MapPin} label="Mode & Venue" value="Online + XR Lab SIET" accent="#00b4d8" />
-                  <StatBadge icon={Trophy} label="Top Prize" value="Free InterCollege Entry" accent="#10b981" />
-                  <StatBadge icon={Gamepad2} label="Perks" value="XR Lab Mentorship" accent="#7c3aed" />
+                  <StatBadge icon={Calendar} label="Jam Dates" value="Dec 15–16, 2026" accent="#00b4d8" />
+                  <StatBadge icon={MapPin} label="Mode & Venue" value="Onsite · SIET XR Lab" accent="#00b4d8" />
+                  <StatBadge icon={Trophy} label="Prize Pool" value={event.totalPrizePool} accent="#10b981" />
+                  <StatBadge icon={Gamepad2} label="Jam Format" value="24 Hours · 5 Themes" accent="#7c3aed" />
                 </motion.div>
 
                 {/* ── Pricing bar ── */}
@@ -408,13 +406,13 @@ export default function EventAnnouncementPopup() {
                         Entry Fee
                       </p>
                       <p className="text-xl font-extrabold text-emerald-400" style={{ fontFamily: "var(--font-tech)" }}>
-                        ₹0 · 100% FREE
-                        <span className="text-xs text-zinc-400 font-normal ml-1">/ No Entry Fee</span>
+                        ₹500
+                        <span className="text-xs text-zinc-400 font-normal ml-1">/ person</span>
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1">Squad Size</p>
-                      <p className="text-sm font-bold text-[#00b4d8]">3 – 4 Gazers</p>
+                      <p className="text-sm font-bold text-[#00b4d8]">3 – 4 Members</p>
                     </div>
                   </div>
                   {/* Sweeping shimmer */}
@@ -440,7 +438,7 @@ export default function EventAnnouncementPopup() {
                     className="flex-1 relative group py-3.5 px-5 bg-[#00b4d8] text-black font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden transition-colors duration-300 hover:bg-white"
                   >
                     <Sparkles size={14} />
-                    Register Squad (Free)
+                    Register Team · ₹500 / Person
                     <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
                   </motion.button>
 
