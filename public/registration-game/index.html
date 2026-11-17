@@ -3459,10 +3459,8 @@
       function animate(now, frame) {
         if (frame && STATE.xrActive) syncCameraFromXR(frame);
 
-        P.gap = Math.max(P.gap || 0, now - lastTime);
         let dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
-        _pt = performance.now();
 
         if (STATE.hitStopTimer > 0) {
           STATE.hitStopTimer -= dt;
