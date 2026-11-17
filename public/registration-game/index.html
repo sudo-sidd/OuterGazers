@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>WHITE RBBIT // AR Wave Shooter</title>
+  <title>JamPass | AR Entry Challenge</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Titan+One&display=swap" rel="stylesheet">
@@ -238,7 +238,7 @@
   <canvas id="webgl-canvas"></canvas>
 
   <div id="xr-overlay">
-    <div id="loader"><div class="ld-title">WHITE RBBIT</div><div class="ld-bar"><i id="ld-fill"></i></div><div id="ld-text">Loading…</div></div>
+    <div id="loader"><div class="ld-title">JAMPASS</div><div class="ld-bar"><i id="ld-fill"></i></div><div id="ld-text">Loading…</div></div>
   <!-- Layer 3: 2D Juice, Off-Screen Enemy POV Indicators & Stylized Anime FX Overlay -->
   <canvas id="fx-canvas"></canvas>
 
@@ -349,7 +349,7 @@
           <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0" fill="#e11d48" stroke="#1e1b4b" stroke-width="2.4">
             <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
           </svg>
-          <span>Clear all waves to unlock Event Registration</span>
+          <span>Clear all waves to earn your JamPass and unlock registration</span>
         </div>
       </div>
 
@@ -548,7 +548,7 @@
   <div id="tutorial-modal" class="fixed inset-0 z-30 pointer-events-auto bg-indigo-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
     <div class="candy-card max-w-md w-full p-4 sm:p-6 text-center relative animate-pop max-h-[92vh] overflow-y-auto">
       <div class="inline-block candy-pill bg-cyan-300 px-3.5 py-1 font-arcade text-xs text-indigo-950 mb-1.5 -rotate-1">
-        WHITE RBBIT // QUICK GUIDE
+        JAMPASS // ENTRY CHALLENGE
       </div>
       <h1 class="font-arcade text-2xl sm:text-3xl text-rose-600 leading-tight">
         HOW TO PLAY
@@ -647,16 +647,16 @@
   <div id="end-modal" class="hidden fixed inset-0 z-30 pointer-events-auto bg-indigo-950/75 backdrop-blur-md flex items-center justify-center p-4">
     <div class="candy-card max-w-sm w-full p-6 text-center relative -rotate-1 animate-pop">
       <div id="end-badge" class="inline-block candy-pill bg-amber-300 px-4 py-1 font-arcade text-xs text-indigo-950 mb-3 rotate-2">
-        ALL 3 WAVES CLEARED
+        CHALLENGE COMPLETE
       </div>
       <h2 id="end-title" class="font-arcade text-3xl sm:text-4xl text-rose-600">
-        YOU ARE IN!
+        JAMPASS UNLOCKED!
       </h2>
       <p id="end-subtitle" class="font-bold text-sm sm:text-base text-indigo-950 mt-2">
-        You blasted all the Chomper Ghosts! Your Event Registration pass is unlocked.
+        Complete the challenge to unlock the Inter-College Game Jam registration.
       </p>
 
-      <div id="reg-pass-box" class="mt-4">
+      <div id="reg-pass-box" class="hidden mt-4">
         <p class="font-bold text-sm text-indigo-950">
           Your event brief and registration are ready.
         </p>
@@ -3097,19 +3097,21 @@
         if (eventRedirectTimer) clearTimeout(eventRedirectTimer);
         if (victory) {
           badge.textContent = 'ALL 3 WAVES CLEARED';
-          title.textContent = 'MISSION COMPLETE!';
-          sub.textContent = 'You cleared the waves! Continue to the Inter-College Game Jam event brief.';
+          title.textContent = 'JAMPASS UNLOCKED!';
+          sub.textContent = 'You cleared the challenge. Your Inter-College Game Jam entry is unlocked.';
           SoundFX.playWaveFanfare();
         } else {
-          badge.textContent = 'SHIELD CORES DEPLETED';
-          title.textContent = 'NICE TRY!';
-          sub.textContent = 'The Inter-College Game Jam event brief and registration are ready.';
+          badge.textContent = 'CHALLENGE INCOMPLETE';
+          title.textContent = 'NOT YET!';
+          sub.textContent = 'Clear all three waves to earn your JamPass and unlock registration.';
         }
-        regPassBox.classList.remove('hidden');
+        regPassBox.classList.toggle('hidden', !victory);
         endModal.classList.remove('hidden');
-        eventRedirectTimer = setTimeout(() => {
-          window.location.assign('/events/intercollege-gamejam-2026.html');
-        }, 8000);
+        if (victory) {
+          eventRedirectTimer = setTimeout(() => {
+            window.location.assign('/events/intercollege-gamejam-2026.html');
+          }, 8000);
+        }
       }
 
       function runImmediateCountdown() {
