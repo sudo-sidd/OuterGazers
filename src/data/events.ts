@@ -243,7 +243,7 @@ export const INTERCOLLEGE_GAME_JAM: EventItem = {
     "All five official themes will be announced at 9:00 AM on Day 1. Teams create a small game within the 24-hour onsite jam window.",
   totalPrizePool: "₹18,000 estimated",
   targetAudience: "Undergraduate / bachelor's degree college students",
-  countdownTarget: "2026-12-02T23:59:59+05:30",
+  countdownTarget: "2026-12-14T23:59:59+05:30",
   countdownLabel: "Registrations Close In",
   registrationType: "modal",
   googleSheetScriptUrl: "",
@@ -266,7 +266,7 @@ export const INTERCOLLEGE_GAME_JAM: EventItem = {
   schedule: [
     {
       phase: "Registration Window",
-      time: "November 2 – December 2, 2026 · Online",
+      time: "November 2 – December 14, 2026 · Online",
       description: "Register a team of 3 to 4 undergraduate students. The registration fee is ₹500 per participant.",
     },
     {

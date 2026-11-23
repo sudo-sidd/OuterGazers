@@ -72,9 +72,9 @@ export default function InterCollegeEventDescription({ event }: { event: EventIt
                 {event.pricePerPerson * event.maxTeamSize} per team
               </p>
               <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                Registration closes December 2
+                Registration closes December 14
               </p>
-              <EventCountdown targetDate={event.countdownTarget || "2026-12-02T23:59:59+05:30"} />
+              <EventCountdown targetDate={event.countdownTarget || "2026-12-14T23:59:59+05:30"} />
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#00b4d8] to-[#0096c7] px-5 py-4 text-xs font-extrabold uppercase tracking-wider text-black transition-colors hover:from-white hover:to-zinc-200"
