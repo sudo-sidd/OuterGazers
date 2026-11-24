@@ -8,7 +8,7 @@ import {
   ArrowLeft, ExternalLink, Monitor, Globe, Smartphone,
   FolderArchive, FileText, UploadCloud, Minimize2, Repeat, Shuffle
 } from "lucide-react";
-import { FLAGSHIP_GAME_JAM, DISCORD_INVITE_URL, type EventItem } from "@/constants";
+import { FLAGSHIP_GAME_JAM, type EventItem } from "@/constants";
 import EventCountdown from "@/components/events/EventCountdown";
 import TeamRegistrationModal from "@/components/events/TeamRegistrationModal";
 import InterCollegeEventDescription from "./InterCollegeEventDescription";
@@ -25,7 +25,6 @@ export default function EventDescriptionClient({
     return <InterCollegeEventDescription event={event} />;
   }
 
-  const discordUrl = event.discordInviteUrl || DISCORD_INVITE_URL;
   const isExternal = event.registrationType === "external" && !!event.registrationUrl;
 
   return (
@@ -150,15 +149,6 @@ export default function EventDescriptionClient({
                   </button>
                 )}
 
-                <a
-                  href={discordUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-6 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
-                  Join Event Discord
-                  <ExternalLink size={14} />
-                </a>
               </div>
             </div>
           </div>
@@ -467,7 +457,7 @@ export default function EventDescriptionClient({
                       Google Drive Submission Link (Last Week Release)
                     </span>
                     <p className="text-zinc-300 leading-relaxed font-sans">
-                      The official Google Drive submission folder link will be shared directly with all registered squads via WhatsApp &amp; Discord during the <span className="text-[#00b4d8] font-bold">final week of the jam</span>. Upload your squad&apos;s .ZIP archive before <span className="text-white font-bold">November 29, 2026 · 11:59 PM IST</span>.
+                      The official Google Drive submission folder link will be shared directly with all registered squads via WhatsApp during the <span className="text-[#00b4d8] font-bold">final week of the jam</span>. Upload your squad&apos;s .ZIP archive before <span className="text-white font-bold">November 29, 2026 · 11:59 PM IST</span>.
                     </p>
                   </div>
                 </div>
@@ -859,14 +849,6 @@ export default function EventDescriptionClient({
                   Register Team ({event.pricePerPerson > 0 ? `₹${event.pricePerPerson}/Head` : "Free"})
                 </button>
               )}
-              <a
-                href={discordUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-8 py-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                Enter Discord Server
-              </a>
             </div>
           </div>
         </section>

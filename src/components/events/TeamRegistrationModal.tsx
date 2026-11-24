@@ -28,7 +28,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { GameJamEvent, TeamRegistrationPayload, TeamMember } from "@/types";
-import { DISCORD_INVITE_URL, WHATSAPP_GROUP_INVITE_URL, UPI_PAYMENT_CONFIG } from "@/constants";
+import { WHATSAPP_GROUP_INVITE_URL, UPI_PAYMENT_CONFIG } from "@/constants";
 import { generateUpiPaymentUrl, generateUpiQrCodeUrl, compressImageToBase64 } from "@/lib/upi";
 import { submitTeamRegistration } from "@/lib/sheets";
 
@@ -101,7 +101,6 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
   const eventUpiId = event.upiId || UPI_PAYMENT_CONFIG.upiId;
   const eventPayeeName = event.upiPayeeName || UPI_PAYMENT_CONFIG.payeeName;
   const eventSheetUrl = event.googleSheetScriptUrl || undefined;
-  const eventDiscordUrl = (event as any).discordInviteUrl || DISCORD_INVITE_URL;
   const eventWhatsappUrl = (event as any).whatsappGroupUrl || WHATSAPP_GROUP_INVITE_URL;
 
   const totalAmount = isFreeEvent ? 0 : teamSize * event.pricePerPerson;
@@ -1223,7 +1222,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                     <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
                       {isSietIntraEvent ? (
                         <>
-                          Make sure to <span className="text-[#00b4d8] font-bold">join our Discord and WhatsApp groups</span>. The official jam themes are live and mandatory: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">LOOPS</span> (pick either theme or combine both!). Build for Windows, Web, or Android. Both registrations and submissions close on <span className="text-white font-bold">November 29, 2026 (11:59 PM IST)</span>. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before the deadline!
+                          Make sure to <span className="text-[#00b4d8] font-bold">join our WhatsApp group</span>. The official jam themes are live and mandatory: <span className="text-[#00b4d8] font-bold">LIMITED SPACE</span> and <span className="text-[#d946ef] font-bold">LOOPS</span> (pick either theme or combine both!). Build for Windows, Web, or Android. Both registrations and submissions close on <span className="text-white font-bold">November 29, 2026 (11:59 PM IST)</span>. The official Google Drive folder link for submitting your squad&apos;s .ZIP (game build + readme with AI disclosure &amp; credits) will be shared in the final week before the deadline!
                         </>
                       ) : (
                         <>
@@ -1232,7 +1231,7 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       )}
                     </p>
 
-                    {isSietIntraEvent && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {isSietIntraEvent && <div className="grid grid-cols-1 gap-3 pt-1">
                       <a
                         href={eventWhatsappUrl}
                         target="_blank"
@@ -1241,17 +1240,6 @@ export default function TeamRegistrationModal({ event, isOpen, onClose }: ModalP
                       >
                         <MessageCircle size={15} />
                         <span>Join WhatsApp Group</span>
-                        <ExternalLink size={13} className="opacity-80" />
-                      </a>
-
-                      <a
-                        href={eventDiscordUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors shadow-md shadow-[#5865F2]/20"
-                      >
-                        <ShieldCheck size={15} />
-                        <span>Join Discord Server</span>
                         <ExternalLink size={13} className="opacity-80" />
                       </a>
                     </div>}

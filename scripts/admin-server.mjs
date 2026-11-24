@@ -200,7 +200,6 @@ export interface EventItem extends GameJamEvent {
   registrationType: "modal" | "external";
   registrationUrl?: string;
   googleSheetScriptUrl?: string;
-  discordInviteUrl?: string;
   whatsappGroupUrl?: string;
   upiId?: string;
   upiPayeeName?: string;
@@ -355,43 +354,6 @@ async function runDiagnostics() {
         service: "Google Apps Script Backend",
         status: "error",
         message: `Connection failed: ${err.message}`,
-      });
-    }
-  }
-
-  // 2. Discord Server Invite
-  const discordUrl = envConfig.NEXT_PUBLIC_DISCORD_INVITE_URL || "https://discord.gg/N4w7gGfdq";
-  const match = discordUrl.match(/discord\.(?:gg|com\/invite)\/([a-zA-Z0-9_-]+)/);
-  if (match) {
-    const code = match[1];
-    const t0 = Date.now();
-    try {
-      const res = await fetch(`https://discord.com/api/v10/invites/${code}?with_counts=true`);
-      const latency = Date.now() - t0;
-      if (res.ok) {
-        const data = await res.json();
-        const guildName = data.guild?.name || "OuterGazers";
-        const total = data.approximate_member_count || 0;
-        const online = data.approximate_presence_count || 0;
-        results.push({
-          service: "Discord Server Invite",
-          status: "healthy",
-          latencyMs: latency,
-          message: `Valid invite to "${guildName}". Total members: ${total}, Online: ${online}.`,
-        });
-      } else {
-        results.push({
-          service: "Discord Server Invite",
-          status: "warning",
-          latencyMs: latency,
-          message: `Discord API returned HTTP ${res.status} for invite '${code}'. May be expired.`,
-        });
-      }
-    } catch (err) {
-      results.push({
-        service: "Discord Server Invite",
-        status: "warning",
-        message: `Discord check error: ${err.message}`,
       });
     }
   }
@@ -831,7 +793,7 @@ function getDashboardHtml() {
     <section id="tab-config" style="display: none;">
       <div style="max-width: 760px;">
         <h2 style="font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Studio Integrations &amp; Backend</h2>
-        <p style="font-size: 12px; color: #71717a; margin-bottom: 24px;">Configures Google Sheets, Discord, Comms, and UPI payment keys. Stored in <code style="color: #00b4d8;">.env.local</code>.</p>
+        <p style="font-size: 12px; color: #71717a; margin-bottom: 24px;">Configures Google Sheets, Comms, and UPI payment keys. Stored in <code style="color: #00b4d8;">.env.local</code>.</p>
 
         <form id="config-form" class="card" onsubmit="handleSaveConfig(event)">
           <label>Google Apps Script Web App URL (Sheets Logging &amp; Drive Uploads)</label>
@@ -840,16 +802,8 @@ function getDashboardHtml() {
             Follow deployment guide in <code style="color: #00b4d8;">google_apps_script.js</code>. Ensure 'Who has access' is set to 'Anyone'.
           </p>
 
-          <div class="grid-2">
-            <div>
-              <label>Discord Server Invite URL</label>
-              <input type="text" id="cfg-discord-invite" placeholder="https://discord.gg/...">
-            </div>
-            <div>
-              <label>Studio Contact / Comms Email</label>
-              <input type="text" id="cfg-connect-email" placeholder="connect@outergazer.in">
-            </div>
-          </div>
+          <label>Studio Contact / Comms Email</label>
+          <input type="text" id="cfg-connect-email" placeholder="connect@outergazer.in">
 
           <div class="grid-2">
             <div>
@@ -1093,16 +1047,8 @@ function getDashboardHtml() {
           <label>Custom Google Sheet Apps Script URL (Optional Override)</label>
           <input type="text" id="ev-sheeturl" placeholder="Leave empty to use studio default from .env.local">
 
-          <div class="grid-2">
-            <div>
-              <label>Discord Server / Jam Channel Invite</label>
-              <input type="text" id="ev-discord" placeholder="https://discord.gg/...">
-            </div>
-            <div>
-              <label>WhatsApp Group Link</label>
-              <input type="text" id="ev-whatsapp" placeholder="https://chat.whatsapp.com/...">
-            </div>
-          </div>
+          <label>WhatsApp Group Link</label>
+          <input type="text" id="ev-whatsapp" placeholder="https://chat.whatsapp.com/...">
 
           <div class="grid-2">
             <div>
@@ -1581,7 +1527,6 @@ function getDashboardHtml() {
       document.getElementById('ev-regtype').value = ev.registrationType || 'modal';
       document.getElementById('ev-regurl').value = ev.registrationUrl || '';
       document.getElementById('ev-sheeturl').value = ev.googleSheetScriptUrl || '';
-      document.getElementById('ev-discord').value = ev.discordInviteUrl || '';
       document.getElementById('ev-whatsapp').value = ev.whatsappGroupUrl || '';
       document.getElementById('ev-upi-id').value = ev.upiId || 'outergazers@oksbi';
       document.getElementById('ev-upi-payee').value = ev.upiPayeeName || 'OuterGazers Studio';
@@ -1857,7 +1802,6 @@ function getDashboardHtml() {
         registrationType: document.getElementById('ev-regtype').value,
         registrationUrl: document.getElementById('ev-regurl').value.trim(),
         googleSheetScriptUrl: document.getElementById('ev-sheeturl').value.trim(),
-        discordInviteUrl: document.getElementById('ev-discord').value.trim(),
         whatsappGroupUrl: document.getElementById('ev-whatsapp').value.trim(),
         upiId: document.getElementById('ev-upi-id').value.trim(),
         upiPayeeName: document.getElementById('ev-upi-payee').value.trim(),
@@ -2049,7 +1993,6 @@ function getDashboardHtml() {
     function populateConfig() {
       const cfg = state.config || {};
       document.getElementById('cfg-google-script').value = cfg.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || '';
-      document.getElementById('cfg-discord-invite').value = cfg.NEXT_PUBLIC_DISCORD_INVITE_URL || '';
       document.getElementById('cfg-connect-email').value = cfg.NEXT_PUBLIC_CONNECT_EMAIL || '';
       document.getElementById('cfg-upi-id').value = cfg.NEXT_PUBLIC_UPI_ID || '';
       document.getElementById('cfg-upi-payee').value = cfg.NEXT_PUBLIC_UPI_PAYEE_NAME || '';
@@ -2059,7 +2002,6 @@ function getDashboardHtml() {
       e.preventDefault();
       const newConfig = {
         NEXT_PUBLIC_GOOGLE_SCRIPT_URL: document.getElementById('cfg-google-script').value.trim(),
-        NEXT_PUBLIC_DISCORD_INVITE_URL: document.getElementById('cfg-discord-invite').value.trim(),
         NEXT_PUBLIC_CONNECT_EMAIL: document.getElementById('cfg-connect-email').value.trim(),
         NEXT_PUBLIC_UPI_ID: document.getElementById('cfg-upi-id').value.trim(),
         NEXT_PUBLIC_UPI_PAYEE_NAME: document.getElementById('cfg-upi-payee').value.trim(),
@@ -2071,7 +2013,7 @@ function getDashboardHtml() {
 
     async function runDiagnostics() {
       const container = document.getElementById('diagnostics-container');
-      container.innerHTML = '<div class="card" style="text-align: center; color: #00b4d8; padding: 30px;">Testing connections across Google Sheets, Discord, Email & UPI...</div>';
+      container.innerHTML = '<div class="card" style="text-align: center; color: #00b4d8; padding: 30px;">Testing connections across Google Sheets, Email & UPI...</div>';
       try {
         const res = await fetch('/api/health-check');
         const results = await res.json();

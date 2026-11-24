@@ -53,7 +53,6 @@ export interface EventItem extends GameJamEvent {
   countdownLabel?: string;
   registrationType: "modal" | "external";
   registrationUrl?: string;
-  discordInviteUrl?: string;
   whatsappGroupUrl?: string;
   venue: string;
   inPersonDates: string;
@@ -88,8 +87,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
   "registrationType": "modal",
   "registrationUrl": "",
   "googleSheetScriptUrl": "",
-  "discordInviteUrl": "https://discord.gg/N4w7gGfdq",
-  "whatsappGroupUrl": "https://chat.whatsapp.com/invite/temp-outergazers-siet-jam",
+  "whatsappGroupUrl": "https://chat.whatsapp.com/FgccrKjdgVoEZcklvGzbuS?s=cl&p=a&iam=2",
   "upiId": "outergazers@oksbi",
   "upiPayeeName": "OuterGazers Studio",
   "inclusions": [
@@ -116,7 +114,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     {
       "phase": "Phase 3: Submissions & Evaluation",
       "time": "Nov 29, 2026 (11:59 PM IST) · Online",
-      "description": "Hard submission lockdown. Squads upload their executable builds (.ZIP package + readme) to Google Drive. Jury evaluation begins online with results announced via Discord."
+      "description": "Hard submission lockdown. Squads upload their executable builds (.ZIP package + readme) to Google Drive. Jury evaluation begins online with results announced through the WhatsApp group."
     }
   ],
   "prizes": [
@@ -198,7 +196,7 @@ export const EMPTY_EVENT_TEMPLATE: EventItem = {
     },
     {
       "question": "How do we submit our game?",
-      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp and Discord. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, team roll numbers, chosen theme, AI disclosure, and asset credits before the deadline on November 29, 2026 (11:59 PM IST)."
+      "answer": "During the final week of the jam, an official Google Drive folder link will be shared with all registered squads via WhatsApp. Teams will upload a single .ZIP package containing: (1) the playable game executable build, and (2) a Readme file/document explaining the game, controls, team roll numbers, chosen theme, AI disclosure, and asset credits before the deadline on November 29, 2026 (11:59 PM IST)."
     },
     {
       "question": "Who can participate in this Game Jam?",
@@ -247,8 +245,7 @@ export const INTERCOLLEGE_GAME_JAM: EventItem = {
   countdownLabel: "Registrations Close In",
   registrationType: "modal",
   googleSheetScriptUrl: "",
-  discordInviteUrl: "https://discord.gg/N4w7gGfdq",
-  whatsappGroupUrl: "https://chat.whatsapp.com/invite/temp-outergazers-siet-jam",
+  whatsappGroupUrl: "https://chat.whatsapp.com/FgccrKjdgVoEZcklvGzbuS?s=cl&p=a&iam=2",
   upiId: "theprosidd@okicici",
   upiPayeeName: "The Prosidd",
   upiQrImageUrl: "/images/intercollege-upi-qr.png",

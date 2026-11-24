@@ -6,7 +6,6 @@
  *
  * Tests all live integrations and configurations:
  * 1. Google Sheets Backend & Apps Script Web App (doGet / deployment check)
- * 2. Discord Server Invite Link validity
  * 3. Studio Email Comms Pipeline
  * 4. UPI Payment VPA & Deep-link configuration
  * 5. Local Data Store files integrity (works.ts, events.ts, news.ts)
@@ -58,7 +57,6 @@ if (fs.existsSync(envPath)) {
 }
 
 const GOOGLE_SCRIPT_URL = envVars.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "";
-const DISCORD_URL = envVars.NEXT_PUBLIC_DISCORD_INVITE_URL || process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "https://discord.gg/N4w7gGfdq";
 const CONTACT_EMAIL = envVars.NEXT_PUBLIC_CONTACT_EMAIL || process.env.NEXT_PUBLIC_CONTACT_EMAIL || "connect@outergazer.in";
 const UPI_ID = envVars.NEXT_PUBLIC_UPI_ID || process.env.NEXT_PUBLIC_UPI_ID || "outergazers@oksbi";
 const UPI_PAYEE = envVars.NEXT_PUBLIC_UPI_PAYEE_NAME || process.env.NEXT_PUBLIC_UPI_PAYEE_NAME || "OuterGazers Studio";
@@ -159,47 +157,6 @@ async function runHealthChecks() {
         latency
       );
     }
-  }
-
-  // ─── 2. DISCORD COMMUNITY ─────────────────────────────────────────────────
-  const discordMatch = DISCORD_URL.match(/discord\.(?:gg|com\/invite)\/([a-zA-Z0-9_-]+)/);
-  if (discordMatch) {
-    const inviteCode = discordMatch[1];
-    const t0 = Date.now();
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch(`https://discord.com/api/v9/invites/${inviteCode}?with_counts=true`, {
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      const latency = Date.now() - t0;
-
-      if (res.ok) {
-        const data = await res.json();
-        logResult(
-          "PASS",
-          "Discord Server Invite",
-          `Server: "${data.guild?.name || "OuterGazers"}" | Online: ${data.approximate_presence_count || 0} | Total Members: ${data.approximate_member_count || 0}`,
-          latency
-        );
-      } else {
-        logResult(
-          "WARN",
-          "Discord Server Invite",
-          `Invite code '${inviteCode}' returned HTTP ${res.status}. Link may be expired.`,
-          latency
-        );
-      }
-    } catch {
-      logResult(
-        "PASS",
-        "Discord Server Invite",
-        `Invite configured: ${DISCORD_URL} (Discord API ping rate-limited or skipped).`
-      );
-    }
-  } else {
-    logResult("WARN", "Discord Server Invite", `Unrecognized invite URL format: ${DISCORD_URL}`);
   }
 
   // ─── 3. EMAIL & COMMS ─────────────────────────────────────────────────────
