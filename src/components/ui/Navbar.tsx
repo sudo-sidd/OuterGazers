@@ -10,7 +10,7 @@ import EventAnnouncementPopup from "@/components/events/EventAnnouncementPopup";
 const NAV_LINKS = [
   { name: "Our Work", href: "/#work" },
   { name: "About", href: "/#about" },
-  { name: "News", href: "/news" },
+  { name: "Events", href: "/news" },
   { name: "Contact", href: "/#contact" },
 ];
 

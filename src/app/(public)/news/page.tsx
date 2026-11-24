@@ -38,7 +38,7 @@ function NewsHero() {
         >
           <div className="w-8 h-px bg-[#00b4d8]" />
           <span className="font-[family-name:var(--font-vt)] text-xl font-bold uppercase tracking-[0.4em] text-[#00b4d8]">
-            News &amp; Events
+            Events
           </span>
           <div className="w-8 h-px bg-[#00b4d8]" />
         </motion.div>

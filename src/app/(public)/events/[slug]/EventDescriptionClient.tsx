@@ -52,7 +52,7 @@ export default function EventDescriptionClient({
             href="/news"
             className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-zinc-400 hover:text-[#00b4d8] transition-colors"
           >
-            <ArrowLeft size={14} /> Back to News &amp; Events
+            <ArrowLeft size={14} /> Back to Events
           </Link>
 
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#00b4d8] font-sans border border-[#00b4d8]/30 px-3 py-1 rounded-full bg-[#00b4d8]/5">

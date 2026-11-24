@@ -26,7 +26,7 @@ export default function InterCollegeEventDescription({ event }: { event: EventIt
           href="/news"
           className="mb-8 inline-flex items-center gap-2 text-xs uppercase tracking-wider text-zinc-400 transition-colors hover:text-[#00b4d8]"
         >
-          <ArrowLeft size={14} /> Back to News &amp; Events
+          <ArrowLeft size={14} /> Back to Events
         </Link>
 
         <section className="relative mb-12 overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-black p-8 md:p-14">
